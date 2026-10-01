@@ -1,0 +1,5 @@
+{
+  "name": "Zed Automation - Real Estate Commission Audit",
+  "description": "Commission audit, leakage detection, and real estate admin dashboard for brokerages.",
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

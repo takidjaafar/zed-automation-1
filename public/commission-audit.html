@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zed Automation - Commission Audit Tool</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- PapaParse via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- Header -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 font-bold text-lg text-white">
+          Z
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-white">Zed Automation</h1>
+            <span class="text-xs uppercase font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Audit Suite</span>
+          </div>
+          <p class="text-xs text-slate-400">Commission Audit & Leakage Detector</p>
+        </div>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="loadSampleBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-slate-700 transition shadow-sm">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Load Sample Data
+        </button>
+        <button id="downloadReportBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition shadow-sm font-semibold">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Download Report (CSV)
+        </button>
+        <button id="clearAllBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-950/40 text-rose-300 hover:bg-rose-900/60 border border-rose-800/50 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          Clear All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+
+    <!-- KPI Summary Dashboard -->
+    <section aria-label="Summary Dashboard">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <!-- Total Audited -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Audited Deals</span>
+            <div class="p-2 rounded-lg bg-blue-50 text-blue-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="kpiCount" class="text-2xl font-bold tracking-tight text-slate-900">0</span>
+            <span class="text-xs text-slate-500">transactions</span>
+          </div>
+          <div class="mt-2 text-xs text-slate-400">Total volume logged</div>
+        </div>
+
+        <!-- Total Overpaid -->
+        <div class="bg-white rounded-xl p-5 border border-rose-200 shadow-sm relative overflow-hidden bg-gradient-to-br from-white to-rose-50/30">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-rose-700">Broker Overpaid</span>
+            <div class="p-2 rounded-lg bg-rose-100 text-rose-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="kpiOverpaid" class="text-2xl font-bold tracking-tight text-rose-600">$0.00</span>
+          </div>
+          <div class="mt-2 text-xs text-rose-600/80 font-medium">Excess funds paid to agent</div>
+        </div>
+
+        <!-- Total Underpaid -->
+        <div class="bg-white rounded-xl p-5 border border-amber-200 shadow-sm relative overflow-hidden bg-gradient-to-br from-white to-amber-50/30">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-amber-700">Broker Underpaid</span>
+            <div class="p-2 rounded-lg bg-amber-100 text-amber-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="kpiUnderpaid" class="text-2xl font-bold tracking-tight text-amber-600">$0.00</span>
+          </div>
+          <div class="mt-2 text-xs text-amber-700/80 font-medium">Agent owed unpaid funds</div>
+        </div>
+
+        <!-- Missing Referral Income -->
+        <div class="bg-white rounded-xl p-5 border border-indigo-200 shadow-sm relative overflow-hidden bg-gradient-to-br from-white to-indigo-50/30">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-700">Missing Referral $</span>
+            <div class="p-2 rounded-lg bg-indigo-100 text-indigo-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="kpiMissingReferral" class="text-2xl font-bold tracking-tight text-indigo-600">$0.00</span>
+          </div>
+          <div class="mt-2 text-xs text-indigo-700/80 font-medium">Uncollected incoming fees</div>
+        </div>
+
+        <!-- Net Discrepancy -->
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Net Discrepancy</span>
+            <div class="p-2 rounded-lg bg-slate-100 text-slate-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 18h12l3-18H3z"/></svg>
+            </div>
+          </div>
+          <div class="mt-3 flex items-baseline gap-2">
+            <span id="kpiNet" class="text-2xl font-bold tracking-tight text-slate-900">$0.00</span>
+          </div>
+          <div id="kpiNetLabel" class="mt-2 text-xs text-slate-500">Actual vs Expected Balance</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Input Tabs Section -->
+    <section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div class="border-b border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-4 bg-slate-50/60">
+        <div class="flex items-center space-x-2">
+          <button id="tabManualBtn" class="px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm border border-slate-200 text-slate-800 transition">
+            Manual Transaction Entry
+          </button>
+          <button id="tabCsvBtn" class="px-4 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            Bulk CSV Upload
+          </button>
+        </div>
+        <div class="text-xs text-slate-500 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Auto-saves in browser local storage
+        </div>
+      </div>
+
+      <!-- Tab 1: Manual Entry Form -->
+      <div id="tabManualContent" class="p-6">
+        <form id="transactionForm" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <!-- Property Address -->
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Property Address <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="propAddress" required placeholder="e.g. 742 Evergreen Terrace, Springfield"
+                class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+            </div>
+
+            <!-- Sale Price -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Sale Price ($) <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                <input type="number" id="salePrice" required min="1" step="0.01" placeholder="450000"
+                  class="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+              </div>
+            </div>
+
+            <!-- Total Commission Rate % -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Total Comm. Rate (%) <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="number" id="commRate" required min="0.1" max="100" step="0.01" value="6" placeholder="6.0"
+                  class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+              </div>
+            </div>
+
+            <!-- Listing Agent Split % -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Listing Agent Split (%) <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="number" id="listingSplit" required min="0" max="100" step="0.01" value="50" placeholder="50"
+                  class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+              </div>
+            </div>
+
+            <!-- Buyer Agent Split % -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Buyer Agent Split (%) <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="number" id="buyerSplit" required min="0" max="100" step="0.01" value="50" placeholder="50"
+                  class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+              </div>
+            </div>
+
+            <!-- Brokerage Split % -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Brokerage Cut (%) <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <input type="number" id="brokerSplit" required min="0" max="100" step="0.01" value="30" placeholder="30"
+                  class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">What the brokerage retains</p>
+            </div>
+
+            <!-- Referral Fee Out % -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Referral Fee Out (%)
+              </label>
+              <div class="relative">
+                <input type="number" id="referralOut" min="0" max="100" step="0.01" value="0" placeholder="0"
+                  class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+                <span class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">% paid to referring agent</p>
+            </div>
+
+            <!-- Referral Fee In $ -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Referral Fee In ($)
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                <input type="number" id="referralIn" min="0" step="0.01" value="0" placeholder="0.00"
+                  class="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Incoming referral income</p>
+            </div>
+
+            <!-- Transaction Fee $ -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Transaction Fee ($)
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                <input type="number" id="transactionFee" min="0" step="0.01" value="0" placeholder="e.g. 500"
+                  class="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Fixed admin/file fee</p>
+            </div>
+
+            <!-- Actual Amount Paid to Agent -->
+            <div class="lg:col-span-2">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                Actual Amount Paid to Agent ($) <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                <input type="number" id="actualPaid" required min="0" step="0.01" placeholder="Amount agent actually received"
+                  class="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" />
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Disbursement check amount to audit against formula</p>
+            </div>
+
+          </div>
+
+          <!-- Live Calculation Preview Callout -->
+          <div id="liveCalcBox" class="bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-xs text-slate-600 flex flex-wrap items-center justify-between gap-4">
+            <div class="space-y-1">
+              <span class="font-semibold text-slate-800">Formula Live Check:</span>
+              <p class="text-slate-500 text-[11px]">
+                Expected = (Listing Side - Referral Out) - Broker Cut - Trans Fee
+              </p>
+            </div>
+            <div class="flex items-center gap-6">
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Computed Expected Pay</span>
+                <span id="liveExpected" class="font-bold text-slate-900 text-sm">$0.00</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Discrepancy</span>
+                <span id="liveDiscrepancy" class="font-bold text-slate-900 text-sm">$0.00</span>
+              </div>
+              <div id="liveStatusBadge" class="hidden">
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" id="resetFormBtn" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 transition">
+              Reset Form
+            </button>
+            <button type="submit" class="px-6 py-2.5 text-sm font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 shadow-sm transition flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              Add Transaction
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Tab 2: Bulk CSV Upload -->
+      <div id="tabCsvContent" class="p-6 hidden">
+        <div class="max-w-2xl mx-auto space-y-6">
+          <!-- Drop Area -->
+          <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:border-emerald-500 hover:bg-emerald-50/30 transition cursor-pointer group">
+            <input type="file" id="csvFileInput" accept=".csv" class="hidden" />
+            <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            </div>
+            <h3 class="text-sm font-semibold text-slate-800">Click to upload CSV or drag and drop</h3>
+            <p class="text-xs text-slate-500 mt-1">Accepts standard real estate transaction exports (.csv)</p>
+          </div>
+
+          <!-- Template Guidance -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 text-xs text-slate-600 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-slate-800">Expected CSV Header Format:</span>
+              <button id="downloadTemplateBtn" class="text-emerald-600 hover:text-emerald-700 font-semibold underline text-xs">
+                Download CSV Template
+              </button>
+            </div>
+            <code class="block bg-slate-100 p-2.5 rounded font-mono text-[11px] text-slate-700 overflow-x-auto">
+              Property Address,Sale Price,Total Commission Rate %,Listing Agent Split %,Buyer Agent Split %,Brokerage Split %,Referral Fee Out %,Referral Fee In $,Transaction Fee $,Actual Amount Paid to Agent
+            </code>
+            <p class="text-[11px] text-slate-500">
+              * Headers are case-insensitive. Numeric currency signs ($) and percent symbols (%) will be sanitized automatically.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audit Records Table Section -->
+    <section class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden space-y-4">
+      <!-- Table Header & Filters -->
+      <div class="p-6 pb-2 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Audited Commission Log</h2>
+          <p class="text-xs text-slate-500">Color-coded variance flags: Red for Overpayment, Yellow for Underpayment</p>
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button data-filter="all" class="filter-btn active px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white transition">
+            All (<span id="filterAllCount">0</span>)
+          </button>
+          <button data-filter="discrepancy" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">
+            Errors Only (<span id="filterDiscrepancyCount">0</span>)
+          </button>
+          <button data-filter="overpaid" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">
+            Overpaid (<span id="filterOverpaidCount">0</span>)
+          </button>
+          <button data-filter="underpaid" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">
+            Underpaid (<span id="filterUnderpaidCount">0</span>)
+          </button>
+          <button data-filter="referral" class="filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition">
+            Missing Referral (<span id="filterReferralCount">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+          <thead class="bg-slate-50 text-slate-600 font-semibold tracking-wider uppercase text-[10px]">
+            <tr>
+              <th scope="col" class="py-3 px-4">Property Address</th>
+              <th scope="col" class="py-3 px-4">Sale Price</th>
+              <th scope="col" class="py-3 px-4">Comm %</th>
+              <th scope="col" class="py-3 px-4">Splits (L / B / Cut)</th>
+              <th scope="col" class="py-3 px-4">Referrals & Fee</th>
+              <th scope="col" class="py-3 px-4">Expected Pay</th>
+              <th scope="col" class="py-3 px-4">Actual Paid</th>
+              <th scope="col" class="py-3 px-4">Discrepancy</th>
+              <th scope="col" class="py-3 px-4">Audit Status</th>
+              <th scope="col" class="py-3 px-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTableBody" class="divide-y divide-slate-100 bg-white">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="p-12 text-center">
+        <div class="w-12 h-12 rounded-full bg-slate-100 mx-auto flex items-center justify-center text-slate-400 mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-700">No Transactions Audited Yet</h3>
+        <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          Add transactions manually using the form above, upload a CSV file, or load our 5 sample audit records.
+        </p>
+        <button id="emptyLoadBtn" class="mt-4 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition">
+          Load 5 Sample Audit Cases
+        </button>
+      </div>
+
+      <!-- Table Footer / Count -->
+      <div class="px-6 py-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
+        <span id="tableShowingCount">Showing 0 transactions</span>
+        <span>Zed Automation Internal Audit Algorithm v2.4</span>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Detailed Math Breakdown -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="text-sm font-bold text-slate-900" id="modalTitle">Audit Calculation Trace</h3>
+          <p class="text-xs text-slate-500" id="modalSubtitle">Property address</p>
+        </div>
+        <button id="closeModalBtn" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 text-xs text-slate-600" id="modalMathContent">
+      </div>
+
+      <div class="pt-3 border-t border-slate-100 flex justify-end">
+        <button id="modalCloseActionBtn" class="px-4 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg hover:bg-slate-800 transition">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p>&copy; Zed Automation — Real Estate Commission Audit & Leakage Detection System</p>
+      <div class="flex items-center gap-4">
+        <span>Confidential Internal Tool</span>
+        <span>&bull;</span>
+        <a href="/dashboard" class="text-emerald-600 hover:underline">Return to Admin Dashboard &rarr;</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core Application Script -->
+  <script>
+    const STORAGE_KEY = 'zed_commission_audit_records_v1';
+
+    let transactions = [];
+    let currentFilter = 'all';
+
+    const SAMPLE_TRANSACTIONS = [
+      {
+        id: 'sample-1',
+        address: '742 Evergreen Terrace, Springfield',
+        salePrice: 450000,
+        commRate: 6.0,
+        listingSplit: 50,
+        buyerSplit: 50,
+        brokerSplit: 30,
+        referralOut: 0,
+        referralIn: 0,
+        transactionFee: 250,
+        actualPaid: 9200
+      },
+      {
+        id: 'sample-2',
+        address: '100 Ocean Drive, Miami Beach, FL',
+        salePrice: 850000,
+        commRate: 5.0,
+        listingSplit: 60,
+        buyerSplit: 40,
+        brokerSplit: 20,
+        referralOut: 25,
+        referralIn: 0,
+        transactionFee: 400,
+        actualPaid: 14900
+      },
+      {
+        id: 'sample-3',
+        address: '42 Wallaby Way, Sydney Park, CA',
+        salePrice: 620000,
+        commRate: 6.0,
+        listingSplit: 50,
+        buyerSplit: 50,
+        brokerSplit: 30,
+        referralOut: 0,
+        referralIn: 0,
+        transactionFee: 500,
+        actualPaid: 14200
+      },
+      {
+        id: 'sample-4',
+        address: '221B Baker Crest, Boston, MA',
+        salePrice: 1200000,
+        commRate: 5.0,
+        listingSplit: 70,
+        buyerSplit: 30,
+        brokerSplit: 25,
+        referralOut: 20,
+        referralIn: 0,
+        transactionFee: 500,
+        actualPaid: 21500
+      },
+      {
+        id: 'sample-5',
+        address: '350 5th Avenue, Suite 12B, New York, NY',
+        salePrice: 950000,
+        commRate: 6.0,
+        listingSplit: 50,
+        buyerSplit: 50,
+        brokerSplit: 30,
+        referralOut: 0,
+        referralIn: 3500,
+        transactionFee: 350,
+        actualPaid: 19600
+      }
+    ];
+
+    function calculateAudit(t) {
+      const salePrice = Number(t.salePrice) || 0;
+      const commRate = Number(t.commRate) || 0;
+      const listingSplit = Number(t.listingSplit) || 0;
+      const buyerSplit = Number(t.buyerSplit) || 0;
+      const brokerSplit = Number(t.brokerSplit) || 0;
+      const referralOut = Number(t.referralOut) || 0;
+      const referralIn = Number(t.referralIn) || 0;
+      const transactionFee = Number(t.transactionFee) || 0;
+      const actualPaid = Number(t.actualPaid) || 0;
+
+      // 1. Total Commission = Sale Price * (Total Commission Rate / 100)
+      const totalCommission = salePrice * (commRate / 100);
+
+      // 2. Listing Side Commission = Total Commission * (Listing Agent Split / 100)
+      const listingCommission = totalCommission * (listingSplit / 100);
+
+      // 3. Buyer Side Commission = Total Commission * (Buyer Agent Split / 100)
+      const buyerCommission = totalCommission * (buyerSplit / 100);
+
+      // 4. Referral Fee Out Amount = Listing Side Commission * (Referral Fee Out / 100)
+      const referralFeeOutAmount = listingCommission * (referralOut / 100);
+
+      // 5. Amount After Referral = Listing Side Commission - Referral Fee Out Amount
+      const amountAfterReferral = listingCommission - referralFeeOutAmount;
+
+      // 6. Brokerage Cut = Amount After Referral * (Brokerage Split / 100)
+      const brokerageCut = amountAfterReferral * (brokerSplit / 100);
+
+      // 7. Expected Agent Payment = Amount After Referral - Brokerage Cut - Transaction Fee
+      const expectedAgentPayment = amountAfterReferral - brokerageCut - transactionFee;
+
+      // 8. Discrepancy = Actual Amount Paid - Expected Agent Payment
+      const discrepancy = actualPaid - expectedAgentPayment;
+
+      // 9, 10. Status
+      let status = 'correct';
+      let statusText = 'Accurate';
+      const roundDisc = Math.round(discrepancy * 100) / 100;
+
+      if (roundDisc > 0.5) {
+        status = 'overpaid';
+        statusText = 'Broker Overpaid';
+      } else if (roundDisc < -0.5) {
+        status = 'underpaid';
+        statusText = 'Broker Underpaid';
+      }
+
+      // 11. Missing Referral Income check
+      const hasMissingReferral = referralIn > 0;
+
+      return {
+        totalCommission,
+        listingCommission,
+        buyerCommission,
+        referralFeeOutAmount,
+        amountAfterReferral,
+        brokerageCut,
+        expectedAgentPayment,
+        discrepancy,
+        status,
+        statusText,
+        hasMissingReferral,
+        referralIn
+      };
+    }
+
+    function formatMoney(amount) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(amount || 0);
+    }
+
+    function formatPercent(val) {
+      return (Number(val) || 0).toFixed(1) + '%';
+    }
+
+    function initApp() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          transactions = JSON.parse(stored);
+        } catch (e) {
+          transactions = [];
+        }
+      }
+
+      if (!transactions || transactions.length === 0) {
+        transactions = [...SAMPLE_TRANSACTIONS];
+        saveTransactions();
+      }
+
+      render();
+      bindEvents();
+    }
+
+    function saveTransactions() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    }
+
+    function bindEvents() {
+      const tabManualBtn = document.getElementById('tabManualBtn');
+      const tabCsvBtn = document.getElementById('tabCsvBtn');
+      const tabManualContent = document.getElementById('tabManualContent');
+      const tabCsvContent = document.getElementById('tabCsvContent');
+
+      tabManualBtn.addEventListener('click', () => {
+        tabManualBtn.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm border border-slate-200 text-slate-800 transition';
+        tabCsvBtn.className = 'px-4 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition';
+        tabManualContent.classList.remove('hidden');
+        tabCsvContent.classList.add('hidden');
+      });
+
+      tabCsvBtn.addEventListener('click', () => {
+        tabCsvBtn.className = 'px-4 py-2 text-sm font-semibold rounded-lg bg-white shadow-sm border border-slate-200 text-slate-800 transition';
+        tabManualBtn.className = 'px-4 py-2 text-sm font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition';
+        tabCsvContent.classList.remove('hidden');
+        tabManualContent.classList.add('hidden');
+      });
+
+      document.getElementById('loadSampleBtn').addEventListener('click', () => {
+        transactions = [...SAMPLE_TRANSACTIONS];
+        saveTransactions();
+        render();
+      });
+
+      document.getElementById('emptyLoadBtn').addEventListener('click', () => {
+        transactions = [...SAMPLE_TRANSACTIONS];
+        saveTransactions();
+        render();
+      });
+
+      document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all audited transactions?')) {
+          transactions = [];
+          saveTransactions();
+          render();
+        }
+      });
+
+      document.getElementById('downloadReportBtn').addEventListener('click', downloadCSVReport);
+      document.getElementById('downloadTemplateBtn').addEventListener('click', downloadCSVTemplate);
+
+      const form = document.getElementById('transactionForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newTx = {
+          id: 'tx-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+          address: document.getElementById('propAddress').value.trim(),
+          salePrice: parseFloat(document.getElementById('salePrice').value),
+          commRate: parseFloat(document.getElementById('commRate').value),
+          listingSplit: parseFloat(document.getElementById('listingSplit').value),
+          buyerSplit: parseFloat(document.getElementById('buyerSplit').value),
+          brokerSplit: parseFloat(document.getElementById('brokerSplit').value),
+          referralOut: parseFloat(document.getElementById('referralOut').value) || 0,
+          referralIn: parseFloat(document.getElementById('referralIn').value) || 0,
+          transactionFee: parseFloat(document.getElementById('transactionFee').value) || 0,
+          actualPaid: parseFloat(document.getElementById('actualPaid').value)
+        };
+
+        transactions.unshift(newTx);
+        saveTransactions();
+        render();
+        form.reset();
+        document.getElementById('commRate').value = '6';
+        document.getElementById('listingSplit').value = '50';
+        document.getElementById('buyerSplit').value = '50';
+        document.getElementById('brokerSplit').value = '30';
+        document.getElementById('referralOut').value = '0';
+        document.getElementById('referralIn').value = '0';
+        document.getElementById('transactionFee').value = '0';
+        updateLiveCalc();
+      });
+
+      document.getElementById('resetFormBtn').addEventListener('click', () => {
+        form.reset();
+        document.getElementById('commRate').value = '6';
+        document.getElementById('listingSplit').value = '50';
+        document.getElementById('buyerSplit').value = '50';
+        document.getElementById('brokerSplit').value = '30';
+        document.getElementById('referralOut').value = '0';
+        document.getElementById('referralIn').value = '0';
+        document.getElementById('transactionFee').value = '0';
+        updateLiveCalc();
+      });
+
+      const liveInputs = ['salePrice', 'commRate', 'listingSplit', 'buyerSplit', 'brokerSplit', 'referralOut', 'referralIn', 'transactionFee', 'actualPaid'];
+      liveInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', updateLiveCalc);
+        }
+      });
+
+      const dropZone = document.getElementById('dropZone');
+      const csvFileInput = document.getElementById('csvFileInput');
+
+      dropZone.addEventListener('click', () => csvFileInput.click());
+
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-emerald-500', 'bg-emerald-50/50');
+      });
+
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-emerald-500', 'bg-emerald-50/50');
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-emerald-500', 'bg-emerald-50/50');
+        if (e.dataTransfer.files.length) {
+          handleCSVFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      csvFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+          handleCSVFile(e.target.files[0]);
+        }
+      });
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => {
+            b.className = 'filter-btn px-3 py-1.5 text-xs font-medium rounded-lg text-slate-600 hover:bg-slate-100 transition';
+          });
+          btn.className = 'filter-btn active px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white transition';
+          currentFilter = btn.getAttribute('data-filter');
+          renderTable();
+        });
+      });
+
+      document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      document.getElementById('modalCloseActionBtn').addEventListener('click', closeModal);
+      document.getElementById('detailModal').addEventListener('click', (e) => {
+        if (e.target.id === 'detailModal') closeModal();
+      });
+    }
+
+    function updateLiveCalc() {
+      const sale = parseFloat(document.getElementById('salePrice').value) || 0;
+      const rate = parseFloat(document.getElementById('commRate').value) || 0;
+      const listSplit = parseFloat(document.getElementById('listingSplit').value) || 0;
+      const brokSplit = parseFloat(document.getElementById('brokerSplit').value) || 0;
+      const refOut = parseFloat(document.getElementById('referralOut').value) || 0;
+      const fee = parseFloat(document.getElementById('transactionFee').value) || 0;
+      const actual = parseFloat(document.getElementById('actualPaid').value) || 0;
+
+      const totalComm = sale * (rate / 100);
+      const listingComm = totalComm * (listSplit / 100);
+      const refOutAmt = listingComm * (refOut / 100);
+      const afterRef = listingComm - refOutAmt;
+      const brokCut = afterRef * (brokSplit / 100);
+      const expected = afterRef - brokCut - fee;
+      const diff = actual - expected;
+
+      document.getElementById('liveExpected').textContent = formatMoney(expected);
+      document.getElementById('liveDiscrepancy').textContent = (diff > 0 ? '+' : '') + formatMoney(diff);
+
+      const badge = document.getElementById('liveStatusBadge');
+      if (sale > 0 && actual > 0) {
+        badge.classList.remove('hidden');
+        if (diff > 0.5) {
+          badge.innerHTML = '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-100 text-rose-700 border border-rose-200">Overpaid (+' + formatMoney(diff) + ')</span>';
+        } else if (diff < -0.5) {
+          badge.innerHTML = '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-100 text-amber-700 border border-amber-200">Underpaid (' + formatMoney(diff) + ')</span>';
+        } else {
+          badge.innerHTML = '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">Accurate</span>';
+        }
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function handleCSVFile(file) {
+      if (!window.Papa) {
+        alert('PapaParse CSV engine is loading, please try again.');
+        return;
+      }
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          if (!results.data || results.data.length === 0) {
+            alert('No valid rows found in CSV file.');
+            return;
+          }
+
+          let addedCount = 0;
+          results.data.forEach((row) => {
+            const findCol = (terms) => {
+              const key = Object.keys(row).find(k => {
+                const clean = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+                return terms.some(t => clean.includes(t));
+              });
+              return key ? row[key] : null;
+            };
+
+            const cleanNum = (val, fallback = 0) => {
+              if (val === null || val === undefined || val === '') return fallback;
+              const cleaned = String(val).replace(/[^0-9.-]/g, '');
+              const num = parseFloat(cleaned);
+              return isNaN(num) ? fallback : num;
+            };
+
+            const address = findCol(['address', 'property', 'location']) || row['Property Address'] || 'Property ' + (transactions.length + 1);
+            const salePrice = cleanNum(findCol(['sale', 'price', 'volume']), 0);
+            const commRate = cleanNum(findCol(['rate', 'commrate', 'totalcomm']), 6);
+            const listingSplit = cleanNum(findCol(['listing', 'listagent']), 50);
+            const buyerSplit = cleanNum(findCol(['buyer', 'buyeragent']), 50);
+            const brokerSplit = cleanNum(findCol(['broker', 'brokerage']), 30);
+            const referralOut = cleanNum(findCol(['referralout', 'refout']), 0);
+            const referralIn = cleanNum(findCol(['referralin', 'refin']), 0);
+            const transactionFee = cleanNum(findCol(['transfee', 'fee', 'adminfee']), 0);
+            const actualPaid = cleanNum(findCol(['actual', 'paid', 'agentpay']), 0);
+
+            if (salePrice > 0 || actualPaid > 0) {
+              transactions.push({
+                id: 'csv-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                address,
+                salePrice,
+                commRate,
+                listingSplit,
+                buyerSplit,
+                brokerSplit,
+                referralOut,
+                referralIn,
+                transactionFee,
+                actualPaid
+              });
+              addedCount++;
+            }
+          });
+
+          saveTransactions();
+          render();
+          alert('Successfully imported and audited ' + addedCount + ' transactions from CSV!');
+          document.getElementById('tabManualBtn').click();
+        },
+        error: function(err) {
+          alert('Error parsing CSV: ' + err.message);
+        }
+      });
+    }
+
+    function render() {
+      renderSummary();
+      renderTable();
+    }
+
+    function renderSummary() {
+      let totalOverpaid = 0;
+      let totalUnderpaid = 0;
+      let totalMissingReferral = 0;
+      let netDiscrepancy = 0;
+
+      let overpaidCount = 0;
+      let underpaidCount = 0;
+      let referralCount = 0;
+      let discrepancyCount = 0;
+
+      transactions.forEach(t => {
+        const audit = calculateAudit(t);
+
+        if (audit.status === 'overpaid') {
+          totalOverpaid += audit.discrepancy;
+          overpaidCount++;
+          discrepancyCount++;
+        } else if (audit.status === 'underpaid') {
+          totalUnderpaid += Math.abs(audit.discrepancy);
+          underpaidCount++;
+          discrepancyCount++;
+        }
+
+        if (audit.hasMissingReferral) {
+          totalMissingReferral += audit.referralIn;
+          referralCount++;
+        }
+
+        netDiscrepancy += audit.discrepancy;
+      });
+
+      document.getElementById('kpiCount').textContent = transactions.length;
+      document.getElementById('kpiOverpaid').textContent = formatMoney(totalOverpaid);
+      document.getElementById('kpiUnderpaid').textContent = formatMoney(totalUnderpaid);
+      document.getElementById('kpiMissingReferral').textContent = formatMoney(totalMissingReferral);
+
+      const netEl = document.getElementById('kpiNet');
+      const netLabel = document.getElementById('kpiNetLabel');
+      netEl.textContent = (netDiscrepancy > 0 ? '+' : '') + formatMoney(netDiscrepancy);
+
+      if (netDiscrepancy > 0.5) {
+        netEl.className = 'text-2xl font-bold tracking-tight text-rose-600';
+        netLabel.textContent = 'Net Brokerage Loss (Overpaid)';
+      } else if (netDiscrepancy < -0.5) {
+        netEl.className = 'text-2xl font-bold tracking-tight text-amber-600';
+        netLabel.textContent = 'Net Agent Shortfall (Underpaid)';
+      } else {
+        netEl.className = 'text-2xl font-bold tracking-tight text-emerald-600';
+        netLabel.textContent = 'Balanced / Clean Books';
+      }
+
+      document.getElementById('filterAllCount').textContent = transactions.length;
+      document.getElementById('filterDiscrepancyCount').textContent = discrepancyCount;
+      document.getElementById('filterOverpaidCount').textContent = overpaidCount;
+      document.getElementById('filterUnderpaidCount').textContent = underpaidCount;
+      document.getElementById('filterReferralCount').textContent = referralCount;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('transactionsTableBody');
+      const emptyState = document.getElementById('emptyState');
+      tbody.innerHTML = '';
+
+      const filtered = transactions.filter(t => {
+        const audit = calculateAudit(t);
+        if (currentFilter === 'all') return true;
+        if (currentFilter === 'discrepancy') return audit.status !== 'correct';
+        if (currentFilter === 'overpaid') return audit.status === 'overpaid';
+        if (currentFilter === 'underpaid') return audit.status === 'underpaid';
+        if (currentFilter === 'referral') return audit.hasMissingReferral;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      document.getElementById('tableShowingCount').textContent = 'Showing ' + filtered.length + ' of ' + transactions.length + ' transactions';
+
+      filtered.forEach((t) => {
+        const audit = calculateAudit(t);
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/80 transition-colors border-b border-slate-100';
+
+        let statusBadge = '';
+        if (audit.status === 'overpaid') {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">' +
+            '<span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>' +
+            'OVERPAID (+' + formatMoney(audit.discrepancy) + ')' +
+          '</span>';
+        } else if (audit.status === 'underpaid') {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">' +
+            '<span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>' +
+            'UNDERPAID (' + formatMoney(audit.discrepancy) + ')' +
+          '</span>';
+        } else {
+          statusBadge = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">' +
+            '<svg class="w-2.5 h-2.5 mr-1 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' +
+            'Accurate' +
+          '</span>';
+        }
+
+        let referralTag = '';
+        if (audit.hasMissingReferral) {
+          referralTag = '<div class="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">' +
+            '<span>Missing In: ' + formatMoney(audit.referralIn) + '</span>' +
+          '</div>';
+        }
+
+        const discClass = audit.status === 'overpaid' ? 'text-rose-600' : audit.status === 'underpaid' ? 'text-amber-600' : 'text-emerald-600';
+        const discSign = audit.discrepancy > 0 ? '+' : '';
+
+        tr.innerHTML = `
+          <td class="py-3 px-4 font-medium text-slate-900 max-w-xs truncate" title="${t.address}">
+            <div class="truncate font-semibold text-slate-800">${t.address}</div>
+            <div class="text-[10px] text-slate-400 font-mono">ID: ${t.id}</div>
+          </td>
+          <td class="py-3 px-4 font-semibold text-slate-800">
+            ${formatMoney(t.salePrice)}
+          </td>
+          <td class="py-3 px-4 text-slate-600">
+            ${formatPercent(t.commRate)}
+            <div class="text-[10px] text-slate-400">${formatMoney(audit.totalCommission)} total</div>
+          </td>
+          <td class="py-3 px-4 text-slate-600">
+            <span class="text-slate-800 font-medium">${t.listingSplit}%</span> L /
+            <span>${t.buyerSplit}%</span> B
+            <div class="text-[10px] text-slate-500">Brok Cut: ${t.brokerSplit}% (${formatMoney(audit.brokerageCut)})</div>
+          </td>
+          <td class="py-3 px-4 text-slate-600">
+            <div>Ref Out: ${t.referralOut}% (${formatMoney(audit.referralFeeOutAmount)})</div>
+            <div class="text-[10px] text-slate-500">Trans Fee: ${formatMoney(t.transactionFee)}</div>
+            ${referralTag}
+          </td>
+          <td class="py-3 px-4 font-semibold text-slate-800">
+            ${formatMoney(audit.expectedAgentPayment)}
+          </td>
+          <td class="py-3 px-4 font-semibold text-slate-800">
+            ${formatMoney(t.actualPaid)}
+          </td>
+          <td class="py-3 px-4">
+            <span class="font-bold ${discClass}">
+              ${discSign + formatMoney(audit.discrepancy)}
+            </span>
+          </td>
+          <td class="py-3 px-4">
+            ${statusBadge}
+          </td>
+          <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+            <button onclick="viewTrace('${t.id}')" class="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded transition" title="Inspect Formula Calculation">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </button>
+            <button onclick="deleteTransaction('${t.id}')" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition" title="Delete record">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.viewTrace = function(id) {
+      const t = transactions.find(x => x.id === id);
+      if (!t) return;
+
+      const a = calculateAudit(t);
+
+      document.getElementById('modalTitle').textContent = 'Audit Trace: ' + t.address;
+      document.getElementById('modalSubtitle').textContent = 'Sale Price: ' + formatMoney(t.salePrice) + ' | Actual Paid: ' + formatMoney(t.actualPaid);
+
+      const mathEl = document.getElementById('modalMathContent');
+      mathEl.innerHTML = `
+        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 font-mono text-[11px] space-y-2">
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">1. Total Commission (${t.commRate}%):</span>
+            <span class="font-bold text-slate-800">${formatMoney(a.totalCommission)}</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">2. Listing Side Commission (${t.listingSplit}%):</span>
+            <span class="font-bold text-slate-800">${formatMoney(a.listingCommission)}</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">3. Buyer Side Commission (${t.buyerSplit}%):</span>
+            <span class="font-bold text-slate-800">${formatMoney(a.buyerCommission)}</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">4. Referral Fee Out (${t.referralOut}% of Listing):</span>
+            <span class="font-bold text-rose-600">-${formatMoney(a.referralFeeOutAmount)}</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">5. Amount After Referral:</span>
+            <span class="font-bold text-slate-800">${formatMoney(a.amountAfterReferral)}</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">6. Brokerage Cut (${t.brokerSplit}% of Remainder):</span>
+            <span class="font-bold text-rose-600">-${formatMoney(a.brokerageCut)}</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-200 pb-1">
+            <span class="text-slate-500">7. Transaction Fee Deduction:</span>
+            <span class="font-bold text-rose-600">-${formatMoney(t.transactionFee)}</span>
+          </div>
+          <div class="flex justify-between bg-emerald-50 p-1.5 rounded border border-emerald-200 font-semibold">
+            <span class="text-emerald-800">8. EXPECTED AGENT PAYMENT:</span>
+            <span class="text-emerald-800 text-sm">${formatMoney(a.expectedAgentPayment)}</span>
+          </div>
+          <div class="flex justify-between bg-slate-100 p-1.5 rounded font-semibold">
+            <span class="text-slate-700">Actual Amount Paid:</span>
+            <span class="text-slate-900 text-sm">${formatMoney(t.actualPaid)}</span>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-lg ${a.status === 'overpaid' ? 'bg-rose-50 border border-rose-200 text-rose-900' : a.status === 'underpaid' ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-emerald-50 border border-emerald-200 text-emerald-900'}">
+          <div class="font-bold text-xs uppercase tracking-wider mb-1">Audit Finding:</div>
+          <p class="text-xs">
+            ${a.status === 'overpaid' ? `Brokerage <strong>OVERPAID</strong> agent by <strong>${formatMoney(a.discrepancy)}</strong>. Cash leakage detected.` :
+              a.status === 'underpaid' ? `Brokerage <strong>UNDERPAID</strong> agent by <strong>${formatMoney(Math.abs(a.discrepancy))}</strong>. Payout owed.` :
+              `Calculations verify correctly. Clean audit.`}
+          </p>
+          ${a.hasMissingReferral ? `<div class="mt-2 pt-2 border-t border-indigo-200 text-indigo-900"><strong>Note:</strong> Incoming referral fee of <strong>${formatMoney(a.referralIn)}</strong> is flagged as uncollected/pending.</div>` : ''}
+        </div>
+      `;
+
+      document.getElementById('detailModal').classList.remove('hidden');
+    };
+
+    function closeModal() {
+      document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    window.deleteTransaction = function(id) {
+      if (confirm('Delete this transaction record?')) {
+        transactions = transactions.filter(x => x.id !== id);
+        saveTransactions();
+        render();
+      }
+    };
+
+    function downloadCSVReport() {
+      if (transactions.length === 0) {
+        alert('No audit transactions to export.');
+        return;
+      }
+
+      const rows = transactions.map(t => {
+        const a = calculateAudit(t);
+        return {
+          'Property Address': t.address,
+          'Sale Price': t.salePrice,
+          'Total Comm Rate %': t.commRate,
+          'Total Commission $': a.totalCommission.toFixed(2),
+          'Listing Agent Split %': t.listingSplit,
+          'Buyer Agent Split %': t.buyerSplit,
+          'Listing Side Comm $': a.listingCommission.toFixed(2),
+          'Referral Fee Out %': t.referralOut,
+          'Referral Fee Out $': a.referralFeeOutAmount.toFixed(2),
+          'Brokerage Cut %': t.brokerSplit,
+          'Brokerage Cut $': a.brokerageCut.toFixed(2),
+          'Transaction Fee $': t.transactionFee,
+          'Expected Agent Payout $': a.expectedAgentPayment.toFixed(2),
+          'Actual Amount Paid $': t.actualPaid.toFixed(2),
+          'Discrepancy $': a.discrepancy.toFixed(2),
+          'Audit Status': a.statusText,
+          'Referral Fee In (Uncollected) $': t.referralIn || 0
+        };
+      });
+
+      const csv = Papa.unparse(rows);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `zed_commission_audit_report_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function downloadCSVTemplate() {
+      const template = [
+        {
+          'Property Address': '123 Main Street, Suite 4',
+          'Sale Price': 500000,
+          'Total Commission Rate %': 6.0,
+          'Listing Agent Split %': 50,
+          'Buyer Agent Split %': 50,
+          'Brokerage Split %': 30,
+          'Referral Fee Out %': 0,
+          'Referral Fee In $': 0,
+          'Transaction Fee $': 250,
+          'Actual Amount Paid to Agent': 10250
+        }
+      ];
+
+      const csv = Papa.unparse(template);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'zed_commission_audit_template.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    document.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
