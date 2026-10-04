@@ -126,6 +126,11 @@ function CommissionAuditWorkspace() {
   const handleImportTransactions = (imported: Transaction[]) => {
     if (imported.length === 0) return;
     updateTransactions([...imported, ...transactions]);
+    push({
+      tone: 'success',
+      title: 'Transactions imported',
+      description: `Successfully added ${imported.length} transaction${imported.length === 1 ? '' : 's'} to audit records.`,
+    });
   };
 
   // CSV Export

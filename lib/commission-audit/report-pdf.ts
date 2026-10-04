@@ -936,7 +936,22 @@ export function downloadAuditReportPdf(
   options: ReportOptions,
 ): AuditReportResult {
   const result = buildAuditReportPdf(transactions, options);
-  result.doc.save(result.fileName);
+  if (typeof window !== 'undefined') {
+    try {
+      result.doc.save(result.fileName);
+    } catch {
+      // Fallback in case doc.save encounters environment restrictions
+      const blob = result.doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = result.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  }
   return result;
 }
 
