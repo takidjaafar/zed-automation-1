@@ -11,27 +11,10 @@ export async function getBaseUrl(): Promise<string> {
     return window.location.origin;
   }
 
-  // Server-side: try to get from headers
-  if (typeof process !== 'undefined') {
-    try {
-      // Import headers from next/headers (only works in app directory)
-      const headersList = await headers();
-      
-      // Try x-forwarded-host first (common in production deployments)
-      const host = headersList.get('x-forwarded-host') || headersList.get('host');
-      const protocol = headersList.get('x-forwarded-proto') || 'https';
-      
-      if (host) {
-        return `${protocol}://${host}`;
-      }
-    } catch (e) {
-      // headers() might not be available in all contexts (e.g., API routes)
-      // Fall through to default
-    }
-  }
-
-  // Production fallback - return empty string and let relative URLs work
-  return '';
+  // Server-side: connect directly to localhost to prevent requests from looping through
+  // external ingress proxies that require interactive browser cookies
+  const port = process.env.PORT || '3000';
+  return `http://127.0.0.1:${port}`;
 }
 
 /**

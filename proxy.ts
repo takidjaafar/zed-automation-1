@@ -2,15 +2,15 @@ import { handleDashboardRoutes, getAuthenticatedUser } from '@/features/dashboar
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-  // Get authenticated user once
-  const { user, redirectToInit } = await getAuthenticatedUser(request);
+  const pathname = request.nextUrl.pathname;
+
+  // Only run dashboard authentication and route handling for /dashboard paths
+  if (pathname.startsWith('/dashboard')) {
+    const { user, redirectToInit } = await getAuthenticatedUser(request);
+    const dashboardResponse = await handleDashboardRoutes(request, user, redirectToInit);
+    if (dashboardResponse) return dashboardResponse;
+  }
   
-  // Let dashboard handler manage its routes
-  const dashboardResponse = await handleDashboardRoutes(request, user, redirectToInit);
-  if (dashboardResponse) return dashboardResponse;
-  
-  // Continue with existing middleware logic {
-  // Add any middleware logic here if needed
   return NextResponse.next();
 }
 

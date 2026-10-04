@@ -50,9 +50,16 @@ export async function checkInitStatus(request: NextRequest) {
   try {
     const client = await createMiddlewareGraphQLClient(headers);
     const data = await client.request(query) as { redirectToInit: boolean };
-    return data.redirectToInit;
-  } catch (error) {
-    console.error("Error checking init status:", error);
+    return data?.redirectToInit || false;
+  } catch (error: any) {
+    const errorMessage = error?.message || String(error);
+    if (
+      !errorMessage.includes('<!doctype') &&
+      !errorMessage.includes('Cookie check') &&
+      !errorMessage.includes('ECONNREFUSED')
+    ) {
+      console.warn("Init status check:", errorMessage);
+    }
     return false;
   }
 }
@@ -85,15 +92,17 @@ export async function getAuthenticatedUser(request: NextRequest) {
     };
     
     return {
-      user: data.authenticatedItem,
-      redirectToInit: data.redirectToInit
+      user: data?.authenticatedItem || null,
+      redirectToInit: !!data?.redirectToInit
     };
-  } catch (error) {
-    console.error("Auth check failed:", error);
-    
-    if (error instanceof ClientError) {
-      const { message } = formatGraphQLErrors(error);
-      console.error("GraphQL error details:", message);
+  } catch (error: any) {
+    const errorMessage = error instanceof ClientError ? formatGraphQLErrors(error).message : String(error?.message || error);
+    if (
+      !errorMessage.includes('<!doctype') &&
+      !errorMessage.includes('Cookie check') &&
+      !errorMessage.includes('ECONNREFUSED')
+    ) {
+      console.warn("Dashboard auth check:", errorMessage);
     }
     
     return { user: null, redirectToInit: false };
