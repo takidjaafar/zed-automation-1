@@ -130,7 +130,14 @@ function CommissionAuditWorkspace() {
 
   // CSV Export
   const handleDownloadCSV = () => {
-    if (transactions.length === 0) return;
+    if (transactions.length === 0) {
+      push({
+        tone: 'info',
+        title: 'No transactions to export',
+        description: 'Add or import transactions before exporting CSV.',
+      });
+      return;
+    }
 
     const headers = [
       'Property Address',
@@ -152,37 +159,87 @@ function CommissionAuditWorkspace() {
       'Missing Referral In $',
     ];
 
+    let totalSalePrice = 0;
+    let totalCommission = 0;
+    let totalListingComm = 0;
+    let totalRefOut = 0;
+    let totalBrokerCut = 0;
+    let totalTxFee = 0;
+    let totalExpectedPay = 0;
+    let totalActualPaid = 0;
+    let totalDiscrepancy = 0;
+    let totalReferralIn = 0;
+
     const rows = transactions.map((t) => {
       const a = calculateAudit(t);
+      totalSalePrice += Number(t.salePrice) || 0;
+      totalCommission += a.totalCommission;
+      totalListingComm += a.listingCommission;
+      totalRefOut += a.referralFeeOutAmount;
+      totalBrokerCut += a.brokerageCut;
+      totalTxFee += Number(t.transactionFee) || 0;
+      totalExpectedPay += a.expectedAgentPayment;
+      totalActualPaid += Number(t.actualPaid) || 0;
+      totalDiscrepancy += a.discrepancy;
+      totalReferralIn += Number(t.referralIn) || 0;
+
       return [
         `"${t.address.replace(/"/g, '""')}"`,
-        t.salePrice,
-        t.commRate,
+        (Number(t.salePrice) || 0).toFixed(2),
+        (Number(t.commRate) || 0).toFixed(2),
         a.totalCommission.toFixed(2),
-        t.listingSplit,
-        t.buyerSplit,
+        (Number(t.listingSplit) || 0).toFixed(2),
+        (Number(t.buyerSplit) || 0).toFixed(2),
         a.listingCommission.toFixed(2),
-        t.referralOut,
+        (Number(t.referralOut) || 0).toFixed(2),
         a.referralFeeOutAmount.toFixed(2),
-        t.brokerSplit,
+        (Number(t.brokerSplit) || 0).toFixed(2),
         a.brokerageCut.toFixed(2),
-        t.transactionFee,
+        (Number(t.transactionFee) || 0).toFixed(2),
         a.expectedAgentPayment.toFixed(2),
-        t.actualPaid.toFixed(2),
+        (Number(t.actualPaid) || 0).toFixed(2),
         a.discrepancy.toFixed(2),
         `"${a.statusText}"`,
-        t.referralIn || 0,
+        (Number(t.referralIn) || 0).toFixed(2),
       ].join(',');
     });
 
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows].join('\n');
-    const encodedUri = encodeURI(csvContent);
+    const totalsRow = [
+      '"TOTALS"',
+      totalSalePrice.toFixed(2),
+      '""',
+      totalCommission.toFixed(2),
+      '""',
+      '""',
+      totalListingComm.toFixed(2),
+      '""',
+      totalRefOut.toFixed(2),
+      '""',
+      totalBrokerCut.toFixed(2),
+      totalTxFee.toFixed(2),
+      totalExpectedPay.toFixed(2),
+      totalActualPaid.toFixed(2),
+      totalDiscrepancy.toFixed(2),
+      '""',
+      totalReferralIn.toFixed(2),
+    ].join(',');
+
+    const csvContent = [headers.join(','), ...rows, totalsRow].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
+    link.setAttribute('href', url);
     link.setAttribute('download', `commission_audit_report_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    push({
+      tone: 'success',
+      title: 'CSV report downloaded',
+      description: `Exported ${transactions.length} transactions with totals.`,
+    });
   };
 
   const handleCreateAudit = (args: {
@@ -230,9 +287,10 @@ function CommissionAuditWorkspace() {
             <button
               onClick={handleDownloadCSV}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition shadow-sm"
+              title="Export all transactions to CSV"
             >
               <Download className="w-3.5 h-3.5" />
-              Download Report
+              Download CSV
             </button>
             <button
               onClick={() => setIsReportOpen(true)}

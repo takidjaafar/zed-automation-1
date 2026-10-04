@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Next x Keystone Starter",
-  description: "Next, Keystone, and Tailwind Starter Template",
+  title: "Zed Automation - Real Estate Commission Audit",
+  description: "Commission audit, leakage detection, and real estate admin dashboard for brokerages.",
 };
 
 export default function RootLayout({
