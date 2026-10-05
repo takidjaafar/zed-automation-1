@@ -101,10 +101,8 @@ export const Todo = list({
           defaultValue: 1.0,
           label: "Weight"
         }),
-        budget: decimal({ 
-          precision: 10,
-          scale: 2,
-          defaultValue: "0.00",
+        budget: float({ 
+          defaultValue: 0.0,
           label: "Budget"
         }),
       }

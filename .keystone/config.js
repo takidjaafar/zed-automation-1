@@ -282,10 +282,8 @@ var Todo = (0, import_core3.list)({
           defaultValue: 1,
           label: "Weight"
         }),
-        budget: (0, import_fields3.decimal)({
-          precision: 10,
-          scale: 2,
-          defaultValue: "0.00",
+        budget: (0, import_fields3.float)({
+          defaultValue: 0,
           label: "Budget"
         })
       }
@@ -498,7 +496,11 @@ async function sendPasswordResetEmail(resetToken, to, baseUrl) {
 }
 
 // features/keystone/index.ts
-var databaseURL = process.env.DATABASE_URL || "file:./keystone.db";
+var isPostgres = Boolean(
+  process.env.DATABASE_URL?.startsWith("postgres://") || process.env.DATABASE_URL?.startsWith("postgresql://")
+);
+var databaseURL = isPostgres ? process.env.DATABASE_URL : process.env.DATABASE_URL || "file:./keystone.db";
+var dbProvider = isPostgres ? "postgresql" : "sqlite";
 var sessionConfig = {
   maxAge: 60 * 60 * 24 * 360,
   // How long they stay signed in?
@@ -556,7 +558,7 @@ var { withAuth } = (0, import_auth.createAuth)({
 var keystone_default = withAuth(
   (0, import_core5.config)({
     db: {
-      provider: "postgresql",
+      provider: dbProvider,
       url: databaseURL
     },
     lists: models,

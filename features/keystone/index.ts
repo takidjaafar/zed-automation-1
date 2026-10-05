@@ -6,7 +6,14 @@ import { statelessSessions } from "@keystone-6/core/session";
 import { extendGraphqlSchema } from "./mutations";
 import { sendPasswordResetEmail } from "./lib/mail";
 
-const databaseURL = process.env.DATABASE_URL || "file:./keystone.db";
+const isPostgres = Boolean(
+  process.env.DATABASE_URL?.startsWith("postgres://") ||
+  process.env.DATABASE_URL?.startsWith("postgresql://")
+);
+const databaseURL = isPostgres
+  ? process.env.DATABASE_URL!
+  : (process.env.DATABASE_URL || "file:./keystone.db");
+const dbProvider = isPostgres ? ("postgresql" as const) : ("sqlite" as const);
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 360, // How long they stay signed in?
@@ -69,7 +76,7 @@ const { withAuth } = createAuth({
 export default withAuth(
   config({
     db: {
-      provider: "postgresql",
+      provider: dbProvider,
       url: databaseURL,
     },
     lists: models,

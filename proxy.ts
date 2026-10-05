@@ -4,12 +4,17 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Only run dashboard authentication and route handling for /dashboard paths
-  if (pathname.startsWith('/dashboard')) {
-    const { user, redirectToInit } = await getAuthenticatedUser(request);
-    const dashboardResponse = await handleDashboardRoutes(request, user, redirectToInit);
-    if (dashboardResponse) return dashboardResponse;
+  // Only run dashboard auth checks on dashboard routes
+  if (!pathname.startsWith('/dashboard')) {
+    return NextResponse.next();
   }
+
+  // Get authenticated user for dashboard access control
+  const { user, redirectToInit } = await getAuthenticatedUser(request);
+  
+  // Let dashboard handler manage its routes
+  const dashboardResponse = await handleDashboardRoutes(request, user, redirectToInit);
+  if (dashboardResponse) return dashboardResponse;
   
   return NextResponse.next();
 }
