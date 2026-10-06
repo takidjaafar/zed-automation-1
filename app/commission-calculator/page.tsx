@@ -2,8 +2,9 @@ import { Metadata } from 'next';
 import CommissionLeakageCalculator from '@/components/CommissionLeakageCalculator';
 
 export const metadata: Metadata = {
-  title: 'حاسبة تسرب العمولات | Zed Automation',
-  description: 'اكتشف كم من المال قد تخسره شركتك سنويًا بسبب أخطاء العمولات ورسوم الإحالة.',
+  title: 'Commission Leakage Calculator | Zed Automation',
+  description:
+    'Discover how much money your brokerage might be losing annually due to commission and referral fee errors.',
 };
 
 export default function CommissionCalculatorPage() {
