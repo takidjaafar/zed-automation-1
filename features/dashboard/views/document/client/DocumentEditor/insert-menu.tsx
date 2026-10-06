@@ -300,8 +300,6 @@ export function InsertMenu({ children, text }: { children: ReactNode; text: Text
         side="bottom"
         align="start"
         onOpenAutoFocus={(e) => e.preventDefault()} // To prevent focus stealing from editor
-        // ref={overlayProps.ref} // TODO: Fix ref type
-        {...overlayProps} // Spread other overlayProps
       >
         <Command ref={listboxRef}>
           {/* CommandInput could be added here if live filtering of the already filtered `options` is desired */}

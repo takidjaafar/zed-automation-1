@@ -1,4 +1,4 @@
-import type { Context } from '.keystone/types';
+import type { Context } from '../context';
 
 async function redirectToInit(root: any, args: any, context: Context) {
   // 1. Query the current user see if they are signed in
