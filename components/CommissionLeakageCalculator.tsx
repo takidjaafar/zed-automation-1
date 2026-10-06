@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Sparkles,
   Lock,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface CommissionLeakageCalculatorProps {
@@ -81,7 +82,7 @@ export default function CommissionLeakageCalculator({
     <div className={`w-full max-w-xl mx-auto font-sans antialiased ${className}`}>
       {/* Main Card */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xl shadow-slate-950/5 overflow-hidden transition-all duration-300">
-        {/* Trust Header */}
+        {/* Trust-Building Header */}
         <div className="px-6 sm:px-8 pt-6 pb-4 bg-slate-50/70 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-8 rounded-lg bg-slate-900 dark:bg-emerald-500 text-white flex items-center justify-center font-black text-sm tracking-wider shadow-sm">
@@ -196,6 +197,7 @@ export default function CommissionLeakageCalculator({
           {/* Result Box (Appears after calculation) */}
           {hasCalculated && calculatedLeakage !== null && (
             <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {/* Estimated Result Card */}
               <div className="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-rose-50/70 via-amber-50/40 to-slate-50 dark:from-rose-950/30 dark:via-slate-800/60 dark:to-slate-900 border border-rose-200/80 dark:border-rose-900/40 shadow-inner">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs font-bold uppercase tracking-wider">
@@ -225,6 +227,20 @@ export default function CommissionLeakageCalculator({
                 </div>
               </div>
 
+              {/* Feature 1: Methodology Note (The "Proof" Layer) */}
+              <p className="text-xs text-slate-500 dark:text-slate-400 italic leading-relaxed px-1">
+                This estimate is based on industry benchmarks showing that over{' '}
+                <a
+                  href="https://boldtrail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium underline decoration-slate-400 hover:decoration-slate-600 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
+                  74%
+                </a>{' '}
+                of brokerages have commission calculation errors in a 90-day period, with an average overpayment of 3%.
+              </p>
+
               {/* Call to Action Button */}
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 <Link
@@ -239,10 +255,32 @@ export default function CommissionLeakageCalculator({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 underline underline-offset-4 py-2 px-3 transition-colors cursor-pointer"
+                  className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 underline underline-offset-4 py-2 px-3 transition-colors cursor-pointer shrink-0"
                 >
                   Reset form
                 </button>
+              </div>
+
+              {/* Feature 2: "What You Get" Box (The "Value" Layer) */}
+              <div className="rounded-2xl p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <span>What the Free Audit Includes:</span>
+                </h4>
+                <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <span>A line-by-line review of 3 of your recent deals.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <span>A report showing exactly where money was lost.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <span>A clear action plan to prevent future leakage.</span>
+                  </li>
+                </ul>
               </div>
             </div>
           )}
