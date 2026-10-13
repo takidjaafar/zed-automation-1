@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import {
   Calculator,
   AlertTriangle,
@@ -16,13 +15,13 @@ import {
 } from 'lucide-react';
 
 interface CommissionLeakageCalculatorProps {
-  /** Optional custom CTA link (e.g. '/contact' or a Calendly booking URL) */
+  /** Optional custom CTA link (defaults to the Calendly booking link placeholder) */
   ctaUrl?: string;
   className?: string;
 }
 
 export default function CommissionLeakageCalculator({
-  ctaUrl = '/contact',
+  ctaUrl = '[ضع_رابط_Calendly_الخاص_بك_هنا]',
   className = '',
 }: CommissionLeakageCalculatorProps) {
   // Input states
@@ -227,13 +226,11 @@ export default function CommissionLeakageCalculator({
                 </div>
               </div>
 
-              {/* Feature 1: Methodology Note (The "Proof" Layer) */}
+              {/* Methodology Note */}
               <p className="text-xs text-slate-500 dark:text-slate-400 italic leading-relaxed px-1">
-                This estimate is based on industry benchmarks showing that over{' '}
+                Based on industry benchmarks: Over{' '}
                 <a
-                  href="https://boldtrail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#"
                   className="font-medium underline decoration-slate-400 hover:decoration-slate-600 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
                 >
                   74%
@@ -243,14 +240,16 @@ export default function CommissionLeakageCalculator({
 
               {/* Call to Action Button */}
               <div className="flex flex-col sm:flex-row items-center gap-3">
-                <Link
+                <a
                   href={ctaUrl}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-600/20 active:scale-[0.99] transition-all duration-150"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-600/20 active:scale-[0.99] transition-all duration-150 cursor-pointer text-center"
                 >
                   <Sparkles className="w-4 h-4 text-emerald-200" />
                   <span>Get a Free 3-Deal Audit</span>
                   <ArrowRight className="w-4 h-4 text-emerald-100" />
-                </Link>
+                </a>
 
                 <button
                   type="button"
@@ -261,13 +260,13 @@ export default function CommissionLeakageCalculator({
                 </button>
               </div>
 
-              {/* Feature 2: "What You Get" Box (The "Value" Layer) */}
-              <div className="rounded-2xl p-4 sm:p-5 bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-2">
+              {/* "What You Get" Box */}
+              <div className="rounded-2xl p-4 sm:p-5 bg-gray-50 dark:bg-slate-800/40 border border-gray-200 dark:border-slate-700/60">
+                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>What the Free Audit Includes:</span>
                 </h4>
-                <ul className="space-y-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                     <span>A line-by-line review of 3 of your recent deals.</span>
