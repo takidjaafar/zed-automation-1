@@ -21,7 +21,7 @@ interface CommissionLeakageCalculatorProps {
 }
 
 export default function CommissionLeakageCalculator({
-  ctaUrl = '[ضع_رابط_Calendly_الخاص_بك_هنا]',
+  ctaUrl = 'https://calendly.com/zed-automation/commission-audit', // <--- ضع رابط Calendly الخاص بك هنا
   className = '',
 }: CommissionLeakageCalculatorProps) {
   // Input states
