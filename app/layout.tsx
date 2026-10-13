@@ -26,6 +26,23 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link href="/favicon.svg" rel="icon" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var _fetch = window.fetch;
+                  Object.defineProperty(window, 'fetch', {
+                    configurable: true,
+                    enumerable: true,
+                    get: function() { return _fetch; },
+                    set: function(val) { _fetch = val; }
+                  });
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
