@@ -1,337 +1,622 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import {
-  Calculator,
   AlertTriangle,
-  TrendingDown,
   ArrowRight,
-  DollarSign,
-  Briefcase,
-  ShieldCheck,
-  Sparkles,
-  Lock,
+  Calculator,
   CheckCircle2,
+  DollarSign,
+  Lock,
+  RotateCcw,
+  ShieldCheck,
 } from 'lucide-react';
 
-interface CommissionLeakageCalculatorProps {
-  /** Optional custom CTA link (defaults to your Calendly booking link) */
-  ctaUrl?: string;
-  className?: string;
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
+import { Slider } from '@/components/ui/slider';
+
+interface AuditCalculationResult {
+  monthlyDeals: number;
+  avgCommission: number;
+  numAgents: number;
+  disputesPerMonth: number;
+  avgCorrectionAmount: number;
+  referralFees: boolean;
+  monthlyLeakFromDisputes: number;
+  monthlyLeakFromReferrals: number;
+  monthlyLeakFromInvisible: number;
+  totalMonthlyLeak: number;
+  annualLeak: number;
+  perAgentMonthlyLoss: number;
+  adminSalaryMonths: number;
+  annualProfitSharePct: number;
+  annualGci: number;
 }
 
-export default function CommissionLeakageCalculator({
-  ctaUrl = 'https://calendly.com/zakariadjaafar12/commission-audit-discovery-call',
-  className = '',
-}: CommissionLeakageCalculatorProps) {
-  // Input states
-  const [monthlyDeals, setMonthlyDeals] = useState<string>('');
-  const [averageCommission, setAverageCommission] = useState<string>('');
+const ADMIN_MONTHLY_SALARY_USD = 4000;
+const EST_PROFIT_MARGIN_ON_GCI = 0.1;
 
-  // Result & validation states
-  const [calculatedLeakage, setCalculatedLeakage] = useState<number | null>(null);
-  const [hasCalculated, setHasCalculated] = useState<boolean>(false);
+function formatCurrency(val: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(val);
+}
+
+export default function CommissionLeakageCalculator() {
+  const [monthlyDeals, setMonthlyDeals] = useState<number>(20);
+  const [avgCommissionInput, setAvgCommissionInput] = useState<string>('8500');
+  const [numAgents, setNumAgents] = useState<number>(15);
+  const [disputesPerMonth, setDisputesPerMonth] = useState<number>(2);
+  const [avgCorrectionInput, setAvgCorrectionInput] = useState<string>('750');
+  const [referralFees, setReferralFees] = useState<boolean>(true);
+
   const [error, setError] = useState<string | null>(null);
-
-  // Currency formatter ($12,400)
-  const formatCurrency = (val: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0,
-    }).format(val);
-  };
+  const [result, setResult] = useState<AuditCalculationResult | null>(null);
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const deals = parseFloat(monthlyDeals);
-    const commission = parseFloat(averageCommission);
+    const avgCommission = parseFloat(avgCommissionInput);
+    const avgCorrectionAmount =
+      disputesPerMonth > 0 ? parseFloat(avgCorrectionInput) : 0;
 
-    if (isNaN(deals) || deals <= 0) {
-      setError('Please enter a valid monthly deal count greater than 0.');
+    if (isNaN(avgCommission) || avgCommission <= 0) {
+      setError('Enter an average commission per deal greater than $0.');
       return;
     }
 
-    if (isNaN(commission) || commission <= 0) {
-      setError('Please enter a valid average commission value greater than 0.');
+    if (
+      disputesPerMonth > 0 &&
+      (isNaN(avgCorrectionAmount) || avgCorrectionAmount < 0)
+    ) {
+      setError('Enter a valid average correction amount in USD.');
       return;
     }
 
     setError(null);
 
-    // Exact formula: monthlyDeals * averageCommission * 12 * 0.03
-    // (0.03 represents the 3% estimated error/leakage rate in the industry)
-    const annualVolume = deals * commission * 12;
-    const leakage = annualVolume * 0.03;
+    const monthlyLeakFromDisputes = disputesPerMonth * avgCorrectionAmount;
+    const monthlyLeakFromReferrals = referralFees
+      ? monthlyDeals * avgCommission * 0.015
+      : 0;
+    const monthlyLeakFromInvisible = monthlyDeals * avgCommission * 0.01;
 
-    setCalculatedLeakage(leakage);
-    setHasCalculated(true);
+    const totalMonthlyLeak =
+      monthlyLeakFromDisputes +
+      monthlyLeakFromReferrals +
+      monthlyLeakFromInvisible;
+
+    const annualLeak = totalMonthlyLeak * 12;
+    const perAgentMonthlyLoss = totalMonthlyLeak / numAgents;
+    const adminSalaryMonths = annualLeak / ADMIN_MONTHLY_SALARY_USD;
+
+    const annualGci = monthlyDeals * avgCommission * 12;
+    const estimatedAnnualProfit = annualGci * EST_PROFIT_MARGIN_ON_GCI;
+    const annualProfitSharePct =
+      estimatedAnnualProfit > 0
+        ? (annualLeak / estimatedAnnualProfit) * 100
+        : 0;
+
+    setResult({
+      monthlyDeals,
+      avgCommission,
+      numAgents,
+      disputesPerMonth,
+      avgCorrectionAmount,
+      referralFees,
+      monthlyLeakFromDisputes,
+      monthlyLeakFromReferrals,
+      monthlyLeakFromInvisible,
+      totalMonthlyLeak,
+      annualLeak,
+      perAgentMonthlyLoss,
+      adminSalaryMonths,
+      annualProfitSharePct,
+      annualGci,
+    });
   };
 
   const handleReset = () => {
-    setMonthlyDeals('');
-    setAverageCommission('');
-    setCalculatedLeakage(null);
-    setHasCalculated(false);
+    setMonthlyDeals(20);
+    setAvgCommissionInput('8500');
+    setNumAgents(15);
+    setDisputesPerMonth(2);
+    setAvgCorrectionInput('750');
+    setReferralFees(true);
     setError(null);
+    setResult(null);
+  };
+
+  const clampedDealsChange = (raw: string) => {
+    const parsed = parseInt(raw, 10);
+    if (isNaN(parsed)) return;
+    setMonthlyDeals(Math.min(100, Math.max(5, parsed)));
+  };
+
+  const clampedAgentsChange = (raw: string) => {
+    const parsed = parseInt(raw, 10);
+    if (isNaN(parsed)) return;
+    setNumAgents(Math.min(100, Math.max(5, parsed)));
+  };
+
+  const clampedDisputesChange = (raw: string) => {
+    const parsed = parseInt(raw, 10);
+    if (isNaN(parsed)) return;
+    setDisputesPerMonth(Math.min(10, Math.max(0, parsed)));
   };
 
   return (
-    <div className={`w-full max-w-xl mx-auto font-sans antialiased ${className}`}>
-      {/* Outer Card with Glassmorphism and Ambient Glow */}
-      <div className="relative rounded-3xl p-[1px] bg-gradient-to-b from-slate-200 via-slate-200/50 to-transparent dark:from-slate-700/80 dark:via-slate-800/40 dark:to-slate-900 shadow-2xl shadow-slate-200/50 dark:shadow-black/60 transition-all duration-300">
-        <div className="relative rounded-[23px] bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl overflow-hidden">
-          
-          {/* Trust-Building Top Header */}
-          <div className="px-6 sm:px-8 py-5 bg-gradient-to-r from-slate-50/90 via-slate-50/50 to-white dark:from-slate-800/60 dark:via-slate-900/40 dark:to-slate-900/60 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative h-9 w-9 rounded-xl bg-gradient-to-tr from-slate-900 to-slate-700 dark:from-emerald-500 dark:to-teal-400 text-white flex items-center justify-center font-black text-sm tracking-wider shadow-md shadow-slate-900/10 dark:shadow-emerald-500/25 ring-1 ring-black/5 dark:ring-white/10">
-                <span>Z</span>
-                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-              </div>
-              <div>
-                <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
-                  Zed Automation
-                  <span className="text-[10px] uppercase font-semibold tracking-wider px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                    Pro
-                  </span>
-                </span>
-                <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">
-                  Financial Audits for Real Estate Brokerages
-                </span>
-              </div>
-            </div>
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      {/* Main Audit Calculator Card */}
+      <div className="rounded-2xl bg-[#0B1120] text-slate-100 shadow-2xl shadow-black/60 border border-slate-800/80 overflow-hidden">
+        {/* Header */}
+        <div className="px-6 sm:px-8 pt-7 pb-6 border-b border-slate-800/80">
+          <p className="text-xs font-medium text-[#10B981]">
+            Zed Automation · Async GCI Leakage Model · Based on your numbers
+          </p>
+          <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            Brokerage Commission Leakage Audit
+          </h1>
+          <p className="mt-2 text-sm sm:text-base text-slate-400 leading-relaxed">
+            Enter your brokerage&apos;s actual deal volume, agent headcount, and
+            monthly payout adjustments to quantify recoverable commission leakage.
+          </p>
+        </div>
 
-            <div className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-500/15 px-3 py-1 rounded-full border border-emerald-500/20 dark:border-emerald-500/30">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Verified Audit Tool</span>
-            </div>
-          </div>
-
-          {/* Title & Introduction */}
-          <div className="px-6 sm:px-8 pt-8 pb-4">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-              Commission Leakage Calculator
-            </h2>
-            <p className="mt-2.5 text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-              Discover how much money your brokerage might be losing annually due to hidden commission discrepancies, split mistakes, and referral fee errors.
-            </p>
-          </div>
-
-          {/* Form Body */}
-          <div className="p-6 sm:p-8 pt-2 space-y-6">
-            <form onSubmit={handleCalculate} className="space-y-5">
-              
-              {/* Input 1: Monthly Deals */}
-              <div className="group">
-                <label
-                  htmlFor="monthlyDeals"
-                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 transition-colors group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400"
-                >
-                  Number of Monthly Deals
-                </label>
-                <div className="relative rounded-2xl shadow-sm transition-transform duration-200 group-hover:translate-y-[-1px]">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 transition-colors group-focus-within:text-emerald-500">
-                    <Briefcase className="w-5 h-5" />
-                  </div>
-                  <input
-                    type="number"
-                    id="monthlyDeals"
-                    name="monthlyDeals"
-                    min="1"
-                    step="any"
-                    value={monthlyDeals}
-                    onChange={(e) => {
-                      setMonthlyDeals(e.target.value);
-                      if (error) setError(null);
-                    }}
-                    placeholder="e.g., 10"
-                    className="w-full pl-12 pr-4 py-3.5 text-base font-medium rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800/90 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Input 2: Average Commission */}
-              <div className="group">
-                <label
-                  htmlFor="averageCommission"
-                  className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 transition-colors group-focus-within:text-emerald-600 dark:group-focus-within:text-emerald-400"
-                >
-                  Average Commission Value (USD)
-                </label>
-                <div className="relative rounded-2xl shadow-sm transition-transform duration-200 group-hover:translate-y-[-1px]">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-slate-500 transition-colors group-focus-within:text-emerald-500">
-                    <DollarSign className="w-5 h-5" />
-                  </div>
-                  <input
-                    type="number"
-                    id="averageCommission"
-                    name="averageCommission"
-                    min="1"
-                    step="any"
-                    value={averageCommission}
-                    onChange={(e) => {
-                      setAverageCommission(e.target.value);
-                      if (error) setError(null);
-                    }}
-                    placeholder="e.g., 5000"
-                    className="w-full pl-12 pr-4 py-3.5 text-base font-medium rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/50 dark:bg-slate-800/50 text-slate-900 dark:text-white placeholder:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 focus:bg-white dark:focus:bg-slate-800/90 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Validation Alert */}
-              {error && (
-                <div className="flex items-center gap-2.5 p-3.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-200">
-                  <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400" />
-                  <span>{error}</span>
-                </div>
-              )}
-
-              {/* Calculate Button */}
-              <button
-                type="submit"
-                className="w-full relative group overflow-hidden inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl font-bold text-sm text-white bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-emerald-600 dark:via-teal-600 dark:to-emerald-600 shadow-md shadow-slate-900/10 dark:shadow-emerald-950/40 hover:scale-[1.02] hover:shadow-lg hover:shadow-emerald-500/25 active:scale-[0.99] transition-all duration-200 cursor-pointer"
+        {/* Inputs Form */}
+        <form onSubmit={handleCalculate} className="p-6 sm:p-8 space-y-7">
+          {/* 1. Number of Monthly Closed Deals */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-4">
+              <Label
+                htmlFor="monthly-deals-input"
+                className="text-sm font-semibold text-slate-200"
               >
-                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
-                <Calculator className="w-4 h-4 text-emerald-400 dark:text-emerald-100 transition-transform group-hover:rotate-6" />
-                <span className="tracking-wide">Calculate Annual Leakage</span>
-              </button>
-            </form>
-
-            {/* Result Box (Critical attention-grabbing design) */}
-            {hasCalculated && calculatedLeakage !== null && (
-              <div className="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-800 space-y-6 animate-in fade-in zoom-in-95 duration-300">
-                
-                {/* Visual Highlight Card */}
-                <div className="relative rounded-3xl p-6 sm:p-7 bg-gradient-to-br from-rose-50 via-orange-50/60 to-amber-50/30 dark:from-rose-950/40 dark:via-slate-900 dark:to-slate-900 border border-rose-200/80 dark:border-rose-900/50 shadow-lg shadow-rose-950/5 overflow-hidden">
-                  {/* Subtle decorative glow circle */}
-                  <div className="absolute -top-12 -right-12 w-36 h-36 bg-rose-500/10 rounded-full blur-2xl pointer-events-none" />
-                  
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 dark:bg-rose-500/20 border border-rose-500/20 text-rose-700 dark:text-rose-300 text-xs font-bold tracking-wide">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-                      </span>
-                      <TrendingDown className="w-3.5 h-3.5 shrink-0" />
-                      <span>Estimated Annual Leakage</span>
-                    </div>
-
-                    <span className="text-[11px] font-mono font-medium text-slate-500 dark:text-slate-400 bg-white/70 dark:bg-slate-800/80 px-2.5 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-700/60">
-                      3% Benchmark
-                    </span>
-                  </div>
-
-                  {/* Main Metric Callout */}
-                  <div className="mt-4 sm:mt-5">
-                    <p className="text-xs uppercase tracking-wider font-semibold text-slate-500 dark:text-slate-400 mb-1">
-                      Projected Annual Loss
-                    </p>
-                    <div className="flex items-baseline flex-wrap gap-2">
-                      <span className="text-3xl sm:text-4xl lg:text-5xl font-black font-mono tracking-tight bg-gradient-to-r from-rose-600 via-rose-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
-                        {formatCurrency(calculatedLeakage)}
-                      </span>
-                      <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                        / year
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-                      Based on your inputs, your brokerage could be losing approximately{' '}
-                      <strong className="text-rose-600 dark:text-rose-400 font-mono font-bold">
-                        {formatCurrency(calculatedLeakage)}
-                      </strong>{' '}
-                      annually due to undetected calculation errors and missing split reconciliation.
-                    </p>
-                  </div>
-
-                  {/* Secondary Financial Context */}
-                  <div className="mt-5 pt-4 border-t border-rose-200/60 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 flex items-center justify-between">
-                    <span>Estimated Annual Commission Volume:</span>
-                    <span className="font-bold text-slate-900 dark:text-slate-200 font-mono text-sm">
-                      {formatCurrency(calculatedLeakage / 0.03)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Methodology Note */}
-                <p className="text-xs text-slate-500 dark:text-slate-400 italic leading-relaxed px-1">
-                  Based on industry benchmarks: Over{' '}
-                  <a
-                    href="#"
-                    className="font-medium underline decoration-slate-400 hover:decoration-slate-600 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
-                  >
-                    74%
-                  </a>{' '}
-                  of brokerages have commission calculation errors in a 90-day period, with an average overpayment of 3%.
-                </p>
-
-                {/* High-Impact CTA Section */}
-                <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <a
-                    href={ctaUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl font-extrabold text-sm text-white bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:via-teal-500 hover:to-emerald-600 shadow-xl shadow-emerald-600/30 hover:shadow-emerald-500/50 hover:scale-[1.02] active:scale-[0.99] transition-all duration-200 cursor-pointer text-center animate-pulse hover:animate-none"
-                  >
-                    <Sparkles className="w-4 h-4 text-emerald-200 shrink-0" />
-                    <span className="tracking-wide">Get a Free 3-Deal Audit</span>
-                    <ArrowRight className="w-4 h-4 text-emerald-100 group-hover:translate-x-1 transition-transform duration-200 shrink-0" />
-                  </a>
-
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 underline underline-offset-4 py-2 px-3 transition-colors cursor-pointer shrink-0"
-                  >
-                    Reset form
-                  </button>
-                </div>
-
-                {/* "What You Get" Box */}
-                <div className="rounded-2xl p-5 bg-gradient-to-b from-gray-50 to-slate-100/70 dark:from-slate-800/50 dark:to-slate-800/20 border border-gray-200 dark:border-slate-700/60 shadow-sm">
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-slate-200 mb-3.5 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    <span>What the Free Audit Includes:</span>
-                  </h4>
-                  <ul className="space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span>A line-by-line review of 3 of your recent deals.</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span>A report showing exactly where money was lost.</span>
-                    </li>
-                    <li className="flex items-start gap-2.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                      <span>A clear action plan to prevent future leakage.</span>
-                    </li>
-                  </ul>
-                </div>
+                Number of Monthly Closed Deals
+              </Label>
+              <div className="flex items-center gap-2 shrink-0">
+                <Input
+                  id="monthly-deals-input"
+                  type="number"
+                  min={5}
+                  max={100}
+                  value={monthlyDeals}
+                  onChange={(e) => clampedDealsChange(e.target.value)}
+                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#05080F] border-slate-800 text-white"
+                />
+                <span className="text-xs text-slate-400 font-medium">
+                  deals
+                </span>
               </div>
+            </div>
+            <Slider
+              aria-label="Number of Monthly Closed Deals"
+              min={5}
+              max={100}
+              step={1}
+              value={[monthlyDeals]}
+              onValueChange={(val) => setMonthlyDeals(val[0])}
+              className="py-1"
+            />
+            <div className="flex justify-between text-xs text-slate-500 font-mono tabular-nums">
+              <span>5</span>
+              <span>50</span>
+              <span>100</span>
+            </div>
+          </div>
+
+          {/* 2. Average Commission per Deal in USD */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="avg-commission-input"
+              className="text-sm font-semibold text-slate-200"
+            >
+              Average Commission per Deal (USD)
+            </Label>
+            <div className="relative">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                <DollarSign className="h-4 w-4" />
+              </div>
+              <Input
+                id="avg-commission-input"
+                type="number"
+                min={100}
+                step="any"
+                value={avgCommissionInput}
+                onChange={(e) => {
+                  setAvgCommissionInput(e.target.value);
+                  if (error) setError(null);
+                }}
+                placeholder="8500"
+                className="pl-9 font-mono tabular-nums text-base font-semibold bg-[#05080F] border-slate-800 text-white"
+                required
+              />
+            </div>
+          </div>
+
+          {/* 3. Number of Agents */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-4">
+              <Label
+                htmlFor="num-agents-input"
+                className="text-sm font-semibold text-slate-200"
+              >
+                Number of Agents
+              </Label>
+              <div className="flex items-center gap-2 shrink-0">
+                <Input
+                  id="num-agents-input"
+                  type="number"
+                  min={5}
+                  max={100}
+                  value={numAgents}
+                  onChange={(e) => clampedAgentsChange(e.target.value)}
+                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#05080F] border-slate-800 text-white"
+                />
+                <span className="text-xs text-slate-400 font-medium">
+                  agents
+                </span>
+              </div>
+            </div>
+            <Slider
+              aria-label="Number of Agents"
+              min={5}
+              max={100}
+              step={1}
+              value={[numAgents]}
+              onValueChange={(val) => setNumAgents(val[0])}
+              className="py-1"
+            />
+            <div className="flex justify-between text-xs text-slate-500 font-mono tabular-nums">
+              <span>5</span>
+              <span>50</span>
+              <span>100</span>
+            </div>
+          </div>
+
+          {/* 4. Commission corrections/disputes per month */}
+          <div className="space-y-3">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <Label
+                  htmlFor="disputes-input"
+                  className="text-sm font-semibold text-slate-200 leading-snug block"
+                >
+                  How many commission corrections/disputes do you have per
+                  month?
+                </Label>
+                <p className="mt-1 text-xs text-slate-400">
+                  Split errors, miscalculated referral fees, etc.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Input
+                  id="disputes-input"
+                  type="number"
+                  min={0}
+                  max={10}
+                  value={disputesPerMonth}
+                  onChange={(e) => clampedDisputesChange(e.target.value)}
+                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#05080F] border-slate-800 text-white"
+                />
+                <span className="text-xs text-slate-400 font-medium">/ mo</span>
+              </div>
+            </div>
+            <Slider
+              aria-label="Monthly commission corrections or disputes"
+              min={0}
+              max={10}
+              step={1}
+              value={[disputesPerMonth]}
+              onValueChange={(val) => setDisputesPerMonth(val[0])}
+              className="py-1"
+            />
+            <div className="flex justify-between text-xs text-slate-500 font-mono tabular-nums">
+              <span>0</span>
+              <span>5</span>
+              <span>10</span>
+            </div>
+          </div>
+
+          {/* 5. Average amount per correction in USD */}
+          {disputesPerMonth > 0 && (
+            <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <Label
+                htmlFor="avg-correction-input"
+                className="text-sm font-semibold text-slate-200"
+              >
+                Average amount per correction (USD)
+              </Label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                  <DollarSign className="h-4 w-4" />
+                </div>
+                <Input
+                  id="avg-correction-input"
+                  type="number"
+                  min={0}
+                  step="any"
+                  value={avgCorrectionInput}
+                  onChange={(e) => {
+                    setAvgCorrectionInput(e.target.value);
+                    if (error) setError(null);
+                  }}
+                  placeholder="750"
+                  className="pl-9 font-mono tabular-nums text-base font-semibold bg-[#05080F] border-slate-800 text-white"
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {/* 6. Do you pay referral fees? */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+            <div>
+              <span className="text-sm font-semibold text-slate-200 block">
+                Do you pay referral fees?
+              </span>
+              <span className="text-xs text-slate-400">
+                Broker-to-broker, relocation, or third-party portal referrals
+              </span>
+            </div>
+
+            <div
+              role="group"
+              aria-label="Do you pay referral fees?"
+              className="inline-flex rounded-lg bg-[#05080F] p-1 border border-slate-800 self-start sm:self-auto shrink-0"
+            >
+              <button
+                type="button"
+                aria-pressed={referralFees === true}
+                onClick={() => setReferralFees(true)}
+                className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
+                  referralFees === true
+                    ? 'bg-[#10B981] text-[#05080F] shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                aria-pressed={referralFees === false}
+                onClick={() => setReferralFees(false)}
+                className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
+                  referralFees === false
+                    ? 'bg-[#10B981] text-[#05080F] shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                No
+              </button>
+            </div>
+          </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="rounded-lg bg-rose-500/10 border border-rose-500/30 px-4 py-3 text-sm text-rose-300 font-medium">
+              {error}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+            <Button
+              type="submit"
+              size="lg"
+              className="flex-1 h-12 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#05080F] font-bold text-base shadow-md shadow-emerald-500/10 cursor-pointer"
+            >
+              <Calculator className="h-4 w-4" />
+              <span>Calculate Annual Leakage</span>
+            </Button>
+            {result && (
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                onClick={handleReset}
+                className="h-12 rounded-xl bg-[#05080F] border-slate-800 text-slate-300 hover:bg-slate-800/80 hover:text-white cursor-pointer"
+              >
+                <RotateCcw className="h-4 w-4" />
+                <span>Reset</span>
+              </Button>
             )}
           </div>
-
-          {/* Card Footer Note */}
-          <div className="px-6 py-3.5 bg-slate-50/80 dark:bg-slate-800/40 border-t border-slate-100 dark:border-slate-800/80 text-center">
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Based on industry estimates of a 3% error rate in commission calculations.
-            </p>
-          </div>
-        </div>
+        </form>
       </div>
 
-      {/* Privacy Reassurance below the Card */}
-      <div className="mt-4 flex items-center justify-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-        <Lock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-        <span>Your data is secure. We never share your information.</span>
+      {/* RESULT CARD + CTA SECTION */}
+      {result && (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+          {/* Leakage Result Card */}
+          <div className="rounded-2xl bg-[#0B1120] text-white border border-rose-500/40 shadow-2xl shadow-black/60 overflow-hidden">
+            <div className="p-6 sm:p-8 space-y-6">
+              {/* Header */}
+              <div className="space-y-2">
+                <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-rose-400">
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  <span>
+                    Based on your numbers · {result.monthlyDeals} deals/mo ·{' '}
+                    {result.numAgents} agents
+                  </span>
+                </p>
+                <h2 className="text-xl sm:text-2xl font-bold text-white leading-snug">
+                  Estimated brokerage GCI leakage:{' '}
+                  <span className="block mt-2 text-4xl sm:text-5xl font-extrabold text-rose-400 font-mono tabular-nums tracking-tight">
+                    {formatCurrency(result.annualLeak)}{' '}
+                    <span className="text-2xl sm:text-3xl font-bold text-rose-300/80">
+                      per year
+                    </span>
+                  </span>
+                </h2>
+              </div>
+
+              {/* 3-Column Sub-Breakdown */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-5 border-t border-slate-800/80">
+                <div className="rounded-xl bg-[#05080F] border border-slate-800/80 p-4">
+                  <div className="text-2xl font-bold font-mono tabular-nums text-white">
+                    {formatCurrency(result.totalMonthlyLeak)}
+                  </div>
+                  <div className="mt-1 text-xs font-medium text-slate-400">
+                    / month lost
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-[#05080F] border border-slate-800/80 p-4">
+                  <div className="text-2xl font-bold font-mono tabular-nums text-white">
+                    {formatCurrency(result.perAgentMonthlyLoss)}
+                  </div>
+                  <div className="mt-1 text-xs font-medium text-slate-400">
+                    per agent / month
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-[#05080F] border border-slate-800/80 p-4">
+                  <div className="text-2xl font-bold font-mono tabular-nums text-white">
+                    {result.adminSalaryMonths.toFixed(1)} months
+                  </div>
+                  <div className="mt-1 text-xs font-medium text-slate-400">
+                    Equivalent admin salary
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown List */}
+              <div className="pt-5 border-t border-slate-800/80 space-y-3">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Annual Leakage Breakdown
+                </h3>
+                <ul className="space-y-2.5 text-sm">
+                  <li className="flex items-center justify-between gap-4">
+                    <span className="text-slate-300">From split corrections:</span>
+                    <span className="font-mono tabular-nums font-bold text-white">
+                      {formatCurrency(result.monthlyLeakFromDisputes * 12)}
+                      <span className="ml-2 text-xs font-normal text-slate-400">
+                        ({formatCurrency(result.monthlyLeakFromDisputes)}/mo)
+                      </span>
+                    </span>
+                  </li>
+                  <li className="flex items-center justify-between gap-4">
+                    <span className="text-slate-300">From referral errors:</span>
+                    <span className="font-mono tabular-nums font-bold text-white">
+                      {formatCurrency(result.monthlyLeakFromReferrals * 12)}
+                      <span className="ml-2 text-xs font-normal text-slate-400">
+                        ({formatCurrency(result.monthlyLeakFromReferrals)}/mo)
+                      </span>
+                    </span>
+                  </li>
+                  <li className="flex items-center justify-between gap-4">
+                    <span className="text-slate-300">
+                      From invisible 1% errors:
+                    </span>
+                    <span className="font-mono tabular-nums font-bold text-white">
+                      {formatCurrency(result.monthlyLeakFromInvisible * 12)}
+                      <span className="ml-2 text-xs font-normal text-slate-400">
+                        ({formatCurrency(result.monthlyLeakFromInvisible)}/mo)
+                      </span>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Progress Bar: % of annual profit */}
+              <div className="pt-5 border-t border-slate-800/80 space-y-2.5">
+                <div className="flex items-center justify-between text-sm font-semibold">
+                  <span className="text-slate-200">
+                    This represents{' '}
+                    <span className="text-rose-400 font-mono tabular-nums font-bold">
+                      {result.annualProfitSharePct.toFixed(1)}%
+                    </span>{' '}
+                    of annual net profit
+                  </span>
+                  <span className="text-xs font-mono tabular-nums text-slate-400">
+                    {formatCurrency(result.annualGci)}/yr GCI
+                  </span>
+                </div>
+                <Progress
+                  value={Math.min(100, Math.round(result.annualProfitSharePct))}
+                  className="h-3 bg-slate-800 [&>div]:bg-rose-500"
+                />
+                <p className="text-xs text-slate-400">
+                  Estimated against a standard 10% brokerage net profit margin on
+                  your {formatCurrency(result.annualGci)} annual gross
+                  commission volume.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Async Written CTA Card */}
+          <div className="rounded-2xl bg-[#0B1120] text-slate-100 border border-emerald-500/30 shadow-2xl shadow-black/60 p-6 sm:p-8 space-y-5">
+            <div className="space-y-2">
+              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+                Want line-by-line proof on which deals are leaking?
+              </h3>
+              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+                Send 3 recent closed deals. Within 48 hours we return a written
+                line-by-line PDF report and async Loom walkthrough showing exact
+                overpayments and uncollected referrals. 100% written delivery.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-medium text-slate-300">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#10B981] shrink-0" />
+                <span>Line-by-line CDA audit</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#10B981] shrink-0" />
+                <span>Async Loom walkthrough in 48h</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-[#10B981] shrink-0" />
+                <span>Actionable recovery PDF</span>
+              </div>
+            </div>
+
+            <div className="space-y-3 pt-1">
+              <Button
+                asChild
+                size="lg"
+                className="w-full h-12 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#05080F] font-bold text-base shadow-lg shadow-emerald-500/10"
+              >
+                <Link href="/free-audit">
+                  <span>Request Written 3-Deal Audit</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+
+              <p className="text-center text-xs text-slate-500">
+                Confidential and encrypted. Zero live meetings required.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Trust Badges */}
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-slate-400 pt-1">
+        <span className="inline-flex items-center gap-1.5">
+          <Lock className="h-3.5 w-3.5 text-[#10B981]" />
+          <span>Encrypted audit workspace</span>
+        </span>
+        <span aria-hidden="true" className="text-slate-700">
+          ·
+        </span>
+        <span>Zero third-party sharing</span>
+        <span aria-hidden="true" className="text-slate-700">
+          ·
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <ShieldCheck className="h-3.5 w-3.5 text-[#10B981]" />
+          <span>Built for 10–50 agent brokerages</span>
+        </span>
       </div>
     </div>
   );

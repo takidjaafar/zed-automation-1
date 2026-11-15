@@ -38,7 +38,7 @@ export default function TransactionTable({
   onDelete,
   onInspect,
   title = 'Audited Commission Log',
-  subtitle = 'Color-coded variance flags: Red for Overpayment, Yellow for Underpayment',
+  subtitle = 'Variance flags: Rose for Overpayment, Amber for Underpayment',
 }: TransactionTableProps) {
   const [filter, setFilter] = useState<AuditFilter>('all');
 
@@ -63,23 +63,23 @@ export default function TransactionTable({
   });
 
   return (
-    <section className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-      <div className="p-6 pb-3 border-b border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <section className="bg-[#0B1120] rounded-2xl border border-slate-800/80 overflow-hidden">
+      <div className="p-6 pb-4 border-b border-slate-800/80 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-base font-bold text-slate-900">{title}</h2>
-          <p className="text-xs text-slate-500">{subtitle}</p>
+          <h2 className="text-base font-bold text-white">{title}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#05080F] border border-slate-800">
           {FILTERS.map(({ key, label }) => (
             <button
               key={key}
               type="button"
               onClick={() => setFilter(key)}
-              className={`px-3 py-1.5 text-xs rounded-lg transition ${
+              className={`px-3 py-1.5 text-xs rounded-md transition whitespace-nowrap shrink-0 cursor-pointer ${
                 filter === key
-                  ? 'bg-slate-900 text-white font-semibold'
-                  : 'text-slate-600 hover:bg-slate-100 font-medium'
+                  ? 'bg-[#10B981] text-[#05080F] font-semibold'
+                  : 'text-slate-400 hover:text-white font-medium'
               }`}
             >
               {label} ({counts[key]})
@@ -89,17 +89,17 @@ export default function TransactionTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-          <thead className="bg-slate-50 text-slate-600 font-semibold tracking-wider uppercase text-[10px]">
+        <table className="min-w-full divide-y divide-slate-800/80 text-left text-xs">
+          <thead className="bg-[#05080F] text-slate-400 font-semibold text-[11px]">
             <tr>
               <th scope="col" className="py-3 px-4">Property Address</th>
-              <th scope="col" className="py-3 px-4">Sale Price</th>
+              <th scope="col" className="py-3 px-4 text-right">Sale Price</th>
               <th scope="col" className="py-3 px-4">Comm %</th>
               <th scope="col" className="py-3 px-4">Splits (L / B / Cut)</th>
               <th scope="col" className="py-3 px-4">Referrals &amp; Fee</th>
-              <th scope="col" className="py-3 px-4">Expected Pay</th>
-              <th scope="col" className="py-3 px-4">Actual Paid</th>
-              <th scope="col" className="py-3 px-4">Discrepancy</th>
+              <th scope="col" className="py-3 px-4 text-right">Expected Pay</th>
+              <th scope="col" className="py-3 px-4 text-right">Actual Paid</th>
+              <th scope="col" className="py-3 px-4 text-right">Discrepancy</th>
               <th scope="col" className="py-3 px-4">Audit Status</th>
               {!readOnly && (
                 <th scope="col" className="py-3 px-4 text-right">
@@ -108,29 +108,29 @@ export default function TransactionTable({
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 bg-white">
+          <tbody className="divide-y divide-slate-800/60 bg-[#0B1120]">
             {visible.map((transaction) => {
               const audit = calculateAudit(transaction);
               return (
-                <tr key={transaction.id} className="hover:bg-slate-50/80 transition-colors">
+                <tr key={transaction.id} className="hover:bg-slate-900/60 transition-colors">
                   <td
-                    className="py-3 px-4 font-medium text-slate-900 max-w-xs truncate"
+                    className="py-3.5 px-4 font-medium text-white max-w-xs truncate"
                     title={transaction.address}
                   >
-                    <div className="truncate font-semibold text-slate-800">{transaction.address}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">ID: {transaction.id}</div>
+                    <div className="truncate font-semibold text-slate-100">{transaction.address}</div>
+                    <div className="text-[10px] text-slate-500 font-mono">ID: {transaction.id}</div>
                   </td>
-                  <td className="py-3 px-4 font-semibold text-slate-800">
+                  <td className="py-3.5 px-4 text-right font-semibold text-slate-200 font-mono tabular-nums">
                     {formatMoney(transaction.salePrice)}
                   </td>
-                  <td className="py-3 px-4 text-slate-600">
+                  <td className="py-3.5 px-4 text-slate-300 font-mono tabular-nums">
                     {formatPercent(transaction.commRate)}
-                    <div className="text-[10px] text-slate-400">
+                    <div className="text-[10px] text-slate-500">
                       {formatMoney(audit.totalCommission)} total
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-slate-600">
-                    <span className="text-slate-800 font-medium">
+                  <td className="py-3.5 px-4 text-slate-400 font-mono tabular-nums">
+                    <span className="text-slate-200 font-medium">
                       {formatPercent(transaction.listingSplit)}
                     </span>{' '}
                     L / {formatPercent(transaction.buyerSplit)} B
@@ -139,7 +139,7 @@ export default function TransactionTable({
                       {formatMoney(audit.brokerageCut)})
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-slate-600">
+                  <td className="py-3.5 px-4 text-slate-400 font-mono tabular-nums">
                     <div>
                       Ref Out: {formatPercent(transaction.referralOut)} (
                       {formatMoney(audit.referralFeeOutAmount)})
@@ -148,56 +148,54 @@ export default function TransactionTable({
                       Trans Fee: {formatMoney(transaction.transactionFee)}
                     </div>
                     {audit.hasMissingReferral && (
-                      <div className="mt-1 inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">
+                      <div className="mt-1 text-[10px] font-semibold text-indigo-400">
                         Missing In: {formatMoney(transaction.referralIn)}
                       </div>
                     )}
                   </td>
-                  <td className="py-3 px-4 font-semibold text-slate-800">
+                  <td className="py-3.5 px-4 text-right font-semibold text-slate-200 font-mono tabular-nums">
                     {formatMoney(audit.expectedAgentPayment)}
                   </td>
-                  <td className="py-3 px-4 font-semibold text-slate-800">
+                  <td className="py-3.5 px-4 text-right font-semibold text-slate-200 font-mono tabular-nums">
                     {formatMoney(transaction.actualPaid)}
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4 text-right font-mono tabular-nums">
                     <span
                       className={`font-bold ${
                         audit.status === 'overpaid'
-                          ? 'text-rose-600'
+                          ? 'text-rose-400'
                           : audit.status === 'underpaid'
-                            ? 'text-amber-600'
-                            : 'text-emerald-600'
+                            ? 'text-amber-400'
+                            : 'text-[#10B981]'
                       }`}
                     >
                       {(audit.discrepancy > 0 ? '+' : '') + formatMoney(audit.discrepancy)}
                     </span>
                   </td>
-                  <td className="py-3 px-4">
+                  <td className="py-3.5 px-4 whitespace-nowrap">
                     {audit.status === 'overpaid' && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5" />
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-950/60 text-rose-300 border border-rose-500/30 font-mono tabular-nums">
                         OVERPAID (+{formatMoney(audit.discrepancy)})
                       </span>
                     )}
                     {audit.status === 'underpaid' && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5" />
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-950/60 text-amber-300 border border-amber-500/30 font-mono tabular-nums">
                         UNDERPAID ({formatMoney(audit.discrepancy)})
                       </span>
                     )}
                     {audit.status === 'correct' && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-600" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-950/60 text-[#10B981] border border-emerald-500/30">
+                        <CheckCircle2 className="w-3 h-3" />
                         Accurate
                       </span>
                     )}
                   </td>
                   {!readOnly && (
-                    <td className="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-right space-x-1 whitespace-nowrap">
                       <button
                         type="button"
                         onClick={() => onInspect?.(transaction)}
-                        className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded transition"
+                        className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition cursor-pointer"
                         title="Inspect Formula Calculation"
                         aria-label={`Inspect calculation for ${transaction.address}`}
                       >
@@ -206,7 +204,7 @@ export default function TransactionTable({
                       <button
                         type="button"
                         onClick={() => onDelete?.(transaction.id)}
-                        className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition"
+                        className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-950/60 rounded transition cursor-pointer"
                         title="Delete record"
                         aria-label={`Delete ${transaction.address}`}
                       >
@@ -223,11 +221,11 @@ export default function TransactionTable({
 
       {visible.length === 0 && (
         <div className="p-12 text-center">
-          <AlertTriangle className="w-10 h-10 text-slate-400 mx-auto mb-2" />
-          <h3 className="text-sm font-semibold text-slate-700">
+          <AlertTriangle className="w-10 h-10 text-slate-600 mx-auto mb-2" />
+          <h3 className="text-sm font-semibold text-slate-200">
             {transactions.length === 0 ? 'No Transactions Recorded' : 'No Transactions Match Filter'}
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             {transactions.length === 0
               ? readOnly
                 ? 'This audit does not contain any transactions yet.'
@@ -237,11 +235,11 @@ export default function TransactionTable({
         </div>
       )}
 
-      <div className="px-6 py-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
+      <div className="px-6 py-3 border-t border-slate-800/80 text-xs text-slate-500 flex items-center justify-between">
         <span>
           Showing {visible.length} of {transactions.length} transactions
         </span>
-        <span>Zed Automation Internal Audit Algorithm v2.4</span>
+        <span>Zed Automation Audit Engine</span>
       </div>
     </section>
   );

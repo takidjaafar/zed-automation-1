@@ -3,15 +3,19 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import {
+  ArrowLeft,
+  CheckCircle2,
   Download,
   ExternalLink,
   FileText,
+  Lock,
   PlusCircle,
   RotateCcw,
   Trash2,
   Users,
 } from 'lucide-react';
 
+import AuditAccessGate, { useAuditGate } from '@/components/commission-audit/AuditAccessGate';
 import AuditBrand from '@/components/commission-audit/AuditBrand';
 import AuditKpiDashboard from '@/components/commission-audit/AuditKpiDashboard';
 import ClientSelector from '@/components/commission-audit/ClientSelector';
@@ -28,15 +32,12 @@ import { INITIAL_SAMPLES } from '@/lib/commission-audit/samples';
 import type { Transaction } from '@/types/commission-audit';
 
 /**
- * Commission Audit & Leakage Detector — working view.
- *
- * Multi-client: the client selector swaps between independently stored audits
- * (`audit_[clientId]_[auditId]`). The read-only client view lives at
- * `/commission-audit/view/[auditId]`.
+ * Commission Audit & Leakage Detector — private client-gated fulfillment workspace.
  */
 function CommissionAuditWorkspace() {
   const workspace = useAuditWorkspace();
   const { push } = useToast();
+  const { lockWorkspace } = useAuditGate();
 
   const [activeTab, setActiveTab] = useState<'manual' | 'import'>('manual');
   const [inspectTx, setInspectTx] = useState<Transaction | null>(null);
@@ -58,12 +59,10 @@ function CommissionAuditWorkspace() {
 
   const { transactions, activeClient, activeAudit } = workspace;
 
-  /** Every mutation of the transaction list persists to the active audit. */
   const updateTransactions = (newList: Transaction[]) => {
     workspace.setTransactions(newList);
   };
 
-  // Add transaction
   const handleAddTransaction = (e: React.FormEvent) => {
     e.preventDefault();
     if (!address) return;
@@ -121,8 +120,6 @@ function CommissionAuditWorkspace() {
     });
   };
 
-  // Bulk CSV import — rows arrive already validated and normalized by the
-  // CSV import engine (`lib/commission-audit/csv.ts`).
   const handleImportTransactions = (imported: Transaction[]) => {
     if (imported.length === 0) return;
     updateTransactions([...imported, ...transactions]);
@@ -133,7 +130,6 @@ function CommissionAuditWorkspace() {
     });
   };
 
-  // CSV Export
   const handleDownloadCSV = () => {
     if (transactions.length === 0) {
       push({
@@ -265,69 +261,126 @@ function CommissionAuditWorkspace() {
   };
 
   const shareUrl = activeAudit ? workspace.buildShareUrl(activeAudit.id) : '';
+  const inputClass =
+    'w-full px-3.5 py-2.5 rounded-lg border border-slate-800 bg-[#05080F] text-white placeholder:text-slate-600 text-sm focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] outline-none transition';
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
-      {/* Top Navbar */}
-      <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <AuditBrand />
+    <div className="min-h-screen bg-[#05080F] text-slate-100 flex flex-col font-sans">
+      {/* Unified Top Navbar */}
+      <header className="bg-[#0B1120]/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
+          <AuditBrand tag="Client Fulfillment Portal" />
 
-          <div className="flex flex-wrap items-center gap-2">
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-400">
             <Link
-              href="/commission-audit.html"
-              target="_blank"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-slate-700 transition"
+              href="/commission-audit"
+              className="text-white font-semibold whitespace-nowrap shrink-0"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-              Standalone HTML View
+              Audit Workspace
             </Link>
-            <button
-              onClick={handleLoadSamples}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white border border-slate-700 transition"
+            <Link
+              href="/clients"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-emerald-400" />
-              Load Sample Data
-            </button>
-            <button
-              onClick={handleDownloadCSV}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition shadow-sm"
-              title="Export all transactions to CSV"
+              Clients
+            </Link>
+            <a
+              href="https://zedautomation.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
             >
-              <Download className="w-3.5 h-3.5" />
-              Download CSV
-            </button>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back to Zed Automation
+            </a>
+          </nav>
+
+          <div className="flex items-center gap-2.5 shrink-0">
             <button
+              type="button"
               onClick={() => setIsReportOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:from-emerald-400 hover:to-cyan-400 transition shadow-sm shadow-emerald-500/20"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 transition whitespace-nowrap shrink-0 cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
-              Generate PDF Report
+              Executive Report
             </button>
             <button
-              onClick={handleClearAll}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-950/40 text-rose-300 hover:bg-rose-900/60 border border-rose-800/50 transition"
+              type="button"
+              onClick={lockWorkspace}
+              title="Re-lock the private audit terminal"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#05080F] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0 cursor-pointer"
             >
-              <Trash2 className="w-3.5 h-3.5" />
-              Clear
+              <Lock className="w-3.5 h-3.5 text-slate-400" />
+              Lock Workspace
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         {!workspace.ready ? (
-          <div className="py-24 text-center">
-            <div className="inline-flex items-center gap-2 text-sm text-slate-500">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Loading your clients and audits…
-            </div>
+          <div className="py-24 text-center text-sm text-slate-400">
+            Loading brokerage ledgers and audits…
           </div>
         ) : (
           <>
+            {/* Workspace Action Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-800/60">
+              <div className="flex items-center gap-3 text-xs text-slate-400">
+                <a
+                  href="https://zedautomation.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="md:hidden inline-flex items-center gap-1 text-[#10B981] hover:underline whitespace-nowrap shrink-0"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  Back to Zed Automation
+                </a>
+                <span className="hidden sm:inline text-slate-400">
+                  Private GCI Audit Terminal &middot; {activeClient?.name ?? 'Brokerage'}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Link
+                  href="/commission-audit.html"
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0B1120] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-[#10B981]" />
+                  Standalone HTML
+                </Link>
+                <button
+                  type="button"
+                  onClick={handleLoadSamples}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0B1120] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-[#10B981]" />
+                  Load Sample Data
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadCSV}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#0B1120] text-[#10B981] hover:bg-emerald-950/50 border border-emerald-500/30 transition whitespace-nowrap shrink-0 cursor-pointer"
+                  title="Export all transactions to CSV"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Download CSV
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-950/30 text-rose-300 hover:bg-rose-950/60 border border-rose-500/30 transition whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Clear
+                </button>
+              </div>
+            </div>
+
             {workspace.storageUnavailable && (
-              <section className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800">
+              <section className="rounded-xl border border-amber-500/30 bg-amber-950/30 p-4 text-xs text-amber-200">
                 This browser is blocking local storage, so audits cannot be saved. Enable storage
                 (or leave private browsing) to keep clients and audits between visits.
               </section>
@@ -349,34 +402,38 @@ function CommissionAuditWorkspace() {
             <AuditKpiDashboard transactions={transactions} />
 
             {/* Input Card */}
-            <section className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
-              <div className="border-b border-slate-200 px-6 py-4 flex flex-wrap items-center justify-between gap-4 bg-slate-50/60">
-                <div className="flex items-center space-x-2">
+            <section className="bg-[#0B1120] rounded-2xl border border-slate-800/80 overflow-hidden">
+              <div className="border-b border-slate-800/80 px-6 py-4 flex flex-wrap items-center justify-between gap-4 bg-[#05080F]/50">
+                <div className="flex items-center gap-1 p-1 rounded-lg bg-[#05080F] border border-slate-800">
                   <button
+                    type="button"
                     onClick={() => setActiveTab('manual')}
-                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition ${
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-md transition whitespace-nowrap shrink-0 cursor-pointer ${
                       activeTab === 'manual'
-                        ? 'bg-white shadow-sm border border-slate-200 text-slate-900'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        ? 'bg-[#10B981] text-[#05080F]'
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     Manual Transaction Entry
                   </button>
                   <button
+                    type="button"
                     onClick={() => setActiveTab('import')}
-                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition ${
+                    className={`px-4 py-1.5 text-xs font-semibold rounded-md transition whitespace-nowrap shrink-0 cursor-pointer ${
                       activeTab === 'import'
-                        ? 'bg-white shadow-sm border border-slate-200 text-slate-900'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                        ? 'bg-[#10B981] text-[#05080F]'
+                        : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Import
+                    CSV Import
                   </button>
                 </div>
-                <div className="text-xs text-slate-500 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  Auto-saved · {activeClient?.name ?? 'no client'}
-                  {activeAudit ? ` · ${activeAudit.name}` : ''}
+                <div className="text-xs text-slate-400 inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
+                  <span>
+                    Auto-saved &middot; {activeClient?.name ?? 'No client'}
+                    {activeAudit ? ` · ${activeAudit.name}` : ''}
+                  </span>
                 </div>
               </div>
 
@@ -386,8 +443,8 @@ function CommissionAuditWorkspace() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                       {/* Property Address */}
                       <div className="lg:col-span-2">
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Property Address <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Property Address <span className="text-rose-400">*</span>
                         </label>
                         <input
                           type="text"
@@ -395,17 +452,17 @@ function CommissionAuditWorkspace() {
                           value={address}
                           onChange={(e) => setAddress(e.target.value)}
                           placeholder="e.g. 742 Evergreen Terrace, Springfield"
-                          className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                          className={inputClass}
                         />
                       </div>
 
                       {/* Sale Price */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Sale Price ($) <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Sale Price ($) <span className="text-rose-400">*</span>
                         </label>
                         <div className="relative">
-                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-sm">$</span>
                           <input
                             type="number"
                             required
@@ -413,15 +470,15 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={salePrice}
                             onChange={(e) => setSalePrice(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pl-7 font-mono tabular-nums`}
                           />
                         </div>
                       </div>
 
                       {/* Total Comm Rate */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Total Comm. Rate (%) <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Total Comm. Rate (%) <span className="text-rose-400">*</span>
                         </label>
                         <div className="relative">
                           <input
@@ -432,16 +489,16 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={commRate}
                             onChange={(e) => setCommRate(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pr-8 font-mono tabular-nums`}
                           />
-                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 text-sm">%</span>
                         </div>
                       </div>
 
                       {/* Listing Split */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Listing Split (%) <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Listing Split (%) <span className="text-rose-400">*</span>
                         </label>
                         <div className="relative">
                           <input
@@ -452,16 +509,16 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={listingSplit}
                             onChange={(e) => setListingSplit(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pr-8 font-mono tabular-nums`}
                           />
-                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 text-sm">%</span>
                         </div>
                       </div>
 
                       {/* Buyer Split */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Buyer Split (%) <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Buyer Split (%) <span className="text-rose-400">*</span>
                         </label>
                         <div className="relative">
                           <input
@@ -472,16 +529,16 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={buyerSplit}
                             onChange={(e) => setBuyerSplit(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pr-8 font-mono tabular-nums`}
                           />
-                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 text-sm">%</span>
                         </div>
                       </div>
 
                       {/* Broker Cut */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Brokerage Cut (%) <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Brokerage Cut (%) <span className="text-rose-400">*</span>
                         </label>
                         <div className="relative">
                           <input
@@ -492,15 +549,15 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={brokerSplit}
                             onChange={(e) => setBrokerSplit(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pr-8 font-mono tabular-nums`}
                           />
-                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 text-sm">%</span>
                         </div>
                       </div>
 
                       {/* Referral Out */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                           Referral Fee Out (%)
                         </label>
                         <div className="relative">
@@ -511,55 +568,55 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={referralOut}
                             onChange={(e) => setReferralOut(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pr-8 font-mono tabular-nums`}
                           />
-                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 text-sm">%</span>
+                          <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 text-sm">%</span>
                         </div>
                       </div>
 
                       {/* Referral In */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                           Referral Fee In ($)
                         </label>
                         <div className="relative">
-                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-sm">$</span>
                           <input
                             type="number"
                             min="0"
                             step="0.01"
                             value={referralIn}
                             onChange={(e) => setReferralIn(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pl-7 font-mono tabular-nums`}
                           />
                         </div>
                       </div>
 
                       {/* Transaction Fee */}
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                           Transaction Fee ($)
                         </label>
                         <div className="relative">
-                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-sm">$</span>
                           <input
                             type="number"
                             min="0"
                             step="0.01"
                             value={transactionFee}
                             onChange={(e) => setTransactionFee(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pl-7 font-mono tabular-nums`}
                           />
                         </div>
                       </div>
 
                       {/* Actual Amount Paid */}
                       <div className="lg:col-span-2">
-                        <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Actual Amount Paid to Agent ($) <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          Actual Amount Paid to Agent ($) <span className="text-rose-400">*</span>
                         </label>
                         <div className="relative">
-                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 text-sm">$</span>
+                          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 text-sm">$</span>
                           <input
                             type="number"
                             required
@@ -567,7 +624,7 @@ function CommissionAuditWorkspace() {
                             step="0.01"
                             value={actualPaid}
                             onChange={(e) => setActualPaid(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                            className="w-full pl-7 pr-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
+                            className={`${inputClass} pl-7 font-mono tabular-nums`}
                           />
                         </div>
                       </div>
@@ -577,9 +634,9 @@ function CommissionAuditWorkspace() {
                     <div className="flex items-center justify-end gap-3 pt-2">
                       <button
                         type="submit"
-                        className="px-6 py-2.5 text-sm font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 shadow-sm transition flex items-center gap-2"
+                        className="px-6 py-2.5 text-sm font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 shadow-sm transition flex items-center gap-2 cursor-pointer"
                       >
-                        <PlusCircle className="w-4 h-4 text-emerald-400" />
+                        <PlusCircle className="w-4 h-4" />
                         Audit &amp; Add Transaction
                       </button>
                     </div>
@@ -605,16 +662,18 @@ function CommissionAuditWorkspace() {
 
       {/* Math Inspection Modal */}
       {inspectTx && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-[#0B1120] rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-800/80 text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>
-                <h3 className="text-sm font-bold text-slate-900">Audit Calculation Trace</h3>
-                <p className="text-xs text-slate-500">{inspectTx.address}</p>
+                <h3 className="text-sm font-bold text-white">Audit Calculation Trace</h3>
+                <p className="text-xs text-slate-400">{inspectTx.address}</p>
               </div>
               <button
+                type="button"
                 onClick={() => setInspectTx(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                className="text-slate-400 hover:text-white p-1 rounded-lg transition"
+                aria-label="Close"
               >
                 &times;
               </button>
@@ -624,48 +683,56 @@ function CommissionAuditWorkspace() {
               const a = calculateAudit(inspectTx);
               return (
                 <div className="space-y-3">
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 font-mono text-[11px] space-y-1.5">
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">1. Total Commission ({formatPercent(inspectTx.commRate)}):</span>
-                      <span className="font-bold text-slate-800">{formatMoney(a.totalCommission)}</span>
+                  <div className="bg-[#05080F] p-3.5 rounded-xl border border-slate-800 font-mono tabular-nums text-[11px] space-y-2">
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">1. Total Commission ({formatPercent(inspectTx.commRate)}):</span>
+                      <span className="font-bold text-white">{formatMoney(a.totalCommission)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">2. Listing Side Commission ({formatPercent(inspectTx.listingSplit)}):</span>
-                      <span className="font-bold text-slate-800">{formatMoney(a.listingCommission)}</span>
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">2. Listing Side Commission ({formatPercent(inspectTx.listingSplit)}):</span>
+                      <span className="font-bold text-white">{formatMoney(a.listingCommission)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">3. Buyer Side Commission ({formatPercent(inspectTx.buyerSplit)}):</span>
-                      <span className="font-bold text-slate-800">{formatMoney(a.buyerCommission)}</span>
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">3. Buyer Side Commission ({formatPercent(inspectTx.buyerSplit)}):</span>
+                      <span className="font-bold text-white">{formatMoney(a.buyerCommission)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">4. Referral Fee Out ({formatPercent(inspectTx.referralOut)} of Listing):</span>
-                      <span className="font-bold text-rose-600">-{formatMoney(a.referralFeeOutAmount)}</span>
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">4. Referral Fee Out ({formatPercent(inspectTx.referralOut)} of Listing):</span>
+                      <span className="font-bold text-rose-400">-{formatMoney(a.referralFeeOutAmount)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">5. Amount After Referral:</span>
-                      <span className="font-bold text-slate-800">{formatMoney(a.amountAfterReferral)}</span>
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">5. Amount After Referral:</span>
+                      <span className="font-bold text-white">{formatMoney(a.amountAfterReferral)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">6. Brokerage Cut ({formatPercent(inspectTx.brokerSplit)}):</span>
-                      <span className="font-bold text-rose-600">-{formatMoney(a.brokerageCut)}</span>
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">6. Brokerage Cut ({formatPercent(inspectTx.brokerSplit)}):</span>
+                      <span className="font-bold text-rose-400">-{formatMoney(a.brokerageCut)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-200 pb-1">
-                      <span className="text-slate-500">7. Transaction Fee:</span>
-                      <span className="font-bold text-rose-600">-{formatMoney(inspectTx.transactionFee)}</span>
+                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                      <span className="text-slate-400">7. Transaction Fee:</span>
+                      <span className="font-bold text-rose-400">-{formatMoney(inspectTx.transactionFee)}</span>
                     </div>
-                    <div className="flex justify-between bg-emerald-50 p-1.5 rounded border border-emerald-200 font-semibold">
-                      <span className="text-emerald-800">8. EXPECTED AGENT PAYMENT:</span>
-                      <span className="text-emerald-800 text-sm">{formatMoney(a.expectedAgentPayment)}</span>
+                    <div className="flex justify-between bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30 font-semibold">
+                      <span className="text-[#10B981]">8. EXPECTED AGENT PAYMENT:</span>
+                      <span className="text-[#10B981] text-sm">{formatMoney(a.expectedAgentPayment)}</span>
                     </div>
-                    <div className="flex justify-between bg-slate-100 p-1.5 rounded font-semibold">
-                      <span className="text-slate-700">Actual Amount Paid:</span>
-                      <span className="text-slate-900 text-sm">{formatMoney(inspectTx.actualPaid)}</span>
+                    <div className="flex justify-between bg-slate-900 p-2 rounded-lg font-semibold">
+                      <span className="text-slate-300">Actual Amount Paid:</span>
+                      <span className="text-white text-sm">{formatMoney(inspectTx.actualPaid)}</span>
                     </div>
                   </div>
 
-                  <div className={`p-3 rounded-lg ${a.status === 'overpaid' ? 'bg-rose-50 border border-rose-200 text-rose-900' : a.status === 'underpaid' ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-emerald-50 border border-emerald-200 text-emerald-900'}`}>
-                    <div className="font-bold text-xs uppercase tracking-wider mb-1">Audit Finding:</div>
-                    <p className="text-xs">
+                  <div
+                    className={`p-3.5 rounded-xl border ${
+                      a.status === 'overpaid'
+                        ? 'bg-rose-950/30 border-rose-500/40 text-rose-200'
+                        : a.status === 'underpaid'
+                          ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
+                          : 'bg-emerald-950/30 border-emerald-500/40 text-emerald-200'
+                    }`}
+                  >
+                    <div className="font-bold text-xs mb-1">Audit Finding</div>
+                    <p className="text-xs leading-relaxed">
                       {a.status === 'overpaid' && `Brokerage OVERPAID agent by ${formatMoney(a.discrepancy)}. Discrepancy represents recoverable leakage.`}
                       {a.status === 'underpaid' && `Brokerage UNDERPAID agent by ${formatMoney(Math.abs(a.discrepancy))}. Agent is owed additional payout.`}
                       {a.status === 'correct' && `Calculations match disbursement exactly. No variance detected.`}
@@ -675,10 +742,11 @@ function CommissionAuditWorkspace() {
               );
             })()}
 
-            <div className="pt-2 border-t border-slate-100 flex justify-end">
+            <div className="pt-2 border-t border-slate-800 flex justify-end">
               <button
+                type="button"
                 onClick={() => setInspectTx(null)}
-                className="px-4 py-2 bg-slate-900 text-white text-xs font-medium rounded-lg hover:bg-slate-800 transition"
+                className="px-4 py-2 bg-[#10B981] text-[#05080F] text-xs font-bold rounded-lg hover:bg-emerald-400 transition cursor-pointer"
               >
                 Close
               </button>
@@ -687,13 +755,14 @@ function CommissionAuditWorkspace() {
         </div>
       )}
 
-      {/* PDF Report Generator */}
+      {/* Executive Report Generator */}
       <PdfReportDialog
         open={isReportOpen}
         onClose={() => setIsReportOpen(false)}
         transactions={transactions}
         defaultClientName={activeClient?.name ?? ''}
         defaultCompany={activeClient?.company ?? ''}
+        defaultContactEmail={activeClient?.email ?? ''}
       />
 
       {/* New audit */}
@@ -715,20 +784,25 @@ function CommissionAuditWorkspace() {
       />
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>&copy; Zed Automation — Real Estate Commission Audit &amp; Leakage Detection System</p>
+      <footer className="bg-[#0B1120] border-t border-slate-800/80 py-6 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p>&copy; Zed Automation &mdash; Real Estate Commission Audit &amp; Leakage Detection</p>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-emerald-600 hover:underline">
-              Home
-            </Link>
-            <span>&bull;</span>
-            <Link href="/clients" className="text-emerald-600 hover:underline inline-flex items-center gap-1">
+            <a
+              href="https://zedautomation.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#10B981] hover:underline"
+            >
+              zedautomation.vercel.app
+            </a>
+            <span>&middot;</span>
+            <Link href="/clients" className="text-slate-300 hover:text-white inline-flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
               Clients
             </Link>
-            <span>&bull;</span>
-            <Link href="/dashboard" className="text-emerald-600 hover:underline">
+            <span>&middot;</span>
+            <Link href="/dashboard" className="text-slate-300 hover:text-white">
               Admin Dashboard
             </Link>
           </div>
@@ -741,7 +815,9 @@ function CommissionAuditWorkspace() {
 export default function CommissionAuditPage() {
   return (
     <ToastProvider>
-      <CommissionAuditWorkspace />
+      <AuditAccessGate>
+        <CommissionAuditWorkspace />
+      </AuditAccessGate>
     </ToastProvider>
   );
 }

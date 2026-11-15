@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
 import {
   AlertTriangle,
+  ArrowLeft,
   Building2,
   CalendarDays,
   Copy,
@@ -13,6 +14,7 @@ import {
   FileSpreadsheet,
   FolderOpen,
   Loader2,
+  Lock,
   Mail,
   Pencil,
   Plus,
@@ -23,6 +25,7 @@ import {
 } from 'lucide-react';
 import { z } from 'zod';
 
+import AuditAccessGate, { useAuditGate } from '@/components/commission-audit/AuditAccessGate';
 import AuditBrand from '@/components/commission-audit/AuditBrand';
 import NewAuditDialog from '@/components/commission-audit/NewAuditDialog';
 import { ToastProvider, useToast } from '@/components/commission-audit/toast';
@@ -78,6 +81,7 @@ function formatDay(value: string): string {
 function ClientsManager() {
   const router = useRouter();
   const { push } = useToast();
+  const { lockWorkspace } = useAuditGate();
 
   const [clients, setClients] = useState<ClientWithHistory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -222,85 +226,114 @@ function ClientsManager() {
   };
 
   const fieldClass = (hasError: boolean) =>
-    `w-full px-3 py-2 rounded-lg border text-sm outline-none transition focus:ring-2 focus:ring-emerald-500 ${
-      hasError ? 'border-rose-300 bg-rose-50' : 'border-slate-300 bg-white'
+    `w-full px-3 py-2 rounded-lg border text-sm outline-none transition bg-[#05080F] text-white placeholder:text-slate-600 focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] ${
+      hasError ? 'border-rose-500/70' : 'border-slate-800'
     }`;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-slate-900 text-white border-b border-slate-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <AuditBrand
-            subtitle="Client management & audit history"
-            badge={
-              <span className="text-xs uppercase font-semibold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                Clients
-              </span>
-            }
-          />
-          <Link
-            href="/commission-audit"
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition shadow-sm"
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" />
-            Open audit workspace
-          </Link>
+    <div className="min-h-screen bg-[#05080F] text-slate-100 flex flex-col font-sans">
+      {/* Unified Header */}
+      <header className="bg-[#0B1120]/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
+          <AuditBrand tag="Client Fulfillment Portal" />
+
+          <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-400">
+            <Link
+              href="/commission-audit"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            >
+              Audit Workspace
+            </Link>
+            <Link
+              href="/clients"
+              className="text-white font-semibold whitespace-nowrap shrink-0"
+            >
+              Clients
+            </Link>
+            <a
+              href="https://zedautomation.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back to Zed Automation
+            </a>
+          </nav>
+
+          <div className="flex items-center gap-2.5 shrink-0">
+            <Link
+              href="/commission-audit"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 transition whitespace-nowrap shrink-0"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              Open Audit Workspace
+            </Link>
+            <button
+              type="button"
+              onClick={lockWorkspace}
+              title="Re-lock the private audit terminal"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#05080F] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <Lock className="w-3.5 h-3.5 text-slate-400" />
+              Lock Workspace
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
         {/* Summary */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm">
+          <div className="bg-[#0B1120] rounded-xl p-5 border border-slate-800/80">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Clients</span>
-              <div className="p-2 rounded-lg bg-blue-50 text-blue-600">
+              <span className="text-xs font-semibold text-slate-400">Clients</span>
+              <div className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300">
                 <Users className="w-4 h-4" />
               </div>
             </div>
-            <p className="mt-3 text-2xl font-bold text-slate-900">{clients.length}</p>
-            <p className="mt-2 text-xs text-slate-400">Brokerages on file</p>
+            <p className="mt-3 text-2xl font-bold text-white font-mono tabular-nums">{clients.length}</p>
+            <p className="mt-2 text-xs text-slate-500">Brokerages on file</p>
           </div>
-          <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm">
+          <div className="bg-[#0B1120] rounded-xl p-5 border border-slate-800/80">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Audits</span>
-              <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+              <span className="text-xs font-semibold text-slate-400">Audits</span>
+              <div className="p-2 rounded-lg bg-emerald-950/50 border border-emerald-500/20 text-[#10B981]">
                 <FolderOpen className="w-4 h-4" />
               </div>
             </div>
-            <p className="mt-3 text-2xl font-bold text-slate-900">{totals.auditCount}</p>
-            <p className="mt-2 text-xs text-slate-400">Stored per client</p>
+            <p className="mt-3 text-2xl font-bold text-white font-mono tabular-nums">{totals.auditCount}</p>
+            <p className="mt-2 text-xs text-slate-500">Stored per client</p>
           </div>
-          <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm">
+          <div className="bg-[#0B1120] rounded-xl p-5 border border-slate-800/80">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Transactions</span>
-              <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+              <span className="text-xs font-semibold text-slate-400">Transactions</span>
+              <div className="p-2 rounded-lg bg-indigo-950/50 border border-indigo-500/20 text-indigo-400">
                 <FileSpreadsheet className="w-4 h-4" />
               </div>
             </div>
-            <p className="mt-3 text-2xl font-bold text-slate-900">{totals.transactionCount}</p>
-            <p className="mt-2 text-xs text-slate-400">Across every audit</p>
+            <p className="mt-3 text-2xl font-bold text-white font-mono tabular-nums">{totals.transactionCount}</p>
+            <p className="mt-2 text-xs text-slate-500">Across every audit</p>
           </div>
-          <div className="bg-white rounded-xl p-5 border border-slate-200/80 shadow-sm">
+          <div className="bg-[#0B1120] rounded-xl p-5 border border-slate-800/80">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Net discrepancy</span>
-              <div className="p-2 rounded-lg bg-rose-50 text-rose-600">
+              <span className="text-xs font-semibold text-slate-400">Net discrepancy</span>
+              <div className="p-2 rounded-lg bg-rose-950/50 border border-rose-500/20 text-rose-400">
                 <AlertTriangle className="w-4 h-4" />
               </div>
             </div>
             <p
-              className={`mt-3 text-2xl font-bold ${
+              className={`mt-3 text-2xl font-bold font-mono tabular-nums ${
                 totals.netDiscrepancy > 0.5
-                  ? 'text-rose-600'
+                  ? 'text-rose-400'
                   : totals.netDiscrepancy < -0.5
-                    ? 'text-amber-600'
-                    : 'text-emerald-600'
+                    ? 'text-amber-400'
+                    : 'text-[#10B981]'
               }`}
             >
               {formatSignedMoney(totals.netDiscrepancy)}
             </p>
-            <p className="mt-2 text-xs text-slate-400">Positive = brokerage leakage</p>
+            <p className="mt-2 text-xs text-slate-500">Positive = brokerage leakage</p>
           </div>
         </section>
 
@@ -308,15 +341,15 @@ function ClientsManager() {
           {/* Client list */}
           <section className="lg:col-span-2 space-y-4">
             {loading ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-sm text-slate-500">
-                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-emerald-500" />
+              <div className="bg-[#0B1120] rounded-2xl border border-slate-800/80 p-12 text-center text-sm text-slate-400">
+                <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-[#10B981]" />
                 Loading clients…
               </div>
             ) : clients.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-                <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <h2 className="text-sm font-semibold text-slate-800">No clients yet</h2>
-                <p className="text-xs text-slate-500 mt-1">
+              <div className="bg-[#0B1120] rounded-2xl border border-slate-800/80 p-12 text-center">
+                <Users className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <h2 className="text-sm font-semibold text-slate-200">No clients yet</h2>
+                <p className="text-xs text-slate-400 mt-1">
                   Add your first brokerage to start filing audits against it.
                 </p>
               </div>
@@ -324,41 +357,41 @@ function ClientsManager() {
               clients.map((client) => (
                 <article
                   key={client.id}
-                  className="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden"
+                  className="bg-[#0B1120] rounded-2xl border border-slate-800/80 overflow-hidden"
                 >
-                  <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <div className="h-9 w-9 rounded-lg bg-slate-900 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-9 w-9 rounded-lg bg-[#05080F] border border-slate-800 text-[#10B981] flex items-center justify-center flex-shrink-0">
                           <Building2 className="w-4 h-4" />
                         </div>
                         <div className="min-w-0">
-                          <h2 className="text-sm font-bold text-slate-900 truncate">{client.name}</h2>
-                          <p className="text-[11px] text-slate-500 truncate">
+                          <h2 className="text-sm font-bold text-white truncate">{client.name}</h2>
+                          <p className="text-[11px] text-slate-400 truncate">
                             {client.company || 'No company on file'}
                           </p>
                         </div>
                       </div>
-                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+                      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-400">
                         {client.email && (
                           <span className="inline-flex items-center gap-1.5">
-                            <Mail className="w-3.5 h-3.5 text-slate-400" />
+                            <Mail className="w-3.5 h-3.5 text-slate-500" />
                             {client.email}
                           </span>
                         )}
                         <span className="inline-flex items-center gap-1.5">
-                          <CalendarDays className="w-3.5 h-3.5 text-slate-400" />
+                          <CalendarDays className="w-3.5 h-3.5 text-slate-500" />
                           Created {formatDay(client.createdAt)}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
-                          <FolderOpen className="w-3.5 h-3.5 text-slate-400" />
-                          {client.history.length} audit{client.history.length === 1 ? '' : 's'} ·{' '}
+                          <FolderOpen className="w-3.5 h-3.5 text-slate-500" />
+                          {client.history.length} audit{client.history.length === 1 ? '' : 's'} &middot;{' '}
                           {client.transactionCount} transaction
                           {client.transactionCount === 1 ? '' : 's'}
                         </span>
                       </div>
                       {client.notes && (
-                        <p className="mt-2 text-[11px] text-slate-500 italic">{client.notes}</p>
+                        <p className="mt-2 text-[11px] text-slate-400 italic">{client.notes}</p>
                       )}
                     </div>
 
@@ -369,23 +402,23 @@ function ClientsManager() {
                           setNewAuditClientId(client.id);
                           setIsNewAuditOpen(true);
                         }}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 transition cursor-pointer"
                       >
-                        <Plus className="w-3.5 h-3.5 text-emerald-400" />
+                        <Plus className="w-3.5 h-3.5" />
                         New audit
                       </button>
                       <button
                         type="button"
                         onClick={() => startEdit(client)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#05080F] border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800/70 transition cursor-pointer"
                       >
-                        <Pencil className="w-3.5 h-3.5 text-slate-500" />
+                        <Pencil className="w-3.5 h-3.5 text-slate-400" />
                         Edit
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDeleteClient(client)}
-                        className="p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition"
+                        className="p-1.5 rounded-lg text-rose-400 hover:text-rose-300 hover:bg-rose-950/60 transition cursor-pointer"
                         title={`Delete ${client.name}`}
                         aria-label={`Delete ${client.name}`}
                       >
@@ -395,8 +428,8 @@ function ClientsManager() {
                   </div>
 
                   {/* Audit history */}
-                  <div className="bg-slate-50/60 px-5 py-4">
-                    <h3 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                  <div className="bg-[#05080F]/60 px-5 py-4">
+                    <h3 className="text-[11px] font-semibold text-slate-400 mb-2">
                       Audit history
                     </h3>
                     {client.history.length === 0 ? (
@@ -406,7 +439,7 @@ function ClientsManager() {
                     ) : (
                       <div className="overflow-x-auto">
                         <table className="min-w-full text-left text-[11px]">
-                          <thead className="text-slate-500 uppercase tracking-wider text-[10px]">
+                          <thead className="text-slate-500 text-[10px]">
                             <tr>
                               <th className="py-1.5 pr-4">Audit</th>
                               <th className="py-1.5 pr-4">Period</th>
@@ -416,51 +449,53 @@ function ClientsManager() {
                               <th className="py-1.5 pr-4 text-right">Actions</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-200">
+                          <tbody className="divide-y divide-slate-800/70">
                             {client.history.map((entry) => (
                               <tr key={entry.id}>
-                                <td className="py-2 pr-4 font-semibold text-slate-800">{entry.name}</td>
-                                <td className="py-2 pr-4 text-slate-600">
+                                <td className="py-2.5 pr-4 font-semibold text-slate-200">{entry.name}</td>
+                                <td className="py-2.5 pr-4 text-slate-400 font-mono tabular-nums">
                                   {formatDay(entry.periodStart)} – {formatDay(entry.periodEnd)}
                                 </td>
-                                <td className="py-2 pr-4 text-slate-600">{formatDay(entry.createdAt)}</td>
-                                <td className="py-2 pr-4 text-right text-slate-700">
+                                <td className="py-2.5 pr-4 text-slate-400 font-mono tabular-nums">
+                                  {formatDay(entry.createdAt)}
+                                </td>
+                                <td className="py-2.5 pr-4 text-right text-slate-300 font-mono tabular-nums">
                                   {entry.transactionCount}
                                 </td>
-                                <td className="py-2 pr-4 text-right">
+                                <td className="py-2.5 pr-4 text-right font-mono tabular-nums">
                                   <span
                                     className={`font-bold ${
                                       entry.netDiscrepancy > 0.5
-                                        ? 'text-rose-600'
+                                        ? 'text-rose-400'
                                         : entry.netDiscrepancy < -0.5
-                                          ? 'text-amber-600'
-                                          : 'text-emerald-600'
+                                          ? 'text-amber-400'
+                                          : 'text-[#10B981]'
                                     }`}
                                   >
                                     {formatSignedMoney(entry.netDiscrepancy)}
                                   </span>
                                   {entry.discrepancyCount > 0 && (
-                                    <div className="text-[10px] text-slate-400">
-                                      {entry.discrepancyCount} flagged ·{' '}
+                                    <div className="text-[10px] text-slate-500">
+                                      {entry.discrepancyCount} flagged &middot;{' '}
                                       {formatMoney(entry.totalMissingReferral)} referral
                                     </div>
                                   )}
                                 </td>
-                                <td className="py-2 pr-4">
+                                <td className="py-2.5 pr-4">
                                   <div className="flex items-center justify-end gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleOpenAudit(client.id, entry.id)}
-                                      className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md text-slate-700 hover:bg-slate-200/70 transition"
+                                      className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition cursor-pointer"
                                       title="Open in audit workspace"
                                     >
-                                      <ExternalLink className="w-3 h-3" />
+                                      <ExternalLink className="w-3 h-3 text-[#10B981]" />
                                       Open
                                     </button>
                                     <button
                                       type="button"
                                       onClick={() => handleCopyShareLink(entry.id, entry.name)}
-                                      className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md text-cyan-700 hover:bg-cyan-50 transition"
+                                      className="inline-flex items-center gap-1 px-2 py-1 text-[10px] font-semibold rounded-md text-[#10B981] hover:bg-emerald-950/60 transition cursor-pointer"
                                       title="Copy read-only client link"
                                     >
                                       <Copy className="w-3 h-3" />
@@ -469,7 +504,7 @@ function ClientsManager() {
                                     <button
                                       type="button"
                                       onClick={() => handleDeleteAudit(client, entry.id, entry.name)}
-                                      className="p-1 rounded-md text-rose-500 hover:bg-rose-50 transition"
+                                      className="p-1 rounded-md text-rose-400 hover:bg-rose-950/60 transition cursor-pointer"
                                       title="Delete audit"
                                       aria-label={`Delete audit ${entry.name}`}
                                     >
@@ -493,18 +528,18 @@ function ClientsManager() {
           <section className="lg:col-span-1">
             <form
               onSubmit={handleSubmit}
-              className="bg-white rounded-2xl border border-slate-200/90 shadow-sm p-5 space-y-4 lg:sticky lg:top-6"
+              className="bg-[#0B1120] rounded-2xl border border-slate-800/80 p-5 space-y-4 lg:sticky lg:top-24"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  {editingId ? <Pencil className="w-4 h-4 text-slate-500" /> : <UserPlus className="w-4 h-4 text-emerald-600" />}
+                <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                  {editingId ? <Pencil className="w-4 h-4 text-slate-400" /> : <UserPlus className="w-4 h-4 text-[#10B981]" />}
                   {editingId ? 'Edit client' : 'Add client'}
                 </h2>
                 {editingId && (
                   <button
                     type="button"
                     onClick={resetForm}
-                    className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-slate-800"
+                    className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-white"
                   >
                     <X className="w-3 h-3" />
                     Cancel
@@ -513,8 +548,8 @@ function ClientsManager() {
               </div>
 
               <div>
-                <label htmlFor="client-name" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Name <span className="text-rose-500">*</span>
+                <label htmlFor="client-name" className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  Name <span className="text-rose-400">*</span>
                 </label>
                 <input
                   id="client-name"
@@ -524,11 +559,11 @@ function ClientsManager() {
                   placeholder="e.g. Acme Realty Group"
                   className={fieldClass(Boolean(errors.name))}
                 />
-                {errors.name && <p className="text-[11px] text-rose-600 mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-[11px] text-rose-400 mt-1">{errors.name}</p>}
               </div>
 
               <div>
-                <label htmlFor="client-company" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label htmlFor="client-company" className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Company / brokerage
                 </label>
                 <input
@@ -539,11 +574,11 @@ function ClientsManager() {
                   placeholder="e.g. Acme Realty Group LLC"
                   className={fieldClass(Boolean(errors.company))}
                 />
-                {errors.company && <p className="text-[11px] text-rose-600 mt-1">{errors.company}</p>}
+                {errors.company && <p className="text-[11px] text-rose-400 mt-1">{errors.company}</p>}
               </div>
 
               <div>
-                <label htmlFor="client-email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label htmlFor="client-email" className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Email
                 </label>
                 <input
@@ -554,11 +589,11 @@ function ClientsManager() {
                   placeholder="e.g. finance@acme-realty.example"
                   className={fieldClass(Boolean(errors.email))}
                 />
-                {errors.email && <p className="text-[11px] text-rose-600 mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-[11px] text-rose-400 mt-1">{errors.email}</p>}
               </div>
 
               <div>
-                <label htmlFor="client-notes" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+                <label htmlFor="client-notes" className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Notes
                 </label>
                 <textarea
@@ -569,12 +604,12 @@ function ClientsManager() {
                   placeholder="Engagement details, billing contact, audit cadence…"
                   className={fieldClass(Boolean(errors.notes))}
                 />
-                {errors.notes && <p className="text-[11px] text-rose-600 mt-1">{errors.notes}</p>}
+                {errors.notes && <p className="text-[11px] text-rose-400 mt-1">{errors.notes}</p>}
               </div>
 
               <button
                 type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg bg-emerald-600 text-white hover:bg-emerald-500 transition shadow-sm"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 transition shadow-sm cursor-pointer"
               >
                 {editingId ? <Pencil className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
                 {editingId ? 'Save changes' : 'Create client'}
@@ -597,15 +632,24 @@ function ClientsManager() {
         onCreate={handleCreateAudit}
       />
 
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>&copy; Zed Automation — Client management for the commission audit suite</p>
+      <footer className="bg-[#0B1120] border-t border-slate-800/80 py-6 text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p>&copy; Zed Automation &mdash; Client management for the commission audit suite</p>
           <div className="flex items-center gap-4">
-            <Link href="/commission-audit" className="text-emerald-600 hover:underline">
+            <a
+              href="https://zedautomation.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#10B981] hover:underline"
+            >
+              zedautomation.vercel.app
+            </a>
+            <span>&middot;</span>
+            <Link href="/commission-audit" className="text-slate-300 hover:text-white">
               Audit workspace
             </Link>
-            <span>&bull;</span>
-            <Link href="/" className="text-emerald-600 hover:underline">
+            <span>&middot;</span>
+            <Link href="/" className="text-slate-300 hover:text-white">
               Home
             </Link>
           </div>
@@ -618,7 +662,9 @@ function ClientsManager() {
 export default function ClientsManagerPage() {
   return (
     <ToastProvider>
-      <ClientsManager />
+      <AuditAccessGate>
+        <ClientsManager />
+      </AuditAccessGate>
     </ToastProvider>
   );
 }

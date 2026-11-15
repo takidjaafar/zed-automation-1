@@ -1,33 +1,35 @@
 'use client';
 
 import React from 'react';
+import { ShieldCheck } from 'lucide-react';
 
 /**
- * The shared Zed Automation brand block used in the audit workspace and in the
- * read-only client view.
+ * Shared Zed Automation brand block used in the unified top navigation bar
+ * across the gated audit workspace, client manager, and read-only share portal.
  */
 export default function AuditBrand({
-  subtitle = 'Commission Audit & Leakage Detector',
-  badge,
+  tag = 'Client Fulfillment Portal',
 }: {
   subtitle?: string;
   badge?: React.ReactNode;
+  tag?: string;
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-emerald-500/20">
+    <div className="flex items-center gap-3 min-w-0">
+      <div className="h-9 w-9 rounded-lg bg-[#10B981] text-[#05080F] flex items-center justify-center font-extrabold text-base tracking-tight shrink-0 shadow-sm shadow-emerald-500/20">
         Z
       </div>
-      <div>
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold tracking-tight text-white">Zed Automation</h1>
-          {badge ?? (
-            <span className="text-xs uppercase font-semibold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              Audit Suite
-            </span>
-          )}
-        </div>
-        <p className="text-xs text-slate-400">{subtitle}</p>
+      <div className="flex items-center gap-2.5 min-w-0">
+        <span className="text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0">
+          Zed Automation
+        </span>
+        <span className="text-slate-700 hidden sm:inline" aria-hidden="true">
+          /
+        </span>
+        <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-[#10B981] whitespace-nowrap shrink-0">
+          <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+          {tag}
+        </span>
       </div>
     </div>
   );

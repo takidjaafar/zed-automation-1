@@ -30,20 +30,20 @@ const ToastContext = createContext<ToastContextValue | null>(null);
 
 const TONE_STYLES: Record<ToastTone, { wrap: string; icon: React.ReactNode }> = {
   success: {
-    wrap: 'border-emerald-200 bg-white',
-    icon: <CheckCircle2 className="w-4 h-4 text-emerald-600" />,
+    wrap: 'border-emerald-500/40 bg-[#0B1120]',
+    icon: <CheckCircle2 className="w-4 h-4 text-[#10B981]" />,
   },
   error: {
-    wrap: 'border-rose-200 bg-white',
-    icon: <XCircle className="w-4 h-4 text-rose-600" />,
+    wrap: 'border-rose-500/40 bg-[#0B1120]',
+    icon: <XCircle className="w-4 h-4 text-rose-400" />,
   },
   warning: {
-    wrap: 'border-amber-200 bg-white',
-    icon: <AlertTriangle className="w-4 h-4 text-amber-600" />,
+    wrap: 'border-amber-500/40 bg-[#0B1120]',
+    icon: <AlertTriangle className="w-4 h-4 text-amber-400" />,
   },
   info: {
-    wrap: 'border-slate-200 bg-white',
-    icon: <Info className="w-4 h-4 text-slate-500" />,
+    wrap: 'border-slate-700 bg-[#0B1120]',
+    icon: <Info className="w-4 h-4 text-slate-400" />,
   },
 };
 
@@ -60,20 +60,20 @@ function ToastCard({ toast, onDismiss }: { toast: ToastMessage; onDismiss: (id: 
   return (
     <div
       role="status"
-      className={`pointer-events-auto flex items-start gap-3 rounded-xl border shadow-lg px-4 py-3 w-80 ${tone.wrap}`}
+      className={`pointer-events-auto flex items-start gap-3 rounded-xl border shadow-2xl shadow-black/60 px-4 py-3 w-80 ${tone.wrap}`}
     >
       <div className="mt-0.5 flex-shrink-0">{tone.icon}</div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs font-semibold text-slate-900">{toast.title}</p>
+        <p className="text-xs font-semibold text-white">{toast.title}</p>
         {toast.description && (
-          <p className="text-[11px] text-slate-600 mt-0.5 break-words">{toast.description}</p>
+          <p className="text-[11px] text-slate-400 mt-0.5 break-words">{toast.description}</p>
         )}
       </div>
       <button
         type="button"
         onClick={() => onDismiss(toast.id)}
         aria-label="Dismiss notification"
-        className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition flex-shrink-0"
+        className="p-1 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800 transition flex-shrink-0"
       >
         <X className="w-3.5 h-3.5" />
       </button>

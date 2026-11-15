@@ -216,7 +216,7 @@ function drawFooters(doc: jsPDF, report: ReportBundle): void {
     });
     drawText(
       doc,
-      `${report.contactEmail}  ·  ${report.contactPhone}`,
+      `${report.contactEmail}  ·  zedautomation.vercel.app`,
       PAGE_WIDTH / 2,
       FOOTER_LINE_Y + 4.5,
       { size: 7.5, color: C.slate400, align: 'center' },
@@ -864,11 +864,139 @@ function drawRecommendationsPage(doc: jsPDF, report: ReportBundle): void {
   });
 
   y += 3;
+  drawRecoveryProtocolSection(doc, report, y);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Silent Closer — 90-Day Recovery Protocol & Next Steps                     */
+/* -------------------------------------------------------------------------- */
+
+function drawRecoveryProtocolSection(
+  doc: jsPDF,
+  report: ReportBundle,
+  startY: number,
+): void {
+  const { recoveryProtocol } = report;
+  const requiredHeight = 112;
+  let y = startY;
+
+  if (y + requiredHeight > CONTENT_BOTTOM) {
+    doc.addPage();
+    drawRunningHeader(doc, report.clientName);
+    y = drawSectionTitle(
+      doc,
+      'Zed Automation 90-Day Recovery Protocol & Next Steps',
+      'Automated commission reconciliation, 45-second Speed-to-Lead guardrails, and async deployment activation.',
+    );
+  } else {
+    drawText(
+      doc,
+      'Zed Automation 90-Day Recovery Protocol & Next Steps',
+      MARGIN.left,
+      y + 4,
+      { size: 12, bold: true, color: C.slate900 },
+    );
+    setFill(doc, C.emerald600);
+    doc.rect(MARGIN.left, y + 6.5, 24, 1, 'F');
+    y += 12;
+  }
+
+  // Outer protocol summary panel
+  drawCard(doc, MARGIN.left, y, CONTENT_WIDTH, 42, {
+    fill: C.slate900,
+    border: C.emerald600,
+    radius: 2.5,
+  });
+
+  // Left: Total Flagged GCI Leakage
+  const halfW = (CONTENT_WIDTH - 14) / 2;
+  drawText(doc, '1. TOTAL FLAGGED GCI LEAKAGE', MARGIN.left + 5, y + 8, {
+    size: 7.5,
+    bold: true,
+    color: C.slate400,
+  });
+  drawText(doc, formatMoney(recoveryProtocol.totalFlaggedLeakage), MARGIN.left + 5, y + 17, {
+    size: 16,
+    bold: true,
+    color: C.white,
+  });
+  drawParagraph(
+    doc,
+    `Split/Cap: ${formatMoney(recoveryProtocol.splitCapDiscrepancies)} | Uncollected Referrals: ${formatMoney(
+      recoveryProtocol.uncollectedReferralFees,
+    )} | CD Shortfalls: ${formatMoney(recoveryProtocol.cdShortfalls)}`,
+    MARGIN.left + 5,
+    y + 23.5,
+    halfW,
+    { size: 7.5, lineHeight: 3.7, color: C.slate300 },
+  );
+
+  // Divider line
+  setStroke(doc, C.slate700);
+  doc.setLineWidth(0.25);
+  doc.line(MARGIN.left + halfW + 7, y + 6, MARGIN.left + halfW + 7, y + 36);
+
+  // Right: Projected 90-Day Net Recovery
+  const rightX = MARGIN.left + halfW + 12;
+  drawText(doc, '2. PROJECTED 90-DAY NET RECOVERY', rightX, y + 8, {
+    size: 7.5,
+    bold: true,
+    color: C.emerald50,
+  });
+  drawText(doc, formatMoney(recoveryProtocol.projected90DayNetRecovery), rightX, y + 17, {
+    size: 16,
+    bold: true,
+    color: C.emerald600,
+  });
+  drawParagraph(
+    doc,
+    `Includes 100% flagged leakage recovery (${formatMoney(
+      recoveryProtocol.totalFlaggedLeakage,
+    )}) + ${formatMoney(
+      recoveryProtocol.speedToLeadUplift90d,
+    )} projected 90-day uplift from automated reconciliation & 45-second Speed-to-Lead guardrails.`,
+    rightX,
+    y + 23.5,
+    halfW - 3,
+    { size: 7.5, lineHeight: 3.7, color: C.slate300 },
+  );
+
+  y += 47;
+
+  // 3. Async Activation Instructions card
+  const activationLines = lineCount(
+    doc,
+    recoveryProtocol.asyncActivationInstructions,
+    CONTENT_WIDTH - 12,
+    8.5,
+  );
+  const activationHeight = 14 + activationLines * 4.2;
+  drawCard(doc, MARGIN.left, y, CONTENT_WIDTH, activationHeight, {
+    fill: C.emerald50,
+    border: C.emerald600,
+    radius: 2,
+  });
+  drawText(doc, '3. ASYNC ACTIVATION INSTRUCTIONS (ZERO SALES CALLS REQUIRED)', MARGIN.left + 5, y + 7, {
+    size: 8,
+    bold: true,
+    color: C.emerald700,
+  });
+  drawParagraph(
+    doc,
+    recoveryProtocol.asyncActivationInstructions,
+    MARGIN.left + 5,
+    y + 13,
+    CONTENT_WIDTH - 10,
+    { size: 8.5, lineHeight: 4.2, color: C.slate800 },
+  );
+
+  y += activationHeight + 5;
+
   if (y < CONTENT_BOTTOM - 16) {
     drawCard(doc, MARGIN.left, y, CONTENT_WIDTH, 15, { fill: C.slate50, border: C.slate200 });
     drawParagraph(
       doc,
-      `Prepared by ${report.preparedBy} · ${report.reportDateLabel} · Questions: ${report.contactEmail} · ${report.contactPhone}`,
+      `Prepared by ${report.preparedBy} · ${report.reportDateLabel} · Async Desk: ${report.contactEmail} · zedautomation.vercel.app`,
       MARGIN.left + 5,
       y + 6,
       CONTENT_WIDTH - 10,

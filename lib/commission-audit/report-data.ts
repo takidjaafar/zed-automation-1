@@ -39,7 +39,18 @@ export interface AuditRecommendation {
   severity: RecommendationSeverity;
 }
 
-/** Everything the PDF renderer needs, fully computed. */
+/** Silent Closer 90-Day Recovery Protocol metrics and async activation copy. */
+export interface RecoveryProtocolSummary {
+  splitCapDiscrepancies: number;
+  uncollectedReferralFees: number;
+  cdShortfalls: number;
+  totalFlaggedLeakage: number;
+  speedToLeadUplift90d: number;
+  projected90DayNetRecovery: number;
+  asyncActivationInstructions: string;
+}
+
+/** Everything the PDF and text summary renderers need, fully computed. */
 export interface ReportBundle {
   clientName: string;
   company: string;
@@ -54,6 +65,7 @@ export interface ReportBundle {
   topDiscrepancies: AuditedTransaction[];
   recommendations: AuditRecommendation[];
   executiveSummary: string;
+  recoveryProtocol: RecoveryProtocolSummary;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -341,6 +353,51 @@ export function buildExecutiveSummary(
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Silent Closer — 90-Day Recovery Protocol                                  */
+/* -------------------------------------------------------------------------- */
+
+const ASYNC_ACTIVATION_COPY =
+  'Reply directly to the written message or email where you received this report (e.g. reply "AUTHORIZED" with your brokerage onboarding contact) to authorize full brokerage deployment. Onboarding is 100% written and asynchronous - zero sales calls required.';
+
+/**
+ * Compute Total Flagged GCI Leakage and Projected 90-Day Net Recovery when
+ * automated commission reconciliation and 45-second Speed-to-Lead guardrails
+ * are deployed across the brokerage.
+ */
+export function buildRecoveryProtocol(
+  summary: AuditSummary,
+  periodDays: number,
+): RecoveryProtocolSummary {
+  const splitCapDiscrepancies = Math.max(0, summary.totalOverpaid);
+  const uncollectedReferralFees = Math.max(0, summary.totalMissingReferral);
+  const cdShortfalls = Math.max(0, summary.totalUnderpaid);
+  const totalFlaggedLeakage =
+    splitCapDiscrepancies + uncollectedReferralFees + cdShortfalls;
+
+  // Normalize audited gross commission to a 90-day run-rate and apply a
+  // conservative 4.0% conversion recovery uplift from 45-second Speed-to-Lead.
+  let speedToLeadUplift90d = 0;
+  if (summary.totalTransactions > 0 && summary.totalCommission > 0) {
+    const windowDays = periodDays > 0 ? Math.max(periodDays, 30) : 90;
+    const quarterlyCommissionBase = summary.totalCommission * (90 / windowDays);
+    speedToLeadUplift90d = Math.round(quarterlyCommissionBase * 0.04 * 100) / 100;
+  }
+
+  const projected90DayNetRecovery =
+    Math.round((totalFlaggedLeakage + speedToLeadUplift90d) * 100) / 100;
+
+  return {
+    splitCapDiscrepancies,
+    uncollectedReferralFees,
+    cdShortfalls,
+    totalFlaggedLeakage,
+    speedToLeadUplift90d,
+    projected90DayNetRecovery,
+    asyncActivationInstructions: ASYNC_ACTIVATION_COPY,
+  };
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Bundle                                                                    */
 /* -------------------------------------------------------------------------- */
 
@@ -353,12 +410,13 @@ export function buildReportBundle(
   const reportDate = options.reportDate ?? new Date();
   const periodStart = options.periodStart ?? '';
   const periodEnd = options.periodEnd ?? '';
+  const periodDays = periodLengthInDays(periodStart, periodEnd);
 
   return {
     clientName: options.clientName?.trim() || 'Unnamed Client',
     company: options.company?.trim() || '',
     periodLabel: formatPeriodLabel(periodStart, periodEnd),
-    periodDays: periodLengthInDays(periodStart, periodEnd),
+    periodDays,
     reportDateLabel: format(reportDate, MONTH_DAY_YEAR),
     reportDateIso: format(reportDate, ISO_DAY),
     preparedBy: options.preparedBy?.trim() || REPORT_CONTACT_DEFAULTS.preparedBy,
@@ -372,5 +430,70 @@ export function buildReportBundle(
       periodStart,
       periodEnd,
     }),
+    recoveryProtocol: buildRecoveryProtocol(summary, periodDays),
   };
+}
+
+/**
+ * Format a copyable plain-text "Silent Closer" Executive Summary ready to paste
+ * into an email or Slack/DM thread for 100% async written authorization.
+ */
+export function formatExecutiveTextSummary(report: ReportBundle): string {
+  const { summary, recoveryProtocol } = report;
+  const headerLines = [
+    'ZED AUTOMATION - EXECUTIVE COMMISSION AUDIT SUMMARY',
+    `Client: ${report.clientName}${report.company ? ` (${report.company})` : ''}`,
+    `Audit Period: ${report.periodLabel}`,
+    `Report Date: ${report.reportDateLabel}`,
+    `Prepared By: ${report.preparedBy} (${report.contactEmail})`,
+    'Portal: https://zedautomation.vercel.app/',
+  ];
+
+  const auditLines = [
+    '',
+    'AUDIT SNAPSHOT',
+    `- Transactions Audited: ${summary.totalTransactions} (${formatMoney(summary.totalSalePrice)} total volume)`,
+    `- Gross Commission Audited: ${formatMoney(summary.totalCommission)}`,
+    `- Split/Cap Overpayments (Brokerage Leakage): ${formatMoney(recoveryProtocol.splitCapDiscrepancies)}`,
+    `- Uncollected Incoming Referral Fees: ${formatMoney(recoveryProtocol.uncollectedReferralFees)}`,
+    `- CD & Agent Payout Shortfalls: ${formatMoney(recoveryProtocol.cdShortfalls)}`,
+    '',
+    'EXECUTIVE FINDINGS',
+    report.executiveSummary,
+  ];
+
+  const topLines: string[] = [];
+  if (report.topDiscrepancies.length > 0) {
+    topLines.push('', 'TOP FLAGGED DISCREPANCIES');
+    report.topDiscrepancies.forEach(({ transaction, audit, rank }) => {
+      const sign = audit.discrepancy > 0 ? '+' : '';
+      topLines.push(
+        `${rank}. ${transaction.address} - ${audit.statusText} (${sign}${formatMoney(audit.discrepancy)} | Expected ${formatMoney(audit.expectedAgentPayment)} vs Paid ${formatMoney(transaction.actualPaid)})`,
+      );
+    });
+  }
+
+  const protocolLines = [
+    '',
+    'ZED AUTOMATION 90-DAY RECOVERY PROTOCOL & NEXT STEPS',
+    `1. Total Flagged GCI Leakage: ${formatMoney(recoveryProtocol.totalFlaggedLeakage)}`,
+    `   - Split/Cap Discrepancies: ${formatMoney(recoveryProtocol.splitCapDiscrepancies)}`,
+    `   - Uncollected Referral Fees: ${formatMoney(recoveryProtocol.uncollectedReferralFees)}`,
+    `   - CD Shortfalls: ${formatMoney(recoveryProtocol.cdShortfalls)}`,
+    `2. Projected 90-Day Net Recovery: ${formatMoney(recoveryProtocol.projected90DayNetRecovery)}`,
+    `   - Direct Leakage Recovery (100%): ${formatMoney(recoveryProtocol.totalFlaggedLeakage)}`,
+    `   - 45-Second Speed-to-Lead Guardrails (90-Day Uplift): ${formatMoney(recoveryProtocol.speedToLeadUplift90d)}`,
+    '3. Async Activation Instructions:',
+    `   ${recoveryProtocol.asyncActivationInstructions}`,
+  ];
+
+  return [...headerLines, ...auditLines, ...topLines, ...protocolLines].join('\n');
+}
+
+/** Build the copyable Executive Text Summary directly from transactions + options. */
+export function buildExecutiveTextSummary(
+  transactions: Transaction[],
+  options: ReportOptions,
+): string {
+  return formatExecutiveTextSummary(buildReportBundle(transactions, options));
 }
