@@ -285,7 +285,7 @@ function CommissionAuditWorkspace() {
               Clients
             </Link>
             <a
-              href="https://zedautomation.vercel.app/"
+              href="https://zedautomations.tech"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
@@ -329,7 +329,7 @@ function CommissionAuditWorkspace() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-800/60">
               <div className="flex items-center gap-3 text-xs text-slate-400">
                 <a
-                  href="https://zedautomation.vercel.app/"
+                  href="https://zedautomations.tech"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="md:hidden inline-flex items-center gap-1 text-[#10B981] hover:underline whitespace-nowrap shrink-0"
@@ -789,12 +789,12 @@ function CommissionAuditWorkspace() {
           <p>&copy; Zed Automation &mdash; Real Estate Commission Audit &amp; Leakage Detection</p>
           <div className="flex items-center gap-4">
             <a
-              href="https://zedautomation.vercel.app/"
+              href="https://zedautomations.tech"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#10B981] hover:underline"
             >
-              zedautomation.vercel.app
+              zedautomations.tech
             </a>
             <span>&middot;</span>
             <Link href="/clients" className="text-slate-300 hover:text-white inline-flex items-center gap-1">

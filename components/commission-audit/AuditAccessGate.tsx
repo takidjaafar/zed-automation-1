@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import { ArrowLeft, Eye, EyeOff, KeyRound, Lock, ShieldCheck } from 'lucide-react';
 
 export const AUDIT_UNLOCK_STORAGE_KEY = 'zed_audit_unlocked';
@@ -100,8 +101,15 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
       <div className="min-h-screen bg-[#05080F] text-slate-100 flex flex-col justify-between p-4 sm:p-6">
         <header className="max-w-6xl w-full mx-auto flex items-center justify-between py-2">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-[#10B981] text-[#05080F] flex items-center justify-center font-extrabold text-base tracking-tight">
-              Z
+            <div className="h-9 w-9 rounded-lg bg-[#0B1120] border border-[#10B981]/35 flex items-center justify-center overflow-hidden shrink-0 shadow-sm shadow-emerald-500/10">
+              <Image
+                src="/assets/aistudio/ZED_SVG_e2b1063b.svg"
+                alt="Zed Automation logo"
+                width={36}
+                height={36}
+                referrerPolicy="no-referrer"
+                className="h-full w-full object-contain"
+              />
             </div>
             <span className="text-base font-bold tracking-tight text-white whitespace-nowrap shrink-0">
               Zed Automation

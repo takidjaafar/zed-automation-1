@@ -465,7 +465,7 @@ export default function PdfReportDialog({
                     type="email"
                     value={contactEmail}
                     onChange={(event) => setContactEmail(event.target.value)}
-                    placeholder="audit@zedautomation.com"
+                    placeholder="zakaria@zedautomations.tech"
                     className={fieldClass(Boolean(errors.contactEmail))}
                   />
                   {errors.contactEmail && (

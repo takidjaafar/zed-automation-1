@@ -55,7 +55,7 @@ function ReadOnlyAuditView({ auditId }: ReadOnlyAuditViewProps) {
           </p>
           <p className="text-[11px] text-slate-500 mt-3 font-mono break-all">audit id: {auditId}</p>
           <a
-            href="https://zedautomation.vercel.app/"
+            href="https://zedautomations.tech"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-5 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 transition"
@@ -76,7 +76,7 @@ function ReadOnlyAuditView({ auditId }: ReadOnlyAuditViewProps) {
 
           <div className="flex items-center gap-4 shrink-0">
             <a
-              href="https://zedautomation.vercel.app/"
+              href="https://zedautomations.tech"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"

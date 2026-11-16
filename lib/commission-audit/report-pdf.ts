@@ -216,7 +216,7 @@ function drawFooters(doc: jsPDF, report: ReportBundle): void {
     });
     drawText(
       doc,
-      `${report.contactEmail}  ·  zedautomation.vercel.app`,
+      `${report.contactEmail}  ·  zedautomations.tech`,
       PAGE_WIDTH / 2,
       FOOTER_LINE_Y + 4.5,
       { size: 7.5, color: C.slate400, align: 'center' },
@@ -996,7 +996,7 @@ function drawRecoveryProtocolSection(
     drawCard(doc, MARGIN.left, y, CONTENT_WIDTH, 15, { fill: C.slate50, border: C.slate200 });
     drawParagraph(
       doc,
-      `Prepared by ${report.preparedBy} · ${report.reportDateLabel} · Async Desk: ${report.contactEmail} · zedautomation.vercel.app`,
+      `Prepared by ${report.preparedBy} · ${report.reportDateLabel} · Async Desk: ${report.contactEmail} · zedautomations.tech`,
       MARGIN.left + 5,
       y + 6,
       CONTENT_WIDTH - 10,

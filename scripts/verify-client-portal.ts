@@ -410,6 +410,11 @@ async function main(): Promise<void> {
   await test('builds the documented read-only path', () => {
     eq(buildSharePath('au-123'), '/commission-audit/view/au-123', 'path');
     eq(
+      buildShareUrl('au-123'),
+      'https://audit.zedautomations.tech/commission-audit/view/au-123',
+      'default portal url',
+    );
+    eq(
       buildShareUrl('au-123', 'https://audit.example.com'),
       'https://audit.example.com/commission-audit/view/au-123',
       'absolute url',

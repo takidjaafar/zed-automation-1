@@ -73,7 +73,7 @@ export interface ReportBundle {
 /* -------------------------------------------------------------------------- */
 
 export const REPORT_CONTACT_DEFAULTS = {
-  email: 'audit@zedautomation.com',
+  email: 'zakaria@zedautomations.tech',
   phone: '(555) 010-2030',
   preparedBy: 'Zed Automation Audit Desk',
 } as const;
@@ -446,7 +446,8 @@ export function formatExecutiveTextSummary(report: ReportBundle): string {
     `Audit Period: ${report.periodLabel}`,
     `Report Date: ${report.reportDateLabel}`,
     `Prepared By: ${report.preparedBy} (${report.contactEmail})`,
-    'Portal: https://zedautomation.vercel.app/',
+    'Portal: https://audit.zedautomations.tech',
+    'Website: https://zedautomations.tech',
   ];
 
   const auditLines = [

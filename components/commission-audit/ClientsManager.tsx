@@ -251,7 +251,7 @@ function ClientsManager() {
               Clients
             </Link>
             <a
-              href="https://zedautomation.vercel.app/"
+              href="https://zedautomations.tech"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
@@ -637,12 +637,12 @@ function ClientsManager() {
           <p>&copy; Zed Automation &mdash; Client management for the commission audit suite</p>
           <div className="flex items-center gap-4">
             <a
-              href="https://zedautomation.vercel.app/"
+              href="https://zedautomations.tech"
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#10B981] hover:underline"
             >
-              zedautomation.vercel.app
+              zedautomations.tech
             </a>
             <span>&middot;</span>
             <Link href="/commission-audit" className="text-slate-300 hover:text-white">

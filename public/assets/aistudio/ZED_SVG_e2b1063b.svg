@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="256" height="256" fill="none">
+  <!-- خلفية داكنة متطابقة مع الموقع -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#0B1120" stroke="#1E293B" stroke-width="1.5" />
+  
+  <!-- حرف Z المخطط بالأبيض الناصع -->
+  <path d="M13 17H32L29.5 21H13V17Z" fill="#F8FAFC" />
+  <path d="M25.5 23.5H30.5L28 27.5H23L25.5 23.5Z" fill="#F8FAFC" />
+  <path d="M21 30H26L23.5 34H18.5L21 30Z" fill="#F8FAFC" />
+  <path d="M16.5 36.5H21.5L19 40.5H14L16.5 36.5Z" fill="#F8FAFC" />
+  <path d="M13 43H26V47H13V43Z" fill="#F8FAFC" />
+
+  <!-- الأعمدة البيانية الصاعدة -->
+  <rect x="28" y="37" width="4.2" height="10" rx="0.8" fill="#94A3B8" />
+  <rect x="34" y="31" width="4.2" height="16" rx="0.8" fill="#CBD5E1" />
+  <rect x="40" y="24" width="4.2" height="23" rx="0.8" fill="#E2E8F0" />
+  <rect x="46" y="17" width="4.2" height="30" rx="0.8" fill="#F8FAFC" />
+
+  <!-- علامة الصح الذهبية/الزمردية للتدقيق -->
+  <path d="M36.5 33.5L41.5 39L52.5 25" stroke="#F59E0B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

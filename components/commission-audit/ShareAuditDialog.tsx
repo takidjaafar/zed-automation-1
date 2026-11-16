@@ -12,7 +12,7 @@ export interface ShareAuditDialogProps {
   onClose: () => void;
   audit: AuditRecord | null;
   client: Client | null;
-  /** Absolute read-only URL, e.g. https://host/commission-audit/view/au-123 */
+  /** Absolute read-only URL, e.g. https://audit.zedautomations.tech/commission-audit/view/au-123 */
   shareUrl: string;
 }
 

@@ -489,7 +489,7 @@ export function initializeWorkspace(): WorkspaceBootstrap {
     const client = createClientObject(
       hasLegacy
         ? { name: MIGRATED_CLIENT_NAME, company: '', email: '' }
-        : { name: DEFAULT_CLIENT_NAME, company: DEFAULT_CLIENT_COMPANY, email: 'audit@zedautomation.com' },
+        : { name: DEFAULT_CLIENT_NAME, company: DEFAULT_CLIENT_COMPANY, email: 'zakaria@zedautomations.tech' },
     );
     writeClients([client]);
 
@@ -543,15 +543,17 @@ export function initializeWorkspace(): WorkspaceBootstrap {
 /*  Sharing                                                                   */
 /* -------------------------------------------------------------------------- */
 
+export const PORTAL_BASE_URL = 'https://audit.zedautomations.tech';
+
 /** Read-only share path for an audit. */
 export function buildSharePath(auditId: string): string {
   return `/commission-audit/view/${encodeURIComponent(auditId)}`;
 }
 
-/** Absolute read-only share URL (falls back to the path when there is no origin). */
+/** Absolute read-only share URL defaulting to https://audit.zedautomations.tech. */
 export function buildShareUrl(auditId: string, origin?: string): string {
   const path = buildSharePath(auditId);
-  const base = origin ?? (typeof globalThis.location !== 'undefined' ? globalThis.location.origin : '');
+  const base = origin ?? PORTAL_BASE_URL;
   return base ? `${base.replace(/\/$/, '')}${path}` : path;
 }
 

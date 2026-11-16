@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { ShieldCheck } from 'lucide-react';
 
 /**
@@ -16,8 +17,15 @@ export default function AuditBrand({
 }) {
   return (
     <div className="flex items-center gap-3 min-w-0">
-      <div className="h-9 w-9 rounded-lg bg-[#10B981] text-[#05080F] flex items-center justify-center font-extrabold text-base tracking-tight shrink-0 shadow-sm shadow-emerald-500/20">
-        Z
+      <div className="h-9 w-9 rounded-lg bg-[#0B1120] border border-[#10B981]/35 flex items-center justify-center overflow-hidden shrink-0 shadow-sm shadow-emerald-500/10">
+        <Image
+          src="/assets/aistudio/ZED_SVG_e2b1063b.svg"
+          alt="Zed Automation logo"
+          width={36}
+          height={36}
+          referrerPolicy="no-referrer"
+          className="h-full w-full object-contain"
+        />
       </div>
       <div className="flex items-center gap-2.5 min-w-0">
         <span className="text-base sm:text-lg font-bold tracking-tight text-white whitespace-nowrap shrink-0">
