@@ -108,7 +108,7 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
             </span>
           </div>
           <a
-            href="https://zedautomation.vercel.app/"
+            href="https://zedautomations.tech"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
@@ -191,12 +191,12 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Authorized for Zed Automation operators &amp; active brokerage partners. Need an audit key? Visit{' '}
                   <a
-                    href="https://zedautomation.vercel.app/"
+                    href="https://zedautomations.tech"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#10B981] font-medium hover:underline"
                   >
-                    zedautomation.vercel.app
+                    zedautomations.tech
                   </a>
                   .
                 </p>

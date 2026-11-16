@@ -77,7 +77,7 @@ export default function FreeAuditPage() {
 
           <div className="flex items-center gap-2.5 shrink-0">
             <a
-              href="https://zedautomation.vercel.app/"
+              href="https://zedautomations.tech"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-300 hover:text-white bg-[#0B1120] border border-slate-800 hover:border-slate-700 transition whitespace-nowrap shrink-0"
