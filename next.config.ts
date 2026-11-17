@@ -3,6 +3,15 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactCompiler: true,
+  allowedDevOrigins: [
+    '127.0.0.1',
+    'localhost',
+    '**.run.app',
+    '**.europe-west2.run.app',
+  ],
+  experimental: {
+    reactDebugChannel: false,
+  },
   serverExternalPackages: ['graphql'],
   typescript: {
     ignoreBuildErrors: true,

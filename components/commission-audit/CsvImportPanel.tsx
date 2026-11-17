@@ -141,8 +141,9 @@ export default function CsvImportPanel({
   const [summary, setSummary] = useState<CsvImportSummary | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const reactId = React.useId();
   // Stable seed so re-validating after a mapping change keeps the same row ids.
-  const idSeedRef = useRef<string>(Math.random().toString(36).slice(2, 8));
+  const idSeedRef = useRef<string>(reactId.replace(/[^a-zA-Z0-9]/g, '').slice(0, 8) || 'csv');
 
   const validation = useMemo(
     () => (table && mapping ? validateCsvImport(table, mapping, { idSeed: idSeedRef.current }) : null),

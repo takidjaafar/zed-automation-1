@@ -59,13 +59,7 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
-  mode: QueryMode
   not: NestedStringFilter
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 input NestedStringFilter {
@@ -273,7 +267,7 @@ type Todo {
   tags: [String!]
   dueDate: DateTime
   weight: Float
-  budget: Decimal
+  budget: Float
   isPrivate: Boolean
   largeNumber: BigInt
   metadata: JSON
@@ -287,8 +281,6 @@ type Todo {
 type Todo_description_Document {
   document(hydrateRelationships: Boolean! = false): JSON!
 }
-
-scalar Decimal
 
 scalar BigInt
 
@@ -323,7 +315,7 @@ input TodoWhereInput {
   priority: IntNullableFilter
   dueDate: DateTimeNullableFilter
   weight: FloatNullableFilter
-  budget: DecimalNullableFilter
+  budget: FloatNullableFilter
   isPrivate: BooleanFilter
   largeNumber: BigIntNullableFilter
   secretNote: PasswordFilter
@@ -342,7 +334,6 @@ input StringNullableFilter {
   contains: String
   startsWith: String
   endsWith: String
-  mode: QueryMode
   not: StringNullableFilter
 }
 
@@ -366,17 +357,6 @@ input FloatNullableFilter {
   gt: Float
   gte: Float
   not: FloatNullableFilter
-}
-
-input DecimalNullableFilter {
-  equals: Decimal
-  in: [Decimal!]
-  notIn: [Decimal!]
-  lt: Decimal
-  lte: Decimal
-  gt: Decimal
-  gte: Decimal
-  not: DecimalNullableFilter
 }
 
 input BigIntNullableFilter {
@@ -418,7 +398,7 @@ input TodoUpdateInput {
   tags: [String!]
   dueDate: DateTime
   weight: Float
-  budget: Decimal
+  budget: Float
   isPrivate: Boolean
   largeNumber: BigInt
   metadata: JSON
@@ -462,7 +442,7 @@ input TodoCreateInput {
   tags: [String!]
   dueDate: DateTime
   weight: Float
-  budget: Decimal
+  budget: Float
   isPrivate: Boolean
   largeNumber: BigInt
   metadata: JSON
@@ -710,6 +690,11 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 type KeystoneAdminUIFieldGroupMeta {
