@@ -245,20 +245,24 @@ function ClientsManager() {
               Audit Workspace
             </Link>
             <Link
+              href="/commission-calculator"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            >
+              Leakage Calculator
+            </Link>
+            <Link
               href="/clients"
               className="text-white font-semibold whitespace-nowrap shrink-0"
             >
               Clients
             </Link>
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/"
               className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Zed Automation
-            </a>
+            </Link>
           </nav>
 
           <div className="flex items-center gap-2.5 shrink-0">
@@ -636,21 +640,16 @@ function ClientsManager() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>&copy; Zed Automation &mdash; Client management for the commission audit suite</p>
           <div className="flex items-center gap-4">
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#10B981] hover:underline"
-            >
-              zedautomations.tech
-            </a>
+            <Link href="/" className="text-[#10B981] hover:underline">
+              Home
+            </Link>
             <span>&middot;</span>
             <Link href="/commission-audit" className="text-slate-300 hover:text-white">
               Audit workspace
             </Link>
             <span>&middot;</span>
-            <Link href="/" className="text-slate-300 hover:text-white">
-              Home
+            <Link href="/commission-calculator" className="text-slate-300 hover:text-white">
+              Leakage calculator
             </Link>
           </div>
         </div>

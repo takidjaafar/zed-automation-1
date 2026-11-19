@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
-  ArrowUpRight,
   FileSpreadsheet,
   Lock,
   Mail,
@@ -68,7 +67,7 @@ const ASYNC_STEPS = [
     title: 'Submit 3 Closed Deals',
     timing: '5 min written intake',
     detail:
-      'Enter three recent settlement references, contracted split percentages, and paid amounts in our on-page modal. 100% written intake with no calendar booking required.',
+      'Enter three recent settlement references, contracted split percentages, and paid amounts in our on-page modal. 100% written intake with zero live calls or Zoom booking required.',
   },
   {
     step: '02',
@@ -140,22 +139,28 @@ export default function LandingClientShell() {
             </span>
           </Link>
 
-          {/* Center: Internal Audit Suite Navigation */}
+          {/* Center: Unified Navigation & Audit Suite Links */}
           <nav
-            aria-label="Audit suite navigation"
-            className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-300"
+            aria-label="Primary navigation"
+            className="hidden lg:flex items-center gap-7 text-xs font-medium text-slate-300"
           >
-            <Link
-              href="/commission-audit"
+            <a
+              href="#leakage-sandbox"
               className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
-              Audit Workspace
-            </Link>
+              Leakage Sandbox
+            </a>
+            <a
+              href="#audit-protocol"
+              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+            >
+              Audit Protocol
+            </a>
             <Link
               href="/commission-calculator"
               className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
-              Leakage Calculator
+              Calculator
             </Link>
             <Link
               href="/clients"
@@ -165,22 +170,20 @@ export default function LandingClientShell() {
             </Link>
           </nav>
 
-          {/* Right: External Domain + Single Primary Conversion CTA */}
+          {/* Right: Internal Client Portal Button + Written Audit CTA */}
           <div className="flex items-center gap-3 shrink-0">
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+            <Link
+              href="/commission-audit"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1210]/85 border border-emerald-400/25 hover:border-emerald-400/55 px-3 py-2 text-xs font-medium text-slate-100 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
-              zedautomations.tech
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
+              <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              Client Portal
+            </Link>
             <MagneticButton>
               <button
                 type="button"
                 onClick={handleOpenModal}
-                className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-3.5 py-2 text-xs font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-3.5 py-2 text-xs font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
                 Request 3-Deal Audit
               </button>
@@ -211,7 +214,7 @@ export default function LandingClientShell() {
                   Forensic GCI verification for managing brokers. Detect agent
                   split drift, uncollected referral fees, closing-disclosure
                   mismatches, and speed-to-lead decay through a 100%
-                  asynchronous written workflow.
+                  asynchronous written workflow—zero phone calls or Zoom meetings.
                 </p>
               </div>
 
@@ -226,16 +229,14 @@ export default function LandingClientShell() {
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </MagneticButton>
-                <a
-                  href="https://audit.zedautomations.tech/commission-audit"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/commission-audit"
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 hover:border-emerald-400/55 text-slate-100 hover:text-white font-medium text-sm h-11 px-4 shadow-[0_0_24px_rgba(16,185,129,0.1)] transition-colors whitespace-nowrap shrink-0"
                 >
                   <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                  Audit Portal
-                  <ArrowUpRight className="w-3.5 h-3.5 text-slate-400" />
-                </a>
+                  Open Audit Workspace
+                  <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                </Link>
               </div>
 
               {/* Smoked Glass Tabular Telemetry Baseline */}
@@ -396,21 +397,20 @@ export default function LandingClientShell() {
                       Ready to verify 3 closed transactions?
                     </div>
                     <div className="text-xs font-mono text-slate-300">
-                      Direct written report &amp; Loom delivered to your inbox ·
+                      Direct written report &amp; Loom delivered to your inbox ·{' '}
                       zakaria@zedautomations.tech
                     </div>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                    <a
-                      href="https://audit.zedautomations.tech/commission-audit"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <Link
+                      href="/commission-audit"
                       className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0B1210] border border-emerald-400/25 hover:border-emerald-400/55 text-slate-100 hover:text-white px-4 h-10 text-xs font-medium transition-colors whitespace-nowrap"
                     >
-                      audit.zedautomations.tech
-                      <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
-                    </a>
+                      <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                      Open Audit Workspace
+                      <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
+                    </Link>
                     <MagneticButton>
                       <button
                         type="button"
@@ -455,13 +455,25 @@ export default function LandingClientShell() {
               href="/commission-audit"
               className="hover:text-emerald-300 transition-colors"
             >
-              Workspace
+              Audit Workspace
+            </Link>
+            <Link
+              href="/commission-calculator"
+              className="hover:text-emerald-300 transition-colors"
+            >
+              Leakage Calculator
             </Link>
             <Link
               href="/clients"
               className="hover:text-emerald-300 transition-colors"
             >
               Clients
+            </Link>
+            <Link
+              href="/free-audit"
+              className="hover:text-emerald-300 transition-colors"
+            >
+              3-Deal Intake
             </Link>
             <a
               href="/commission-audit.html"
@@ -471,14 +483,6 @@ export default function LandingClientShell() {
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
               Offline HTML
-            </a>
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-emerald-400 hover:underline"
-            >
-              zedautomations.tech
             </a>
           </div>
         </div>

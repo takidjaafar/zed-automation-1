@@ -279,20 +279,24 @@ function CommissionAuditWorkspace() {
               Audit Workspace
             </Link>
             <Link
+              href="/commission-calculator"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            >
+              Leakage Calculator
+            </Link>
+            <Link
               href="/clients"
               className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
               Clients
             </Link>
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/"
               className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Zed Automation
-            </a>
+            </Link>
           </nav>
 
           <div className="flex items-center gap-2.5 shrink-0">
@@ -328,15 +332,13 @@ function CommissionAuditWorkspace() {
             {/* Workspace Action Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-800/60">
               <div className="flex items-center gap-3 text-xs text-slate-400">
-                <a
-                  href="https://zedautomations.tech"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href="/"
                   className="md:hidden inline-flex items-center gap-1 text-[#10B981] hover:underline whitespace-nowrap shrink-0"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Back to Zed Automation
-                </a>
+                </Link>
                 <span className="hidden sm:inline text-slate-400">
                   Private GCI Audit Terminal &middot; {activeClient?.name ?? 'Brokerage'}
                 </span>
@@ -788,14 +790,13 @@ function CommissionAuditWorkspace() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>&copy; Zed Automation &mdash; Real Estate Commission Audit &amp; Leakage Detection</p>
           <div className="flex items-center gap-4">
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#10B981] hover:underline"
-            >
-              zedautomations.tech
-            </a>
+            <Link href="/" className="text-[#10B981] hover:underline">
+              Home
+            </Link>
+            <span>&middot;</span>
+            <Link href="/commission-calculator" className="text-slate-300 hover:text-white">
+              Leakage Calculator
+            </Link>
             <span>&middot;</span>
             <Link href="/clients" className="text-slate-300 hover:text-white inline-flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />

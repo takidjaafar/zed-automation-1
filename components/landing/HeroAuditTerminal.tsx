@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Check, ChevronRight, Clock, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight, Calculator, Check, ChevronRight, Clock, Lock, Zap } from 'lucide-react';
 import {
   AnimatedNumber,
   GlassSpotlightCard,
@@ -326,6 +327,25 @@ export default function HeroAuditTerminal() {
             <AnimatedNumber value={projected90DayRecovery} prefix="+$" />
           </div>
         </div>
+      </div>
+
+      {/* Internal Audit Suite Launch Bar */}
+      <div className="px-4 sm:px-5 py-3 border-t border-emerald-400/15 bg-[#040807]/85 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+        <Link
+          href="/commission-calculator"
+          className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap"
+        >
+          <Calculator className="w-3.5 h-3.5 text-emerald-400" />
+          Launch Full Calculator
+        </Link>
+        <Link
+          href="/commission-audit"
+          className="inline-flex items-center gap-1.5 text-emerald-300 hover:text-emerald-200 font-medium transition-colors whitespace-nowrap"
+        >
+          <Lock className="w-3.5 h-3.5 text-emerald-400" />
+          Open Audit Workspace
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       </div>
     </GlassSpotlightCard>
   );

@@ -2,6 +2,7 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowLeft, Eye, EyeOff, KeyRound, Lock, ShieldCheck } from 'lucide-react';
 
 export const AUDIT_UNLOCK_STORAGE_KEY = 'zed_audit_unlocked';
@@ -115,15 +116,13 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
               Zed Automation
             </span>
           </div>
-          <a
-            href="https://zedautomations.tech"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/"
             className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to Zed Automation
-          </a>
+          </Link>
         </header>
 
         <main className="flex-1 flex items-center justify-center py-12">
@@ -197,15 +196,20 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
 
               <div className="pt-4 border-t border-slate-800/80">
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Authorized for Zed Automation operators &amp; active brokerage partners. Need an audit key? Visit{' '}
-                  <a
-                    href="https://zedautomations.tech"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  Authorized for Zed Automation operators &amp; active brokerage partners. Need an audit key? Request one on the{' '}
+                  <Link
+                    href="/free-audit"
                     className="text-[#10B981] font-medium hover:underline"
                   >
-                    zedautomations.tech
-                  </a>
+                    3-Deal Written Intake
+                  </Link>
+                  {' '}or return{' '}
+                  <Link
+                    href="/"
+                    className="text-[#10B981] font-medium hover:underline"
+                  >
+                    Home
+                  </Link>
                   .
                 </p>
               </div>

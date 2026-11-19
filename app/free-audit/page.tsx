@@ -76,15 +76,13 @@ export default function FreeAuditPage() {
           </nav>
 
           <div className="flex items-center gap-2.5 shrink-0">
-            <a
-              href="https://zedautomations.tech"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-300 hover:text-white bg-[#0B1120] border border-slate-800 hover:border-slate-700 transition whitespace-nowrap shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-[#10B981]" />
               Back to Zed Automation
-            </a>
+            </Link>
             <Link
               href="/commission-calculator"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-slate-300 hover:text-white bg-[#0B1120] border border-slate-800 hover:border-slate-700 transition whitespace-nowrap shrink-0"

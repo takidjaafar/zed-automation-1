@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Calculator, SlidersHorizontal, Zap } from 'lucide-react';
+import { ArrowRight, Calculator, Lock, SlidersHorizontal, Zap } from 'lucide-react';
 import {
   AnimatedNumber,
   GlassSpotlightCard,
@@ -109,7 +109,7 @@ export default function InlineLeakageSandbox({
             className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-200 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
           >
             <Calculator className="w-3.5 h-3.5 text-emerald-400" />
-            Open Full Discrepancy Calculator
+            Launch Full Calculator
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -330,6 +330,22 @@ export default function InlineLeakageSandbox({
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </MagneticButton>
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href="/commission-calculator"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#040807]/85 border border-emerald-400/20 hover:border-emerald-400/50 text-xs font-mono text-slate-200 hover:text-emerald-300 h-9 px-3 transition-colors whitespace-nowrap"
+                >
+                  <Calculator className="w-3.5 h-3.5 text-emerald-400" />
+                  Launch Full Calculator
+                </Link>
+                <Link
+                  href="/commission-audit"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#040807]/85 border border-emerald-400/20 hover:border-emerald-400/50 text-xs font-mono text-slate-200 hover:text-emerald-300 h-9 px-3 transition-colors whitespace-nowrap"
+                >
+                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
+                  Open Audit Workspace
+                </Link>
+              </div>
               <p className="text-[11px] font-mono text-slate-400 text-center">
                 Delivered via PDF + private Loom in 48h · Written delivery only
               </p>
