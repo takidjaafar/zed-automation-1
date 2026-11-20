@@ -13,7 +13,6 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
@@ -154,16 +153,16 @@ export default function CommissionLeakageCalculator() {
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
       {/* Main Audit Calculator Card */}
-      <div className="rounded-2xl bg-[#0B1120] text-slate-100 shadow-2xl shadow-black/60 border border-slate-800/80 overflow-hidden">
+      <div className="rounded-2xl bg-[#0B1210]/90 backdrop-blur-xl text-slate-100 shadow-[0_12px_45px_rgba(0,0,0,0.45)] border border-emerald-400/20 overflow-hidden">
         {/* Header */}
-        <div className="px-6 sm:px-8 pt-7 pb-6 border-b border-slate-800/80">
-          <p className="text-xs font-medium text-[#10B981]">
+        <div className="px-6 sm:px-8 pt-7 pb-6 border-b border-emerald-400/15 bg-[#040807]/50">
+          <p className="text-[11px] font-mono uppercase tracking-wider text-emerald-300/90">
             Zed Automation · Async GCI Leakage Model · Based on your numbers
           </p>
-          <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">
+          <h1 className="mt-2 text-2xl sm:text-3xl font-bold tracking-[-0.02em] text-white">
             Brokerage Commission Leakage Audit
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-slate-400 leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
             Enter your brokerage&apos;s actual deal volume, agent headcount, and
             monthly payout adjustments to quantify recoverable commission leakage.
           </p>
@@ -188,7 +187,7 @@ export default function CommissionLeakageCalculator() {
                   max={100}
                   value={monthlyDeals}
                   onChange={(e) => clampedDealsChange(e.target.value)}
-                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#05080F] border-slate-800 text-white"
+                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#040807]/90 border-emerald-400/20 text-white focus-visible:ring-emerald-400/40"
                 />
                 <span className="text-xs text-slate-400 font-medium">
                   deals
@@ -234,7 +233,7 @@ export default function CommissionLeakageCalculator() {
                   if (error) setError(null);
                 }}
                 placeholder="8500"
-                className="pl-9 font-mono tabular-nums text-base font-semibold bg-[#05080F] border-slate-800 text-white"
+                className="pl-9 font-mono tabular-nums text-base font-semibold bg-[#040807]/90 border-emerald-400/20 text-white focus-visible:ring-emerald-400/40"
                 required
               />
             </div>
@@ -257,7 +256,7 @@ export default function CommissionLeakageCalculator() {
                   max={100}
                   value={numAgents}
                   onChange={(e) => clampedAgentsChange(e.target.value)}
-                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#05080F] border-slate-800 text-white"
+                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#040807]/90 border-emerald-400/20 text-white focus-visible:ring-emerald-400/40"
                 />
                 <span className="text-xs text-slate-400 font-medium">
                   agents
@@ -303,7 +302,7 @@ export default function CommissionLeakageCalculator() {
                   max={10}
                   value={disputesPerMonth}
                   onChange={(e) => clampedDisputesChange(e.target.value)}
-                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#05080F] border-slate-800 text-white"
+                  className="w-20 h-9 text-right font-mono tabular-nums font-semibold bg-[#040807]/90 border-emerald-400/20 text-white focus-visible:ring-emerald-400/40"
                 />
                 <span className="text-xs text-slate-400 font-medium">/ mo</span>
               </div>
@@ -348,7 +347,7 @@ export default function CommissionLeakageCalculator() {
                     if (error) setError(null);
                   }}
                   placeholder="750"
-                  className="pl-9 font-mono tabular-nums text-base font-semibold bg-[#05080F] border-slate-800 text-white"
+                  className="pl-9 font-mono tabular-nums text-base font-semibold bg-[#040807]/90 border-emerald-400/20 text-white focus-visible:ring-emerald-400/40"
                   required
                 />
               </div>
@@ -369,7 +368,7 @@ export default function CommissionLeakageCalculator() {
             <div
               role="group"
               aria-label="Do you pay referral fees?"
-              className="inline-flex rounded-lg bg-[#05080F] p-1 border border-slate-800 self-start sm:self-auto shrink-0"
+              className="inline-flex rounded-lg bg-[#040807]/90 p-1 border border-emerald-400/20 self-start sm:self-auto shrink-0"
             >
               <button
                 type="button"
@@ -377,7 +376,7 @@ export default function CommissionLeakageCalculator() {
                 onClick={() => setReferralFees(true)}
                 className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
                   referralFees === true
-                    ? 'bg-[#10B981] text-[#05080F] shadow-sm'
+                    ? 'bg-[#10B981] text-[#040807] shadow-sm'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -389,7 +388,7 @@ export default function CommissionLeakageCalculator() {
                 onClick={() => setReferralFees(false)}
                 className={`px-4 py-1.5 text-sm font-semibold rounded-md transition-colors cursor-pointer whitespace-nowrap ${
                   referralFees === false
-                    ? 'bg-[#10B981] text-[#05080F] shadow-sm'
+                    ? 'bg-[#10B981] text-[#040807] shadow-sm'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -407,25 +406,22 @@ export default function CommissionLeakageCalculator() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-            <Button
+            <button
               type="submit"
-              size="lg"
-              className="flex-1 h-12 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#05080F] font-bold text-base shadow-md shadow-emerald-500/10 cursor-pointer"
+              className="flex-1 h-12 px-5 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-bold text-base shadow-[0_0_24px_rgba(16,185,129,0.28)] transition-colors cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap"
             >
-              <Calculator className="h-4 w-4" />
+              <Calculator className="h-4 w-4 shrink-0" />
               <span>Calculate Annual Leakage</span>
-            </Button>
+            </button>
             {result && (
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                size="lg"
                 onClick={handleReset}
-                className="h-12 rounded-xl bg-[#05080F] border-slate-800 text-slate-300 hover:bg-slate-800/80 hover:text-white cursor-pointer"
+                className="h-12 px-4 rounded-xl bg-[#040807]/90 border border-emerald-400/20 text-slate-300 hover:bg-emerald-400/10 hover:text-white font-semibold text-sm transition-colors cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <RotateCcw className="h-4 w-4" />
+                <RotateCcw className="h-4 w-4 shrink-0" />
                 <span>Reset</span>
-              </Button>
+              </button>
             )}
           </div>
         </form>
@@ -435,11 +431,11 @@ export default function CommissionLeakageCalculator() {
       {result && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Leakage Result Card */}
-          <div className="rounded-2xl bg-[#0B1120] text-white border border-rose-500/40 shadow-2xl shadow-black/60 overflow-hidden">
+          <div className="rounded-2xl bg-[#0B1210]/95 backdrop-blur-xl text-white border border-rose-500/35 shadow-[0_12px_45px_rgba(0,0,0,0.5)] overflow-hidden">
             <div className="p-6 sm:p-8 space-y-6">
               {/* Header */}
               <div className="space-y-2">
-                <p className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-rose-400">
+                <p className="inline-flex items-center gap-1.5 text-[11px] font-mono font-semibold uppercase tracking-wider text-rose-400">
                   <AlertTriangle className="h-3.5 w-3.5" />
                   <span>
                     Based on your numbers · {result.monthlyDeals} deals/mo ·{' '}
@@ -458,8 +454,8 @@ export default function CommissionLeakageCalculator() {
               </div>
 
               {/* 3-Column Sub-Breakdown */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-5 border-t border-slate-800/80">
-                <div className="rounded-xl bg-[#05080F] border border-slate-800/80 p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-5 border-t border-emerald-400/15">
+                <div className="rounded-xl bg-[#040807]/85 border border-emerald-400/15 p-4">
                   <div className="text-2xl font-bold font-mono tabular-nums text-white">
                     {formatCurrency(result.totalMonthlyLeak)}
                   </div>
@@ -468,7 +464,7 @@ export default function CommissionLeakageCalculator() {
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-[#05080F] border border-slate-800/80 p-4">
+                <div className="rounded-xl bg-[#040807]/85 border border-emerald-400/15 p-4">
                   <div className="text-2xl font-bold font-mono tabular-nums text-white">
                     {formatCurrency(result.perAgentMonthlyLoss)}
                   </div>
@@ -477,7 +473,7 @@ export default function CommissionLeakageCalculator() {
                   </div>
                 </div>
 
-                <div className="rounded-xl bg-[#05080F] border border-slate-800/80 p-4">
+                <div className="rounded-xl bg-[#040807]/85 border border-emerald-400/15 p-4">
                   <div className="text-2xl font-bold font-mono tabular-nums text-white">
                     {result.adminSalaryMonths.toFixed(1)} months
                   </div>
@@ -488,8 +484,8 @@ export default function CommissionLeakageCalculator() {
               </div>
 
               {/* Breakdown List */}
-              <div className="pt-5 border-t border-slate-800/80 space-y-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <div className="pt-5 border-t border-emerald-400/15 space-y-3">
+                <h3 className="text-[11px] font-mono font-semibold uppercase tracking-wider text-slate-400">
                   Annual Leakage Breakdown
                 </h3>
                 <ul className="space-y-2.5 text-sm">
@@ -526,8 +522,8 @@ export default function CommissionLeakageCalculator() {
               </div>
 
               {/* Progress Bar: % of annual profit */}
-              <div className="pt-5 border-t border-slate-800/80 space-y-2.5">
-                <div className="flex items-center justify-between text-sm font-semibold">
+              <div className="pt-5 border-t border-emerald-400/15 space-y-2.5">
+                <div className="flex items-center justify-between gap-3 text-sm font-semibold">
                   <span className="text-slate-200">
                     This represents{' '}
                     <span className="text-rose-400 font-mono tabular-nums font-bold">
@@ -535,13 +531,13 @@ export default function CommissionLeakageCalculator() {
                     </span>{' '}
                     of annual net profit
                   </span>
-                  <span className="text-xs font-mono tabular-nums text-slate-400">
+                  <span className="text-xs font-mono tabular-nums text-slate-400 shrink-0">
                     {formatCurrency(result.annualGci)}/yr GCI
                   </span>
                 </div>
                 <Progress
                   value={Math.min(100, Math.round(result.annualProfitSharePct))}
-                  className="h-3 bg-slate-800 [&>div]:bg-rose-500"
+                  className="h-3 bg-[#040807] border border-emerald-400/15 [&>div]:bg-rose-500"
                 />
                 <p className="text-xs text-slate-400">
                   Estimated against a standard 10% brokerage net profit margin on
@@ -553,12 +549,12 @@ export default function CommissionLeakageCalculator() {
           </div>
 
           {/* Async Written CTA Card */}
-          <div className="rounded-2xl bg-[#0B1120] text-slate-100 border border-emerald-500/30 shadow-2xl shadow-black/60 p-6 sm:p-8 space-y-5">
+          <div className="rounded-2xl bg-[#0B1210]/95 backdrop-blur-xl text-slate-100 border border-emerald-400/30 shadow-[0_0_40px_rgba(16,185,129,0.1)] p-6 sm:p-8 space-y-5">
             <div className="space-y-2">
-              <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-white">
                 Want line-by-line proof on which deals are leaking?
               </h3>
-              <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
                 Send 3 recent closed deals. Within 48 hours we return a written
                 line-by-line PDF report and async Loom walkthrough showing exact
                 overpayments and uncollected referrals. 100% written delivery.
@@ -581,18 +577,15 @@ export default function CommissionLeakageCalculator() {
             </div>
 
             <div className="space-y-3 pt-1">
-              <Button
-                asChild
-                size="lg"
-                className="w-full h-12 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#05080F] font-bold text-base shadow-lg shadow-emerald-500/10"
+              <Link
+                href="/free-audit"
+                className="w-full h-12 px-5 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-bold text-base shadow-[0_0_24px_rgba(16,185,129,0.28)] transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <Link href="/free-audit">
-                  <span>Request Written 3-Deal Audit</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+                <span>Request Written 3-Deal Audit</span>
+                <ArrowRight className="h-4 w-4 shrink-0" />
+              </Link>
 
-              <p className="text-center text-xs text-slate-500">
+              <p className="text-center text-xs font-mono text-slate-400">
                 Confidential and encrypted. Zero live meetings required.
               </p>
             </div>

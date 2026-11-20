@@ -89,10 +89,10 @@ export default function InlineLeakageSandbox({
   return (
     <section
       id="sandbox"
-      className="relative scroll-mt-20 rounded-3xl overflow-hidden border border-emerald-400/20 p-5 sm:p-8 lg:p-10"
+      className="relative scroll-mt-20 rounded-2xl sm:rounded-3xl overflow-hidden border border-emerald-400/20 p-4 sm:p-8 lg:p-10"
     >
       {/* Subtle Dark-Blurred Modern Brokerage Office Backdrop */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <Image
           src="/images/office-backdrop.jpg"
           alt="Modern brokerage glass boardroom backdrop"
@@ -128,7 +128,7 @@ export default function InlineLeakageSandbox({
         {/* Dual Glowing Smoked Glass Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Card: Interactive Sliders & Controls */}
-          <GlassSpotlightCard className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between gap-6">
+          <GlassSpotlightCard className="lg:col-span-7 p-4 sm:p-7 lg:p-8 flex flex-col justify-between gap-6">
             <div className="space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-emerald-400/15">
                 <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white">
@@ -215,7 +215,7 @@ export default function InlineLeakageSandbox({
                         key={rate.value}
                         type="button"
                         onClick={() => setErrorRate(rate.value)}
-                        className={`px-3 py-2 rounded-lg text-xs font-mono border transition-colors cursor-pointer text-left tabular-nums ${
+                        className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-mono border transition-colors cursor-pointer text-left tabular-nums whitespace-nowrap truncate ${
                           active
                             ? 'bg-emerald-400/15 border-emerald-400/50 text-white font-semibold'
                             : 'bg-[#040807]/75 border-white/10 text-slate-300 hover:text-white hover:border-emerald-400/30'
@@ -241,7 +241,7 @@ export default function InlineLeakageSandbox({
                         key={scope.id}
                         type="button"
                         onClick={() => setScopeId(scope.id)}
-                        className={`px-3 py-2 rounded-lg text-xs font-mono border transition-colors cursor-pointer text-center tabular-nums ${
+                        className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-mono border transition-colors cursor-pointer text-center tabular-nums whitespace-nowrap ${
                           active
                             ? 'bg-emerald-400/15 border-emerald-400/50 text-white font-semibold'
                             : 'bg-[#040807]/75 border-white/10 text-slate-300 hover:text-white hover:border-emerald-400/30'
@@ -263,23 +263,23 @@ export default function InlineLeakageSandbox({
           {/* Right Card: Glowing Loss & Recovery Readout */}
           <GlassSpotlightCard
             borderBeam={true}
-            className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between gap-6"
+            className="lg:col-span-5 p-4 sm:p-7 lg:p-8 flex flex-col justify-between gap-6"
           >
             <div className="space-y-5">
-              <div className="flex items-center justify-between text-xs font-mono">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
                 <span className="inline-flex items-center gap-1.5 uppercase tracking-wider text-emerald-300">
-                  <Zap className="w-3.5 h-3.5 text-emerald-400" />
+                  <Zap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   Projected Audit Ledger
                 </span>
                 <span className="text-slate-400">Tabular Estimate</span>
               </div>
 
               <div className="divide-y divide-emerald-400/15 border-y border-emerald-400/15">
-                <div className="py-3.5 flex items-baseline justify-between gap-4">
-                  <span className="text-xs text-slate-300">
+                <div className="py-3.5 flex items-baseline justify-between gap-3">
+                  <span className="text-xs text-slate-300 min-w-0">
                     Monthly Split &amp; Cap Drift
                   </span>
-                  <span className="text-lg font-mono font-semibold text-rose-400">
+                  <span className="text-base sm:text-lg font-mono font-semibold text-rose-400 shrink-0">
                     <AnimatedNumber
                       value={metrics.monthlyCommissionLeakage}
                       prefix="-$"
@@ -287,20 +287,20 @@ export default function InlineLeakageSandbox({
                   </span>
                 </div>
 
-                <div className="py-3.5 flex items-baseline justify-between gap-4">
-                  <span className="text-xs text-slate-300">
+                <div className="py-3.5 flex items-baseline justify-between gap-3">
+                  <span className="text-xs text-slate-300 min-w-0">
                     Annualized Unaudited Leakage
                   </span>
-                  <span className="text-xl font-mono font-bold text-white">
+                  <span className="text-lg sm:text-xl font-mono font-bold text-white shrink-0">
                     <AnimatedNumber value={metrics.annualLeakage} prefix="$" />
                   </span>
                 </div>
 
-                <div className="py-3.5 flex items-baseline justify-between gap-4">
-                  <span className="text-xs text-slate-300">
+                <div className="py-3.5 flex items-baseline justify-between gap-3">
+                  <span className="text-xs text-slate-300 min-w-0">
                     90d CD &amp; Referral Clawback ({activeScope.label})
                   </span>
-                  <span className="text-lg font-mono font-semibold text-slate-100">
+                  <span className="text-base sm:text-lg font-mono font-semibold text-slate-100 shrink-0">
                     <AnimatedNumber
                       value={metrics.referralAndFeeClawback90d}
                       prefix="+$"
@@ -308,11 +308,11 @@ export default function InlineLeakageSandbox({
                   </span>
                 </div>
 
-                <div className="py-4 flex items-baseline justify-between gap-4">
-                  <span className="text-xs font-semibold text-white">
+                <div className="py-4 flex items-baseline justify-between gap-3">
+                  <span className="text-xs font-semibold text-white min-w-0">
                     Projected 90-Day Net Recovery
                   </span>
-                  <span className="text-2xl sm:text-3xl font-mono font-bold text-emerald-400">
+                  <span className="text-xl sm:text-3xl font-mono font-bold text-emerald-400 shrink-0">
                     <AnimatedNumber
                       value={metrics.projected90dRecovery}
                       prefix="+$"
@@ -335,10 +335,10 @@ export default function InlineLeakageSandbox({
                       auditScopeLabel: activeScope.label,
                     })
                   }
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm h-11 px-4 shadow-[0_0_24px_rgba(16,185,129,0.35)] transition-colors cursor-pointer whitespace-nowrap"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-xs sm:text-sm h-11 px-3.5 sm:px-4 shadow-[0_0_24px_rgba(16,185,129,0.35)] transition-colors cursor-pointer whitespace-nowrap"
                 >
                   Verify on 3 Real Closed Deals
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               </MagneticButton>
               <p className="text-[11px] font-mono text-slate-400 text-center">

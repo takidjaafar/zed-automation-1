@@ -261,48 +261,54 @@ function CommissionAuditWorkspace() {
 
   const shareUrl = activeAudit ? workspace.buildShareUrl(activeAudit.id) : '';
   const inputClass =
-    'w-full px-3.5 py-2.5 rounded-lg border border-slate-800 bg-[#05080F] text-white placeholder:text-slate-600 text-sm focus:ring-2 focus:ring-[#10B981]/50 focus:border-[#10B981] outline-none transition';
+    'w-full px-3.5 py-2.5 rounded-lg border border-emerald-400/20 bg-[#040807]/90 text-white placeholder:text-slate-600 text-sm focus:ring-2 focus:ring-emerald-400/40 focus:border-[#10B981] outline-none transition';
 
   return (
-    <div className="min-h-screen bg-[#05080F] text-slate-100 flex flex-col font-sans">
-      {/* Unified Top Navbar */}
-      <header className="bg-[#0B1120]/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
+    <div className="min-h-screen bg-[#040807] text-slate-100 flex flex-col font-sans relative">
+      {/* Subtle top emerald atmospheric glow matching landing page */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.09),transparent_65%)] z-0"
+      />
+
+      {/* Unified Executive Glass Top Navbar */}
+      <header className="bg-[#040807]/85 backdrop-blur-xl border-b border-emerald-400/15 sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 sm:gap-6">
           <AuditBrand tag="Client Fulfillment Portal" />
 
           <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-400">
             <Link
               href="/commission-audit"
-              className="text-white font-semibold whitespace-nowrap shrink-0"
+              className="text-emerald-300 font-semibold whitespace-nowrap shrink-0"
             >
               Audit Workspace
             </Link>
             <Link
               href="/commission-calculator"
-              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
               Leakage Calculator
             </Link>
             <Link
               href="/clients"
-              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
               Clients
             </Link>
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#10B981] transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Zed Automation
             </Link>
           </nav>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <button
               type="button"
               onClick={() => setIsReportOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 transition whitespace-nowrap shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold rounded-lg bg-[#10B981] text-[#040807] hover:bg-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.28)] transition whitespace-nowrap shrink-0 cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
               Executive Report
@@ -311,35 +317,38 @@ function CommissionAuditWorkspace() {
               type="button"
               onClick={lockWorkspace}
               title="Re-lock the private audit terminal"
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg bg-[#05080F] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-medium rounded-lg bg-[#0B1210]/90 text-slate-300 hover:text-emerald-300 border border-emerald-400/20 hover:border-emerald-400/45 transition whitespace-nowrap shrink-0 cursor-pointer"
             >
-              <Lock className="w-3.5 h-3.5 text-slate-400" />
-              Lock Workspace
+              <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Lock Workspace</span>
+              <span className="sm:hidden">Lock</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6">
         {!workspace.ready ? (
-          <div className="py-24 text-center text-sm text-slate-400">
+          <div className="py-24 text-center text-sm font-mono text-slate-400">
             Loading brokerage ledgers and audits…
           </div>
         ) : (
           <>
             {/* Workspace Action Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-2 border-b border-slate-800/60">
-              <div className="flex items-center gap-3 text-xs text-slate-400">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-emerald-400/15">
+              <div className="flex items-center gap-3 text-xs font-mono text-slate-400">
                 <Link
                   href="/"
-                  className="md:hidden inline-flex items-center gap-1 text-[#10B981] hover:underline whitespace-nowrap shrink-0"
+                  className="md:hidden inline-flex items-center gap-1 text-emerald-300 hover:underline whitespace-nowrap shrink-0"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Back to Zed Automation
                 </Link>
-                <span className="hidden sm:inline text-slate-400">
-                  Private GCI Audit Terminal &middot; {activeClient?.name ?? 'Brokerage'}
+                <span className="hidden sm:inline text-slate-300">
+                  Private GCI Audit Terminal{' '}
+                  <span className="text-emerald-400/40">&middot;</span>{' '}
+                  <span className="text-emerald-300">{activeClient?.name ?? 'Brokerage'}</span>
                 </span>
               </div>
 
@@ -347,7 +356,7 @@ function CommissionAuditWorkspace() {
                 <button
                   type="button"
                   onClick={handleLoadSamples}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0B1120] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0B1210]/90 text-slate-200 hover:text-white border border-emerald-400/20 hover:border-emerald-400/40 transition whitespace-nowrap shrink-0 cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5 text-[#10B981]" />
                   Load Sample Data
@@ -355,7 +364,7 @@ function CommissionAuditWorkspace() {
                 <button
                   type="button"
                   onClick={handleDownloadCSV}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#0B1120] text-[#10B981] hover:bg-emerald-950/50 border border-emerald-500/30 transition whitespace-nowrap shrink-0 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-[#0B1210]/90 text-emerald-300 hover:bg-emerald-950/60 border border-emerald-400/30 transition whitespace-nowrap shrink-0 cursor-pointer"
                   title="Export all transactions to CSV"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -364,7 +373,7 @@ function CommissionAuditWorkspace() {
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-950/30 text-rose-300 hover:bg-rose-950/60 border border-rose-500/30 transition whitespace-nowrap shrink-0 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-rose-950/35 text-rose-300 hover:bg-rose-950/65 border border-rose-500/30 transition whitespace-nowrap shrink-0 cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                   Clear
@@ -395,15 +404,15 @@ function CommissionAuditWorkspace() {
             <AuditKpiDashboard transactions={transactions} />
 
             {/* Input Card */}
-            <section className="bg-[#0B1120] rounded-2xl border border-slate-800/80 overflow-hidden">
-              <div className="border-b border-slate-800/80 px-6 py-4 flex flex-wrap items-center justify-between gap-4 bg-[#05080F]/50">
-                <div className="flex items-center gap-1 p-1 rounded-lg bg-[#05080F] border border-slate-800">
+            <section className="bg-[#0B1210]/90 backdrop-blur-xl rounded-2xl border border-emerald-400/15 overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+              <div className="border-b border-emerald-400/15 px-5 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-4 bg-[#040807]/60">
+                <div className="flex items-center gap-1 p-1 rounded-lg bg-[#040807]/95 border border-emerald-400/20">
                   <button
                     type="button"
                     onClick={() => setActiveTab('manual')}
                     className={`px-4 py-1.5 text-xs font-semibold rounded-md transition whitespace-nowrap shrink-0 cursor-pointer ${
                       activeTab === 'manual'
-                        ? 'bg-[#10B981] text-[#05080F]'
+                        ? 'bg-[#10B981] text-[#040807]'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
@@ -414,14 +423,14 @@ function CommissionAuditWorkspace() {
                     onClick={() => setActiveTab('import')}
                     className={`px-4 py-1.5 text-xs font-semibold rounded-md transition whitespace-nowrap shrink-0 cursor-pointer ${
                       activeTab === 'import'
-                        ? 'bg-[#10B981] text-[#05080F]'
+                        ? 'bg-[#10B981] text-[#040807]'
                         : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     CSV Import
                   </button>
                 </div>
-                <div className="text-xs text-slate-400 inline-flex items-center gap-1.5">
+                <div className="text-xs font-mono text-slate-400 inline-flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
                   <span>
                     Auto-saved &middot; {activeClient?.name ?? 'No client'}
@@ -627,7 +636,7 @@ function CommissionAuditWorkspace() {
                     <div className="flex items-center justify-end gap-3 pt-2">
                       <button
                         type="submit"
-                        className="px-6 py-2.5 text-sm font-bold rounded-lg bg-[#10B981] text-[#05080F] hover:bg-emerald-400 shadow-sm transition flex items-center gap-2 cursor-pointer"
+                        className="px-6 py-2.5 text-sm font-bold rounded-lg bg-[#10B981] text-[#040807] hover:bg-emerald-400 shadow-[0_0_24px_rgba(16,185,129,0.25)] transition flex items-center gap-2 cursor-pointer"
                       >
                         <PlusCircle className="w-4 h-4" />
                         Audit &amp; Add Transaction
@@ -656,8 +665,8 @@ function CommissionAuditWorkspace() {
       {/* Math Inspection Modal */}
       {inspectTx && (
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0B1120] rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-800/80 text-slate-100">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="bg-[#0B1210]/95 backdrop-blur-2xl rounded-2xl max-w-lg w-full p-6 shadow-[0_0_50px_rgba(16,185,129,0.16)] space-y-4 border border-emerald-400/25 text-slate-100">
+            <div className="flex items-center justify-between border-b border-emerald-400/15 pb-3">
               <div>
                 <h3 className="text-sm font-bold text-white">Audit Calculation Trace</h3>
                 <p className="text-xs text-slate-400">{inspectTx.address}</p>
@@ -665,7 +674,7 @@ function CommissionAuditWorkspace() {
               <button
                 type="button"
                 onClick={() => setInspectTx(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg transition"
+                className="text-slate-400 hover:text-white p-1 rounded-lg transition cursor-pointer"
                 aria-label="Close"
               >
                 &times;
@@ -676,40 +685,40 @@ function CommissionAuditWorkspace() {
               const a = calculateAudit(inspectTx);
               return (
                 <div className="space-y-3">
-                  <div className="bg-[#05080F] p-3.5 rounded-xl border border-slate-800 font-mono tabular-nums text-[11px] space-y-2">
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                  <div className="bg-[#040807]/90 p-3.5 rounded-xl border border-emerald-400/15 font-mono tabular-nums text-[11px] space-y-2">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">1. Total Commission ({formatPercent(inspectTx.commRate)}):</span>
                       <span className="font-bold text-white">{formatMoney(a.totalCommission)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">2. Listing Side Commission ({formatPercent(inspectTx.listingSplit)}):</span>
                       <span className="font-bold text-white">{formatMoney(a.listingCommission)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">3. Buyer Side Commission ({formatPercent(inspectTx.buyerSplit)}):</span>
                       <span className="font-bold text-white">{formatMoney(a.buyerCommission)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">4. Referral Fee Out ({formatPercent(inspectTx.referralOut)} of Listing):</span>
                       <span className="font-bold text-rose-400">-{formatMoney(a.referralFeeOutAmount)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">5. Amount After Referral:</span>
                       <span className="font-bold text-white">{formatMoney(a.amountAfterReferral)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">6. Brokerage Cut ({formatPercent(inspectTx.brokerSplit)}):</span>
                       <span className="font-bold text-rose-400">-{formatMoney(a.brokerageCut)}</span>
                     </div>
-                    <div className="flex justify-between border-b border-slate-800/80 pb-1.5">
+                    <div className="flex justify-between border-b border-emerald-400/10 pb-1.5">
                       <span className="text-slate-400">7. Transaction Fee:</span>
                       <span className="font-bold text-rose-400">-{formatMoney(inspectTx.transactionFee)}</span>
                     </div>
-                    <div className="flex justify-between bg-emerald-950/40 p-2 rounded-lg border border-emerald-500/30 font-semibold">
-                      <span className="text-[#10B981]">8. EXPECTED AGENT PAYMENT:</span>
-                      <span className="text-[#10B981] text-sm">{formatMoney(a.expectedAgentPayment)}</span>
+                    <div className="flex justify-between bg-emerald-950/45 p-2 rounded-lg border border-emerald-400/30 font-semibold">
+                      <span className="text-emerald-300">8. EXPECTED AGENT PAYMENT:</span>
+                      <span className="text-emerald-300 text-sm">{formatMoney(a.expectedAgentPayment)}</span>
                     </div>
-                    <div className="flex justify-between bg-slate-900 p-2 rounded-lg font-semibold">
+                    <div className="flex justify-between bg-white/[0.04] p-2 rounded-lg font-semibold">
                       <span className="text-slate-300">Actual Amount Paid:</span>
                       <span className="text-white text-sm">{formatMoney(inspectTx.actualPaid)}</span>
                     </div>
@@ -735,11 +744,11 @@ function CommissionAuditWorkspace() {
               );
             })()}
 
-            <div className="pt-2 border-t border-slate-800 flex justify-end">
+            <div className="pt-2 border-t border-emerald-400/15 flex justify-end">
               <button
                 type="button"
                 onClick={() => setInspectTx(null)}
-                className="px-4 py-2 bg-[#10B981] text-[#05080F] text-xs font-bold rounded-lg hover:bg-emerald-400 transition cursor-pointer"
+                className="px-4 py-2 bg-[#10B981] text-[#040807] text-xs font-bold rounded-lg hover:bg-emerald-400 transition cursor-pointer"
               >
                 Close
               </button>
@@ -777,24 +786,24 @@ function CommissionAuditWorkspace() {
       />
 
       {/* Footer */}
-      <footer className="bg-[#0B1120] border-t border-slate-800/80 py-6 text-xs text-slate-500">
+      <footer className="relative z-10 bg-[#040807]/90 border-t border-emerald-400/15 py-6 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p>&copy; Zed Automation &mdash; Real Estate Commission Audit &amp; Leakage Detection</p>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-[#10B981] hover:underline">
+            <Link href="/" className="text-emerald-300 hover:underline">
               Home
             </Link>
-            <span>&middot;</span>
-            <Link href="/commission-calculator" className="text-slate-300 hover:text-white">
+            <span className="text-emerald-400/30">&middot;</span>
+            <Link href="/commission-calculator" className="text-slate-300 hover:text-emerald-300 transition-colors">
               Leakage Calculator
             </Link>
-            <span>&middot;</span>
-            <Link href="/clients" className="text-slate-300 hover:text-white inline-flex items-center gap-1">
+            <span className="text-emerald-400/30">&middot;</span>
+            <Link href="/clients" className="text-slate-300 hover:text-emerald-300 transition-colors inline-flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
               Clients
             </Link>
-            <span>&middot;</span>
-            <Link href="/dashboard" className="text-slate-300 hover:text-white">
+            <span className="text-emerald-400/30">&middot;</span>
+            <Link href="/dashboard" className="text-slate-300 hover:text-emerald-300 transition-colors">
               Admin Dashboard
             </Link>
           </div>

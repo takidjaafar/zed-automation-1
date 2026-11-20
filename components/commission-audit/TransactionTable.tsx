@@ -63,14 +63,14 @@ export default function TransactionTable({
   });
 
   return (
-    <section className="bg-[#0B1120] rounded-2xl border border-slate-800/80 overflow-hidden">
-      <div className="p-6 pb-4 border-b border-slate-800/80 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <section className="bg-[#0B1210]/90 backdrop-blur-xl rounded-2xl border border-emerald-400/15 overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.3)]">
+      <div className="p-5 sm:p-6 pb-4 border-b border-emerald-400/15 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h2 className="text-base font-bold text-white">{title}</h2>
+          <h2 className="text-base font-bold tracking-[-0.01em] text-white">{title}</h2>
           <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#05080F] border border-slate-800">
+        <div className="flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#040807]/90 border border-emerald-400/20">
           {FILTERS.map(({ key, label }) => (
             <button
               key={key}
@@ -78,7 +78,7 @@ export default function TransactionTable({
               onClick={() => setFilter(key)}
               className={`px-3 py-1.5 text-xs rounded-md transition whitespace-nowrap shrink-0 cursor-pointer ${
                 filter === key
-                  ? 'bg-[#10B981] text-[#05080F] font-semibold'
+                  ? 'bg-[#10B981] text-[#040807] font-semibold'
                   : 'text-slate-400 hover:text-white font-medium'
               }`}
             >
@@ -89,30 +89,30 @@ export default function TransactionTable({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-800/80 text-left text-xs">
-          <thead className="bg-[#05080F] text-slate-400 font-semibold text-[11px]">
+        <table className="min-w-full divide-y divide-emerald-400/15 text-left text-xs">
+          <thead className="bg-[#040807]/85 text-slate-400 font-mono uppercase tracking-wider text-[10px]">
             <tr>
-              <th scope="col" className="py-3 px-4">Property Address</th>
-              <th scope="col" className="py-3 px-4 text-right">Sale Price</th>
-              <th scope="col" className="py-3 px-4">Comm %</th>
-              <th scope="col" className="py-3 px-4">Splits (L / B / Cut)</th>
-              <th scope="col" className="py-3 px-4">Referrals &amp; Fee</th>
-              <th scope="col" className="py-3 px-4 text-right">Expected Pay</th>
-              <th scope="col" className="py-3 px-4 text-right">Actual Paid</th>
-              <th scope="col" className="py-3 px-4 text-right">Discrepancy</th>
-              <th scope="col" className="py-3 px-4">Audit Status</th>
+              <th scope="col" className="py-3 px-4 font-medium">Property Address</th>
+              <th scope="col" className="py-3 px-4 text-right font-medium">Sale Price</th>
+              <th scope="col" className="py-3 px-4 font-medium">Comm %</th>
+              <th scope="col" className="py-3 px-4 font-medium">Splits (L / B / Cut)</th>
+              <th scope="col" className="py-3 px-4 font-medium">Referrals &amp; Fee</th>
+              <th scope="col" className="py-3 px-4 text-right font-medium">Expected Pay</th>
+              <th scope="col" className="py-3 px-4 text-right font-medium">Actual Paid</th>
+              <th scope="col" className="py-3 px-4 text-right font-medium">Discrepancy</th>
+              <th scope="col" className="py-3 px-4 font-medium">Audit Status</th>
               {!readOnly && (
-                <th scope="col" className="py-3 px-4 text-right">
+                <th scope="col" className="py-3 px-4 text-right font-medium">
                   Actions
                 </th>
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/60 bg-[#0B1120]">
+          <tbody className="divide-y divide-emerald-400/10 bg-[#0B1210]/70">
             {visible.map((transaction) => {
               const audit = calculateAudit(transaction);
               return (
-                <tr key={transaction.id} className="hover:bg-slate-900/60 transition-colors">
+                <tr key={transaction.id} className="hover:bg-emerald-400/[0.04] transition-colors">
                   <td
                     className="py-3.5 px-4 font-medium text-white max-w-xs truncate"
                     title={transaction.address}
@@ -235,11 +235,11 @@ export default function TransactionTable({
         </div>
       )}
 
-      <div className="px-6 py-3 border-t border-slate-800/80 text-xs text-slate-500 flex items-center justify-between">
+      <div className="px-6 py-3 border-t border-emerald-400/15 bg-[#040807]/60 text-xs font-mono text-slate-400 flex items-center justify-between">
         <span>
           Showing {visible.length} of {transactions.length} transactions
         </span>
-        <span>Zed Automation Audit Engine</span>
+        <span className="text-emerald-300/80">Zed Automation Audit Engine</span>
       </div>
     </section>
   );
