@@ -2,8 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, Calculator, Lock, SlidersHorizontal, Zap } from 'lucide-react';
+import { ArrowRight, ShieldCheck, SlidersHorizontal, Zap } from 'lucide-react';
 import {
   AnimatedNumber,
   GlassSpotlightCard,
@@ -18,10 +17,22 @@ const ERROR_RATES = [
   { label: '5.5% Unaudited', value: 0.055 },
 ] as const;
 
-const RESPONSE_TIERS = [
-  { id: 'manual', label: '>4h Manual', upliftDealsPerQuarter: 0 },
-  { id: 'moderate', label: '15–60 Min', upliftDealsPerQuarter: 1.4 },
-  { id: 'instant', label: '<90s Auto', upliftDealsPerQuarter: 3.2 },
+const AUDIT_SCOPES = [
+  {
+    id: 'splits',
+    label: 'Splits Only',
+    clawbackShare: 0,
+  },
+  {
+    id: 'fees',
+    label: 'Splits + Admin Fees',
+    clawbackShare: 0.25,
+  },
+  {
+    id: 'full',
+    label: 'Full CD + Referrals',
+    clawbackShare: 0.45,
+  },
 ] as const;
 
 function formatUsd(val: number): string {
@@ -37,7 +48,7 @@ export interface SandboxAuditPreset {
   avgGci: number;
   annualLeakage: number;
   projected90dRecovery: number;
-  responseTierLabel: string;
+  auditScopeLabel: string;
 }
 
 export default function InlineLeakageSandbox({
@@ -48,38 +59,38 @@ export default function InlineLeakageSandbox({
   const [monthlyDeals, setMonthlyDeals] = useState<number>(22);
   const [avgGci, setAvgGci] = useState<number>(8800);
   const [errorRate, setErrorRate] = useState<number>(0.025);
-  const [responseTierId, setResponseTierId] = useState<
-    'manual' | 'moderate' | 'instant'
-  >('instant');
+  const [scopeId, setScopeId] = useState<'splits' | 'fees' | 'full'>('full');
 
-  const activeTier = useMemo(
-    () =>
-      RESPONSE_TIERS.find((tier) => tier.id === responseTierId) ??
-      RESPONSE_TIERS[2],
-    [responseTierId],
+  const activeScope = useMemo(
+    () => AUDIT_SCOPES.find((scope) => scope.id === scopeId) ?? AUDIT_SCOPES[2],
+    [scopeId],
   );
 
   const metrics = useMemo(() => {
     const monthlyGrossGci = monthlyDeals * avgGci;
     const monthlyCommissionLeakage = monthlyGrossGci * errorRate;
-    const quarterlyCommissionLeakage = monthlyCommissionLeakage * 3;
-    const annualLeakage = monthlyCommissionLeakage * 12;
-    const speedToLeadUplift90d = activeTier.upliftDealsPerQuarter * avgGci;
+    const quarterlySplitLeakage = monthlyCommissionLeakage * 3;
+    const referralAndFeeClawback90d =
+      quarterlySplitLeakage * activeScope.clawbackShare;
+    const annualLeakage =
+      (monthlyCommissionLeakage + referralAndFeeClawback90d / 3) * 12;
     const projected90dRecovery =
-      quarterlyCommissionLeakage + speedToLeadUplift90d;
+      quarterlySplitLeakage + referralAndFeeClawback90d;
 
     return {
       monthlyGrossGci,
       monthlyCommissionLeakage,
-      quarterlyCommissionLeakage,
+      referralAndFeeClawback90d,
       annualLeakage,
-      speedToLeadUplift90d,
       projected90dRecovery,
     };
-  }, [activeTier.upliftDealsPerQuarter, avgGci, errorRate, monthlyDeals]);
+  }, [activeScope.clawbackShare, avgGci, errorRate, monthlyDeals]);
 
   return (
-    <section id="leakage-sandbox" className="relative rounded-3xl overflow-hidden border border-emerald-400/20 p-5 sm:p-8 lg:p-10">
+    <section
+      id="sandbox"
+      className="relative scroll-mt-20 rounded-3xl overflow-hidden border border-emerald-400/20 p-5 sm:p-8 lg:p-10"
+    >
       {/* Subtle Dark-Blurred Modern Brokerage Office Backdrop */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0">
         <Image
@@ -97,21 +108,21 @@ export default function InlineLeakageSandbox({
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
             <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
-              Section 02 · Interactive Leakage Model
+              Section 02 · Interactive Leakage Calculator
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white">
-              Inline Brokerage{' '}
-              <span className="text-emerald-400">Leakage Sandbox</span>
+              Brokerage{' '}
+              <span className="text-emerald-400">Commission Leakage Sandbox</span>
             </h2>
           </div>
-          <Link
-            href="/commission-calculator"
+          <a
+            href="#protocol"
             className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-200 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
           >
-            <Calculator className="w-3.5 h-3.5 text-emerald-400" />
-            Launch Full Calculator
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            Inspect Audit Protocol
             <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
+          </a>
         </div>
 
         {/* Dual Glowing Smoked Glass Cards */}
@@ -122,7 +133,7 @@ export default function InlineLeakageSandbox({
               <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-emerald-400/15">
                 <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white">
                   <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-400" />
-                  Brokerage Inputs
+                  Brokerage Closing Inputs
                 </span>
                 <span className="text-xs font-mono text-emerald-300/90 tabular-nums">
                   {formatUsd(metrics.monthlyGrossGci)} / mo Gross GCI
@@ -194,7 +205,7 @@ export default function InlineLeakageSandbox({
               {/* Unaudited Split & Fee Drift */}
               <div className="space-y-2.5">
                 <div className="text-xs font-medium text-slate-200">
-                  Estimated Split, Referral &amp; Fee Drift Rate
+                  Estimated Split &amp; Cap Drift Rate
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {ERROR_RATES.map((rate) => {
@@ -217,26 +228,26 @@ export default function InlineLeakageSandbox({
                 </div>
               </div>
 
-              {/* Speed-to-Lead Tier */}
+              {/* Reconciliation Scope */}
               <div className="space-y-2.5">
                 <div className="text-xs font-medium text-slate-200">
-                  Inbound Lead Response Protocol (90-Day Uplift Model)
+                  Forensic Reconciliation Scope
                 </div>
-                <div className="grid grid-cols-3 gap-2">
-                  {RESPONSE_TIERS.map((tier) => {
-                    const active = responseTierId === tier.id;
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {AUDIT_SCOPES.map((scope) => {
+                    const active = scopeId === scope.id;
                     return (
                       <button
-                        key={tier.id}
+                        key={scope.id}
                         type="button"
-                        onClick={() => setResponseTierId(tier.id)}
+                        onClick={() => setScopeId(scope.id)}
                         className={`px-3 py-2 rounded-lg text-xs font-mono border transition-colors cursor-pointer text-center tabular-nums ${
                           active
                             ? 'bg-emerald-400/15 border-emerald-400/50 text-white font-semibold'
                             : 'bg-[#040807]/75 border-white/10 text-slate-300 hover:text-white hover:border-emerald-400/30'
                         }`}
                       >
-                        {tier.label}
+                        {scope.label}
                       </button>
                     );
                   })}
@@ -245,7 +256,7 @@ export default function InlineLeakageSandbox({
             </div>
 
             <div className="pt-3 border-t border-emerald-400/15 text-[11px] font-mono text-slate-400">
-              Adjust deal volume &amp; average commission to calibrate your 90-day audit projection.
+              Calibrate closing volume &amp; audit scope to estimate 90-day recoverable GCI.
             </div>
           </GlassSpotlightCard>
 
@@ -266,7 +277,7 @@ export default function InlineLeakageSandbox({
               <div className="divide-y divide-emerald-400/15 border-y border-emerald-400/15">
                 <div className="py-3.5 flex items-baseline justify-between gap-4">
                   <span className="text-xs text-slate-300">
-                    Monthly Commission Drift
+                    Monthly Split &amp; Cap Drift
                   </span>
                   <span className="text-lg font-mono font-semibold text-rose-400">
                     <AnimatedNumber
@@ -287,11 +298,11 @@ export default function InlineLeakageSandbox({
 
                 <div className="py-3.5 flex items-baseline justify-between gap-4">
                   <span className="text-xs text-slate-300">
-                    90d Speed-to-Lead ({activeTier.label})
+                    90d CD &amp; Referral Clawback ({activeScope.label})
                   </span>
                   <span className="text-lg font-mono font-semibold text-slate-100">
                     <AnimatedNumber
-                      value={metrics.speedToLeadUplift90d}
+                      value={metrics.referralAndFeeClawback90d}
                       prefix="+$"
                     />
                   </span>
@@ -321,7 +332,7 @@ export default function InlineLeakageSandbox({
                       avgGci,
                       annualLeakage: metrics.annualLeakage,
                       projected90dRecovery: metrics.projected90dRecovery,
-                      responseTierLabel: activeTier.label,
+                      auditScopeLabel: activeScope.label,
                     })
                   }
                   className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm h-11 px-4 shadow-[0_0_24px_rgba(16,185,129,0.35)] transition-colors cursor-pointer whitespace-nowrap"
@@ -330,24 +341,8 @@ export default function InlineLeakageSandbox({
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </MagneticButton>
-              <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href="/commission-calculator"
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#040807]/85 border border-emerald-400/20 hover:border-emerald-400/50 text-xs font-mono text-slate-200 hover:text-emerald-300 h-9 px-3 transition-colors whitespace-nowrap"
-                >
-                  <Calculator className="w-3.5 h-3.5 text-emerald-400" />
-                  Launch Full Calculator
-                </Link>
-                <Link
-                  href="/commission-audit"
-                  className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#040807]/85 border border-emerald-400/20 hover:border-emerald-400/50 text-xs font-mono text-slate-200 hover:text-emerald-300 h-9 px-3 transition-colors whitespace-nowrap"
-                >
-                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                  Open Audit Workspace
-                </Link>
-              </div>
               <p className="text-[11px] font-mono text-slate-400 text-center">
-                Delivered via PDF + private Loom in 48h · Written delivery only
+                Delivered via PDF + private Loom in 48h · Zero phone calls
               </p>
             </div>
           </GlassSpotlightCard>

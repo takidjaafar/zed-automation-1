@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
+  ArrowDown,
   ArrowRight,
-  FileSpreadsheet,
   Lock,
   Mail,
 } from 'lucide-react';
@@ -54,10 +54,10 @@ const PROTOCOL_ROWS = [
   },
   {
     code: 'PR-04',
-    discrepancy: 'Speed-to-Lead Pipeline Decay',
-    source: 'CRM Lead Routing & Response Timestamps',
-    impact: '18% – 27% GCI / quarter',
-    remediation: '<90s automated SMS & email lead capture sequence',
+    discrepancy: 'Team Overrides & E&O Variance',
+    source: 'ALTA Ledger & Brokerage Override Schedule',
+    impact: '$420 – $1,350 / deal',
+    remediation: 'Automated override & E&O reconciliation prior to ACH payout',
   },
 ] as const;
 
@@ -74,7 +74,7 @@ const ASYNC_STEPS = [
     title: 'Forensic Ledger Reconciliation',
     timing: 'Hours 1 – 36',
     detail:
-      'Our audit desk checks agent split tiers, cap thresholds, referral deductions, compliance fees, and response-time GCI leakage row by row.',
+      'Our audit desk checks agent split tiers, cap thresholds, referral deductions, compliance fees, and override calculations row by row.',
   },
   {
     step: '03',
@@ -103,13 +103,13 @@ export default function LandingClientShell() {
 
   const handleOpenWithSandboxPreset = (preset: SandboxAuditPreset) => {
     setPrefilledNotes(
-      `Sandbox baseline: ${preset.monthlyDeals} closed sides/mo @ ${formatUsd(preset.avgGci)} avg GCI (${preset.responseTierLabel} response). Est. annual leakage ${formatUsd(preset.annualLeakage)}; projected 90-day recovery +${formatUsd(preset.projected90dRecovery)}.`,
+      `Sandbox baseline: ${preset.monthlyDeals} closed sides/mo @ ${formatUsd(preset.avgGci)} avg GCI (${preset.auditScopeLabel}). Est. annual leakage ${formatUsd(preset.annualLeakage)}; projected 90-day recovery +${formatUsd(preset.projected90dRecovery)}.`,
     );
     setModalOpen(true);
   };
 
   const handleScrollToSandbox = () => {
-    const el = document.getElementById('leakage-sandbox');
+    const el = document.getElementById('sandbox');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -119,10 +119,10 @@ export default function LandingClientShell() {
     <div className="relative min-h-screen bg-[#040807] text-slate-100 flex flex-col overflow-x-clip">
       <AtmosphericBackdrop />
 
-      {/* Smoked Glass Sticky Top Navigation */}
+      {/* Clean Executive Glass Top Navigation */}
       <header className="sticky top-0 z-40 border-b border-emerald-400/15 bg-[#040807]/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-6">
-          {/* Left: Clean Brand Lockup */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
+          {/* Left: Brand Lockup */}
           <Link href="/" className="flex items-center gap-3 min-w-0 shrink-0">
             <div className="h-8 w-8 rounded-lg bg-[#0B1210] border border-emerald-400/30 shadow-[0_0_18px_rgba(16,185,129,0.2)] flex items-center justify-center overflow-hidden shrink-0">
               <Image
@@ -139,42 +139,36 @@ export default function LandingClientShell() {
             </span>
           </Link>
 
-          {/* Center: Unified Navigation & Audit Suite Links */}
+          {/* Center: Strictly 3 Clean Anchor Links */}
           <nav
             aria-label="Primary navigation"
-            className="hidden lg:flex items-center gap-7 text-xs font-medium text-slate-300"
+            className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-300"
           >
             <a
-              href="#leakage-sandbox"
-              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
-            >
-              Leakage Sandbox
-            </a>
-            <a
-              href="#audit-protocol"
+              href="#protocol"
               className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
               Audit Protocol
             </a>
-            <Link
-              href="/commission-calculator"
+            <a
+              href="#sandbox"
               className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
-              Calculator
-            </Link>
-            <Link
-              href="/clients"
+              Leakage Calculator
+            </a>
+            <a
+              href="#results"
               className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
-              Clients
-            </Link>
+              Verified Recoveries
+            </a>
           </nav>
 
-          {/* Right: Internal Client Portal Button + Written Audit CTA */}
+          {/* Right: 2 Clear Actions (Client Portal + Free 3-Deal Audit CTA) */}
           <div className="flex items-center gap-3 shrink-0">
             <Link
               href="/commission-audit"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1210]/85 border border-emerald-400/25 hover:border-emerald-400/55 px-3 py-2 text-xs font-medium text-slate-100 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1210]/85 border border-emerald-400/25 hover:border-emerald-400/55 px-3 py-2 text-xs font-medium text-slate-200 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
             >
               <Lock className="w-3.5 h-3.5 text-emerald-400" />
               Client Portal
@@ -183,9 +177,9 @@ export default function LandingClientShell() {
               <button
                 type="button"
                 onClick={handleOpenModal}
-                className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-3.5 py-2 text-xs font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-4 py-2 text-xs font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
               >
-                Request 3-Deal Audit
+                Get Free 3-Deal Audit
               </button>
             </MagneticButton>
           </div>
@@ -199,11 +193,11 @@ export default function LandingClientShell() {
             {/* Editorial Copy Column */}
             <ScrollReveal aboveFold={true} className="lg:col-span-5 space-y-7 pt-1">
               <div className="text-xs font-mono text-emerald-300/90 tracking-wide">
-                Async Written Audit · 48h PDF + Loom · Written Delivery Only
+                Async Written Audit · 48h PDF + Loom · Zero Phone Calls
               </div>
 
               <div className="space-y-4">
-                <h1 className="text-[clamp(2.25rem,3.8vw,3.35rem)] font-bold tracking-[-0.03em] leading-[1.06] text-white">
+                <h1 className="text-[clamp(2.25rem,3.8vw,3.35rem)] font-bold tracking-[-0.03em] leading-[1.06] text-white [text-wrap:balance]">
                   Recover{' '}
                   <span className="text-emerald-400">
                     hidden commission leakage
@@ -213,7 +207,7 @@ export default function LandingClientShell() {
                 <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
                   Forensic GCI verification for managing brokers. Detect agent
                   split drift, uncollected referral fees, closing-disclosure
-                  mismatches, and speed-to-lead decay through a 100%
+                  mismatches, and waived compliance charges through a 100%
                   asynchronous written workflow—zero phone calls or Zoom meetings.
                 </p>
               </div>
@@ -225,18 +219,18 @@ export default function LandingClientShell() {
                     onClick={handleOpenModal}
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm h-11 px-5 shadow-[0_0_28px_rgba(16,185,129,0.35)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
-                    Request 3-Deal Written Audit
+                    Get Free 3-Deal Audit
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </MagneticButton>
-                <Link
-                  href="/commission-audit"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 hover:border-emerald-400/55 text-slate-100 hover:text-white font-medium text-sm h-11 px-4 shadow-[0_0_24px_rgba(16,185,129,0.1)] transition-colors whitespace-nowrap shrink-0"
+                <button
+                  type="button"
+                  onClick={handleScrollToSandbox}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 hover:border-emerald-400/55 text-slate-100 hover:text-white font-medium text-sm h-11 px-4 shadow-[0_0_24px_rgba(16,185,129,0.1)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
                 >
-                  <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                  Open Audit Workspace
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-                </Link>
+                  Estimate Leakage
+                  <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
+                </button>
               </div>
 
               {/* Smoked Glass Tabular Telemetry Baseline */}
@@ -251,10 +245,10 @@ export default function LandingClientShell() {
                 </div>
                 <div>
                   <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-                    90d Net Recovery
+                    90d Audit Recovery
                   </div>
                   <div className="mt-1 text-lg sm:text-xl font-mono font-semibold text-emerald-400">
-                    <AnimatedNumber value={33845} prefix="+$" />
+                    <AnimatedNumber value={22335} prefix="+$" />
                   </div>
                 </div>
                 <div>
@@ -268,9 +262,12 @@ export default function LandingClientShell() {
               </div>
             </ScrollReveal>
 
-            {/* Interactive Brokerage GCI Ledger & Speed-to-Lead Audit Terminal */}
+            {/* Interactive Brokerage GCI Ledger Terminal */}
             <ScrollReveal aboveFold={true} delay={0.1} className="lg:col-span-7">
-              <HeroAuditTerminal />
+              <HeroAuditTerminal
+                onScrollToSandbox={handleScrollToSandbox}
+                onOpenModal={handleOpenModal}
+              />
             </ScrollReveal>
           </section>
         </div>
@@ -351,7 +348,7 @@ export default function LandingClientShell() {
           {/* Section 05: Old Brokerage Way vs Zed Automation Comparison */}
           <ComparisonSection />
 
-          {/* Section 06: Async 48-Hour Written Workflow */}
+          {/* Section 06: Async 48-Hour Written Workflow (Single Dominant CTA) */}
           <section id="async-workflow" className="space-y-6">
             <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div className="space-y-2">
@@ -364,7 +361,7 @@ export default function LandingClientShell() {
                 </h2>
               </div>
               <span className="text-xs font-mono text-emerald-300/90">
-                100% email + portal fulfillment
+                100% written email + PDF delivery
               </span>
             </ScrollReveal>
 
@@ -397,31 +394,21 @@ export default function LandingClientShell() {
                       Ready to verify 3 closed transactions?
                     </div>
                     <div className="text-xs font-mono text-slate-300">
-                      Direct written report &amp; Loom delivered to your inbox ·{' '}
+                      Confidential written PDF &amp; Loom delivered in 48h ·{' '}
                       zakaria@zedautomations.tech
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                    <Link
-                      href="/commission-audit"
-                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#0B1210] border border-emerald-400/25 hover:border-emerald-400/55 text-slate-100 hover:text-white px-4 h-10 text-xs font-medium transition-colors whitespace-nowrap"
+                  <MagneticButton className="w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={handleOpenModal}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-5 h-11 text-xs sm:text-sm font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap"
                     >
-                      <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                      Open Audit Workspace
-                      <ArrowRight className="w-3.5 h-3.5 text-emerald-400" />
-                    </Link>
-                    <MagneticButton>
-                      <button
-                        type="button"
-                        onClick={handleOpenModal}
-                        className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-4 h-10 text-xs font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap"
-                      >
-                        Open Written Audit Modal
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </MagneticButton>
-                  </div>
+                      Submit 3 Deals for Free Written Audit
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </MagneticButton>
                 </div>
               </GlassSpotlightCard>
             </ScrollReveal>
@@ -429,15 +416,15 @@ export default function LandingClientShell() {
         </div>
       </main>
 
-      {/* Quiet Smoked Glass Footer */}
+      {/* Clean Quiet Footer */}
       <footer className="relative z-10 border-t border-emerald-400/15 bg-[#040807]/85 backdrop-blur-xl py-8 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="font-medium text-white">Zed Automation</span>
             <span aria-hidden="true" className="text-emerald-400/40">
               ·
             </span>
-            <span>Commission Audit &amp; GCI Recovery</span>
+            <span>Forensic Commission Audit &amp; GCI Recovery</span>
             <span aria-hidden="true" className="text-emerald-400/40">
               ·
             </span>
@@ -450,40 +437,21 @@ export default function LandingClientShell() {
             </a>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono">
+          <div className="flex items-center gap-6 font-mono">
+            <button
+              type="button"
+              onClick={handleOpenModal}
+              className="text-emerald-300 hover:text-emerald-200 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              Request Free Audit
+            </button>
             <Link
               href="/commission-audit"
-              className="hover:text-emerald-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap"
             >
-              Audit Workspace
+              <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              Client Portal
             </Link>
-            <Link
-              href="/commission-calculator"
-              className="hover:text-emerald-300 transition-colors"
-            >
-              Leakage Calculator
-            </Link>
-            <Link
-              href="/clients"
-              className="hover:text-emerald-300 transition-colors"
-            >
-              Clients
-            </Link>
-            <Link
-              href="/free-audit"
-              className="hover:text-emerald-300 transition-colors"
-            >
-              3-Deal Intake
-            </Link>
-            <a
-              href="/commission-audit.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 hover:text-emerald-300 transition-colors"
-            >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
-              Offline HTML
-            </a>
           </div>
         </div>
       </footer>

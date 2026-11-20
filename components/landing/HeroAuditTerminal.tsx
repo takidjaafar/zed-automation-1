@@ -1,8 +1,14 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import Link from 'next/link';
-import { ArrowRight, Calculator, Check, ChevronRight, Clock, Lock, Zap } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowRight,
+  Check,
+  ChevronRight,
+  FileCheck2,
+  ShieldCheck,
+} from 'lucide-react';
 import {
   AnimatedNumber,
   GlassSpotlightCard,
@@ -20,6 +26,7 @@ export interface LedgerDeal {
   expectedPayout: number;
   variance: number;
   category: string;
+  scope: 'split' | 'full';
   rule: string;
   status: 'flagged' | 'verified';
 }
@@ -37,6 +44,7 @@ const LEDGER_DEALS: LedgerDeal[] = [
     expectedPayout: 10185,
     variance: 1455,
     category: 'Split Tier Drift',
+    scope: 'split',
     rule: '80/20 post-cap rate applied prior to $18,000 anniversary cap clearance',
     status: 'flagged',
   },
@@ -52,6 +60,7 @@ const LEDGER_DEALS: LedgerDeal[] = [
     expectedPayout: 11625,
     variance: 3875,
     category: 'Referral Uncollected',
+    scope: 'full',
     rule: '25% outbound relocation referral omitted from closing settlement sheet',
     status: 'flagged',
   },
@@ -67,6 +76,7 @@ const LEDGER_DEALS: LedgerDeal[] = [
     expectedPayout: 9360,
     variance: 495,
     category: 'Fee Shortfall',
+    scope: 'full',
     rule: '$495 brokerage compliance & admin fee waived without managing broker sign-off',
     status: 'flagged',
   },
@@ -82,6 +92,7 @@ const LEDGER_DEALS: LedgerDeal[] = [
     expectedPayout: 15120,
     variance: 0,
     category: 'Cap Matched',
+    scope: 'split',
     rule: 'Split, $495 transaction fee, and E&O deduction reconciled to CD',
     status: 'verified',
   },
@@ -97,6 +108,7 @@ const LEDGER_DEALS: LedgerDeal[] = [
     expectedPayout: 11340,
     variance: 1620,
     category: 'Split Tier Drift',
+    scope: 'split',
     rule: '10% override discrepancy between MLS commission instruction and ACH payout',
     status: 'flagged',
   },
@@ -110,23 +122,48 @@ function formatUsd(amount: number): string {
   }).format(amount);
 }
 
-export default function HeroAuditTerminal() {
+export default function HeroAuditTerminal({
+  onScrollToSandbox,
+  onOpenModal,
+}: {
+  onScrollToSandbox?: () => void;
+  onOpenModal?: () => void;
+}) {
   const [selectedId, setSelectedId] = useState<string>(LEDGER_DEALS[0].id);
-  const [speedMode, setSpeedMode] = useState<'manual' | 'automated'>('automated');
+  const [auditScope, setAuditScope] = useState<'splits' | 'full'>('full');
 
   const selectedDeal = useMemo(
     () => LEDGER_DEALS.find((deal) => deal.id === selectedId) ?? LEDGER_DEALS[0],
     [selectedId],
   );
 
-  const flaggedLeakage = useMemo(
-    () => LEDGER_DEALS.reduce((sum, deal) => sum + deal.variance, 0),
+  const splitDriftLeakage = useMemo(
+    () =>
+      LEDGER_DEALS.filter((deal) => deal.scope === 'split').reduce(
+        (sum, deal) => sum + deal.variance,
+        0,
+      ),
     [],
   );
 
-  const speedToLeadUplift = speedMode === 'automated' ? 26400 : 0;
-  const recoveredLeadsCount = speedMode === 'automated' ? '3.1' : '0.0';
-  const projected90DayRecovery = flaggedLeakage + speedToLeadUplift;
+  const referralAndFeeRecovery = useMemo(
+    () =>
+      auditScope === 'full'
+        ? LEDGER_DEALS.filter((deal) => deal.scope === 'full').reduce(
+            (sum, deal) => sum + deal.variance,
+            0,
+          )
+        : 0,
+    [auditScope],
+  );
+
+  const sampleFlaggedTotal = splitDriftLeakage + referralAndFeeRecovery;
+  const projected90DayRecovery = sampleFlaggedTotal * 3;
+  const flaggedCount =
+    auditScope === 'full'
+      ? LEDGER_DEALS.filter((deal) => deal.variance > 0).length
+      : LEDGER_DEALS.filter((deal) => deal.scope === 'split' && deal.variance > 0)
+          .length;
 
   return (
     <GlassSpotlightCard borderBeam={true} shimmer={true} tilt={false}>
@@ -144,39 +181,39 @@ export default function HeroAuditTerminal() {
             /
           </span>
           <span className="text-xs font-mono text-slate-400 tabular-nums">
-            UTC 14:30
+            5 Closed Sides
           </span>
         </div>
 
-        {/* Speed-to-Lead Response Toggle */}
+        {/* Reconciliation Scope Toggle */}
         <div
           role="group"
-          aria-label="Speed-to-Lead response time toggle"
+          aria-label="Reconciliation scope toggle"
           className="inline-flex items-center rounded-lg bg-[#040807]/85 border border-emerald-400/20 p-0.5"
         >
           <button
             type="button"
-            onClick={() => setSpeedMode('manual')}
+            onClick={() => setAuditScope('splits')}
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer whitespace-nowrap ${
-              speedMode === 'manual'
+              auditScope === 'splits'
                 ? 'bg-white/[0.1] text-white font-medium'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Clock className="w-3 h-3" />
-            &gt;4h Manual
+            <ShieldCheck className="w-3 h-3" />
+            Splits Only
           </button>
           <button
             type="button"
-            onClick={() => setSpeedMode('automated')}
+            onClick={() => setAuditScope('full')}
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors cursor-pointer whitespace-nowrap ${
-              speedMode === 'automated'
+              auditScope === 'full'
                 ? 'bg-[#10B981] text-[#040807] font-semibold shadow-[0_0_16px_rgba(16,185,129,0.4)]'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Zap className="w-3 h-3" />
-            &lt;90s Automated
+            <FileCheck2 className="w-3 h-3" />
+            Full CD + Referrals
           </button>
         </div>
       </div>
@@ -196,6 +233,9 @@ export default function HeroAuditTerminal() {
       >
         {LEDGER_DEALS.map((deal) => {
           const isSelected = deal.id === selectedDeal.id;
+          const activeVariance =
+            auditScope === 'splits' && deal.scope === 'full' ? 0 : deal.variance;
+
           return (
             <button
               key={deal.id}
@@ -230,14 +270,14 @@ export default function HeroAuditTerminal() {
               </div>
 
               <div className="col-span-4 text-right font-mono text-xs sm:text-[13px] tabular-nums">
-                {deal.variance > 0 ? (
+                {activeVariance > 0 ? (
                   <span className="text-rose-400 font-medium">
-                    -{formatUsd(deal.variance)}
+                    -{formatUsd(activeVariance)}
                   </span>
                 ) : (
                   <span className="inline-flex items-center justify-end gap-1 text-emerald-400">
                     <Check className="w-3 h-3" />
-                    $0
+                    {deal.variance > 0 ? 'Skipped' : '$0'}
                   </span>
                 )}
                 <div className="text-[10px] text-slate-400 truncate">
@@ -299,23 +339,23 @@ export default function HeroAuditTerminal() {
         </div>
       </div>
 
-      {/* Speed-to-Lead + Projected 90-Day Net Recovery Summary */}
+      {/* Forensic Commission Reconciliation Summary */}
       <div className="px-4 sm:px-5 py-4 border-t border-emerald-400/20 bg-[#08100E]/85 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
         <div>
           <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-            Flagged Leakage
+            Split Drift ({flaggedCount} files)
           </div>
           <div className="mt-1 text-base font-mono font-semibold text-white">
-            <AnimatedNumber value={flaggedLeakage} prefix="$" />
+            <AnimatedNumber value={splitDriftLeakage} prefix="$" />
           </div>
         </div>
 
         <div>
           <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-            90d Speed-to-Lead ({recoveredLeadsCount} deals)
+            CD &amp; Referral Clawback
           </div>
           <div className="mt-1 text-base font-mono font-semibold text-slate-100">
-            <AnimatedNumber value={speedToLeadUplift} prefix="+$" />
+            <AnimatedNumber value={referralAndFeeRecovery} prefix="+$" />
           </div>
         </div>
 
@@ -329,23 +369,24 @@ export default function HeroAuditTerminal() {
         </div>
       </div>
 
-      {/* Internal Audit Suite Launch Bar */}
+      {/* Public Conversion Action Bar (Zero Password Wall) */}
       <div className="px-4 sm:px-5 py-3 border-t border-emerald-400/15 bg-[#040807]/85 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-        <Link
-          href="/commission-calculator"
-          className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap"
+        <button
+          type="button"
+          onClick={onScrollToSandbox}
+          className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap cursor-pointer"
         >
-          <Calculator className="w-3.5 h-3.5 text-emerald-400" />
-          Launch Full Calculator
-        </Link>
-        <Link
-          href="/commission-audit"
-          className="inline-flex items-center gap-1.5 text-emerald-300 hover:text-emerald-200 font-medium transition-colors whitespace-nowrap"
+          <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
+          Model Your Brokerage Leakage
+        </button>
+        <button
+          type="button"
+          onClick={onOpenModal}
+          className="inline-flex items-center gap-1.5 text-emerald-300 hover:text-emerald-200 font-medium transition-colors whitespace-nowrap cursor-pointer"
         >
-          <Lock className="w-3.5 h-3.5 text-emerald-400" />
-          Open Audit Workspace
+          Submit 3 Deals for Free Audit
           <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        </button>
       </div>
     </GlassSpotlightCard>
   );

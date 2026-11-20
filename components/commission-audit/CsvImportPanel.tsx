@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
 import {
   AlertTriangle,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
   Download,
-  ExternalLink,
   FileSpreadsheet,
   Info,
   Loader2,
@@ -414,14 +412,6 @@ export default function CsvImportPanel({
                 <ChevronRight className="w-3.5 h-3.5" />
               )}
             </button>
-            <Link
-              href="/commission-audit.html"
-              target="_blank"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition whitespace-nowrap"
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-[#10B981]" />
-              Standalone HTML tool
-            </Link>
           </div>
 
           {showHeaderReference && (

@@ -6,7 +6,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   Download,
-  ExternalLink,
   FileText,
   Lock,
   PlusCircle,
@@ -345,14 +344,6 @@ function CommissionAuditWorkspace() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  href="/commission-audit.html"
-                  target="_blank"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-[#0B1120] text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-800 transition whitespace-nowrap shrink-0"
-                >
-                  <ExternalLink className="w-3.5 h-3.5 text-[#10B981]" />
-                  Standalone HTML
-                </Link>
                 <button
                   type="button"
                   onClick={handleLoadSamples}

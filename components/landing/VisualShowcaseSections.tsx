@@ -14,7 +14,6 @@ import {
   Star,
   TrendingUp,
   XCircle,
-  Zap,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import {
@@ -42,7 +41,7 @@ export function DiagnosticProblemSection({
       {/* Left Diagnostic Narrative */}
       <ScrollReveal className="lg:col-span-6 space-y-6">
         <div className="text-xs font-mono uppercase tracking-[0.16em] text-emerald-300/90">
-          Section 01 · Diagnostic · Audit &amp; Lead Capture
+          Section 01 · Diagnostic · Closing File Reconciliation
         </div>
 
         <h2 className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.08] text-white">
@@ -54,9 +53,9 @@ export function DiagnosticProblemSection({
 
         <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
           Every month, silent split drift, uncollected outbound referral fees,
-          waived compliance charges, and slow inbound lead follow-up drain
-          brokerage net margin. Zed Automation reconciles every closing line
-          and automates sub-90-second written lead capture asynchronously.
+          waived compliance charges, and ALTA settlement mismatches drain
+          brokerage net margin. Zed Automation reconciles every closing file
+          line-by-line asynchronously with zero meetings.
         </p>
 
         <div className="pt-1 flex flex-wrap items-center gap-4">
@@ -66,12 +65,12 @@ export function DiagnosticProblemSection({
               onClick={onScrollToSandbox}
               className="inline-flex items-center gap-2 rounded-xl bg-[#0B1210]/85 border border-emerald-400/35 hover:border-emerald-400/70 text-white px-5 h-11 text-sm font-semibold shadow-[0_0_24px_rgba(16,185,129,0.16)] transition-colors cursor-pointer whitespace-nowrap"
             >
-              See How We Stop the Leak
+              Estimate Your Leakage
               <ArrowRight className="w-4 h-4 text-emerald-400" />
             </button>
           </MagneticButton>
           <span className="text-xs font-mono text-slate-400">
-            100% written audit · Zero live meetings
+            100% written audit · Zero live calls
           </span>
         </div>
       </ScrollReveal>
@@ -117,13 +116,13 @@ export function DiagnosticProblemSection({
                 </div>
               </div>
 
-              {/* Overlay 2: 76% */}
+              {/* Overlay 2: 48h Written */}
               <div className="rounded-xl bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 p-3 shadow-[0_0_24px_rgba(16,185,129,0.15)]">
                 <div className="text-lg sm:text-2xl font-mono font-bold text-emerald-400 tabular-nums">
-                  <AnimatedNumber value={76} suffix="%" />
+                  <AnimatedNumber value={48} suffix="h" />
                 </div>
                 <div className="text-[11px] font-medium text-slate-200 truncate">
-                  Faster Response
+                  Written Delivery
                 </div>
                 <div className="mt-2.5 h-6 flex items-end gap-1">
                   {MINI_BARS_SPEED.map((height, i) => (
@@ -221,30 +220,30 @@ const PROTOCOL_PILLARS = [
   },
   {
     code: 'PR-04',
-    title: 'Async Speed-to-Lead',
+    title: 'Overrides & E&O Audit',
     description:
-      'Captures and qualifies inbound brokerage leads via automated SMS & email under 90s.',
-    statusIcon: Zap,
-    statusText: '<90s Avg Response',
-    badgeIcon: Zap,
-    previewTitle: 'Written Lead Dispatch',
+      'Verifies team override tiers, E&O deductions, and franchise fees across ALTA statements.',
+    statusIcon: ShieldCheck,
+    statusText: '$420 – $1,350 / deal',
+    badgeIcon: ShieldCheck,
+    previewTitle: 'Override Reconciliation',
     previewRows: [
-      { label: 'SMS + Email', value: '38s Sent', tone: 'text-emerald-400' },
-      { label: '90d GCI Uplift', value: '18% – 27%', tone: 'text-emerald-300' },
+      { label: 'Override Tier', value: '10% Variance', tone: 'text-rose-400' },
+      { label: 'Ledger Check', value: 'Clawback Logged', tone: 'text-emerald-400' },
     ],
   },
 ] as const;
 
 export function InfrastructurePillarsSection() {
   return (
-    <section id="audit-protocol" className="space-y-8">
+    <section id="protocol" className="scroll-mt-20 space-y-8">
       <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-2">
           <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
             Section 03 · Forensic Coverage Matrix
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white">
-            Commission &amp; Pipeline{' '}
+            Commission &amp; Closing{' '}
             <span className="text-emerald-400">Audit Protocol</span>
           </h2>
         </div>
@@ -351,13 +350,13 @@ const CASE_STUDIES = [
     label: 'Verified Direct Clawback',
     brokerage: 'Northstar Realty Group',
     quote:
-      '"Line-by-line commission reconciliation paired with automated <90s lead capture added pure net profit asynchronously."',
+      '"Line-by-line commission reconciliation and referral fee tracking added pure net profit across our closing ledger asynchronously."',
   },
 ] as const;
 
 export function RealResultsSection() {
   return (
-    <section id="real-results" className="space-y-8">
+    <section id="results" className="scroll-mt-20 space-y-8">
       <ScrollReveal className="text-center max-w-2xl mx-auto space-y-3">
         <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
           Section 04 · Verified Recoveries
@@ -440,15 +439,15 @@ export function RealResultsSection() {
 /* -------------------------------------------------------------------------- */
 
 const OLD_WAY_ITEMS = [
-  'Slow manual follow-up after hours',
-  'Unaudited split tier & referral leaks',
-  'Messy closing spreadsheet checks',
+  'Manual closing spreadsheet checks',
+  'Unaudited split tier & cap drift',
+  'Waived compliance fees & missed referrals',
 ] as const;
 
 const ZED_WAY_ITEMS = [
-  '<90s automated SMS & email capture',
-  'Line-by-line forensic GCI audit',
-  '48-hour written PDF & Loom delivery',
+  'Line-by-line split tier & cap verification',
+  'Automated ALTA / CD & referral fee audit',
+  '48-hour written PDF recovery ledger — zero calls',
 ] as const;
 
 export function ComparisonSection() {
