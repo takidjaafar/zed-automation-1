@@ -1,0 +1,15 @@
+[
+  {
+    "id": "e6b91afb-7bfc-468c-86e2-e99ca91f455c",
+    "referenceId": "ZED-AUD-20261121-7MH1",
+    "submittedAt": "2026-11-21T15:26:55.666Z",
+    "ownerName": "Morgan Hayes",
+    "brokerageName": "Crestline Realty TX",
+    "email": "morgan@crestlinerealty.example",
+    "agentCount": 18,
+    "dealOne": "412 Oak Ridge Dr - $485,000, 3% side, 70/30, paid $11,640",
+    "dealTwo": "1904 Pinehurst Ave - $620,000, 2.5% side, 25% ref, paid $15,500",
+    "dealThree": "88 Maplewood Ln - $390,000, 3% side, 80/20, paid $9,855",
+    "notes": ""
+  }
+]

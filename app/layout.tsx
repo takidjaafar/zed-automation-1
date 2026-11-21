@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Instrument_Sans, Inter } from "next/font/google";
+import { Geist_Mono, Inter, Manrope } from "next/font/google";
 import "./globals.css";
 
-const instrumentSans = Instrument_Sans({
+const manrope = Manrope({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["600", "700", "800"],
 });
 
 const inter = Inter({
@@ -22,9 +22,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zedautomations.tech"),
-  title: "Zed Automation - Real Estate Commission Audit",
+  title: "ZED Automation - Forensic Commission Audit",
   description:
-    "Forensic real estate commission audit and GCI leakage recovery for US managing brokers. Detect split drift, uncollected referral fees, and waived admin fees in 48 hours—100% written and async.",
+    "Forensic GCI verification for US managing brokers. Detect split drift, uncollected referral fees, and ALTA mismatches across every closed side in 48 hours—100% written and async.",
   keywords: [
     "forensic commission audit",
     "real estate commission audit",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "closing disclosure reconciliation",
     "ALTA settlement statement audit",
     "real estate brokerage margin audit",
-    "Zed Automation",
+    "ZED Automation",
   ],
   alternates: {
     canonical: "/",
@@ -50,16 +50,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://zedautomations.tech",
-    siteName: "Zed Automation",
-    title: "Zed Automation - Real Estate Commission Audit",
+    siteName: "ZED Automation",
+    title: "ZED Automation - Forensic Commission Audit",
     description:
-      "Forensic real estate commission audit and GCI leakage recovery for US managing brokers. 48-hour written PDF, CSV, and Loom delivery with zero calls.",
+      "Stop leaking commissions. Recover your GCI in 48 hours with a free 3-deal forensic audit delivered via Executive PDF, Discrepancy CSV, and Private Loom—zero calls.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zed Automation - Real Estate Commission Audit",
+    title: "ZED Automation - Forensic Commission Audit",
     description:
-      "Detect agent split drift, uncollected referral fees, and waived compliance charges in 48 hours—100% written and asynchronous.",
+      "Forensic GCI verification for managing brokers. Free 3-deal audit delivered in 48h via PDF, CSV, and Loom—100% written, zero calls.",
   },
 };
 
@@ -69,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <head suppressHydrationWarning>
         <script
           suppressHydrationWarning
@@ -80,7 +80,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={`${instrumentSans.variable} ${inter.variable} ${geistMono.variable} bg-[#040807] font-sans text-slate-100 antialiased selection:bg-emerald-500/25 selection:text-emerald-200`}
+        className={`${manrope.variable} ${inter.variable} ${geistMono.variable} bg-[#050807] font-sans text-white antialiased selection:bg-emerald-500/30 selection:text-emerald-200`}
       >
         <div
           aria-hidden="true"

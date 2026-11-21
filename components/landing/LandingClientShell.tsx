@@ -8,96 +8,31 @@ import {
   ArrowRight,
   Lock,
   Mail,
+  ShieldCheck,
+  TrendingDown,
+  TrendingUp,
 } from 'lucide-react';
 
 import AtmosphericBackdrop from '@/components/landing/AtmosphericBackdrop';
-import HeroAuditTerminal from '@/components/landing/HeroAuditTerminal';
-import InlineLeakageSandbox, {
-  type SandboxAuditPreset,
-} from '@/components/landing/InlineLeakageSandbox';
+import ProblemSection from '@/components/landing/ProblemSection';
+import LeakageAuditTool from '@/components/landing/LeakageAuditTool';
+import CoverageCardsSection from '@/components/landing/CoverageCardsSection';
+import AuditSnapshotsSection from '@/components/landing/AuditSnapshotsSection';
+import ComparisonSection from '@/components/landing/ComparisonSection';
+import {
+  ConfidentialityGuaranteeBar,
+  ExecutiveFaqSection,
+} from '@/components/landing/DeliverableAndFaqSections';
 import {
   AnimatedNumber,
   GlassSpotlightCard,
   MagneticButton,
+  ParallaxPhoto,
   ScrollReveal,
   TrustMarquee,
 } from '@/components/landing/MotionPrimitives';
-import {
-  ComparisonSection,
-  DiagnosticProblemSection,
-  InfrastructurePillarsSection,
-  RealResultsSection,
-} from '@/components/landing/VisualShowcaseSections';
-import {
-  AuditDossierPreviewCard,
-  ConfidentialityGuaranteeBar,
-  ExecutiveFaqSection,
-} from '@/components/landing/DeliverableAndFaqSections';
 import PrivacyConfidentialityModal from '@/components/landing/PrivacyConfidentialityModal';
 import WrittenAuditModal from '@/components/landing/WrittenAuditModal';
-
-const PROTOCOL_ROWS = [
-  {
-    code: 'PR-01',
-    discrepancy: 'Agent Split & Anniversary Cap Drift',
-    source: 'Closing Disclosure + Brokerage Cap Ledger',
-    impact: '$950 – $2,400 / deal',
-    remediation: 'Pre-payout split tier check & ledger clawback log',
-  },
-  {
-    code: 'PR-02',
-    discrepancy: 'Uncollected Outbound Referral Fees',
-    source: 'Relocation & Partner Referral Agreements',
-    impact: '20% – 35% of side GCI',
-    remediation: 'Automated referral receivable flag prior to close',
-  },
-  {
-    code: 'PR-03',
-    discrepancy: 'Admin & Compliance Fee Omissions',
-    source: 'HUD-1 / ALTA Settlement Statement',
-    impact: '$395 – $695 / side',
-    remediation: 'Mandatory fee reconciliation against broker waiver policy',
-  },
-  {
-    code: 'PR-04',
-    discrepancy: 'Team Overrides & E&O Variance',
-    source: 'ALTA Ledger & Brokerage Override Schedule',
-    impact: '$420 – $1,350 / deal',
-    remediation: 'Automated override & E&O reconciliation prior to ACH payout',
-  },
-] as const;
-
-const ASYNC_STEPS = [
-  {
-    step: '01',
-    title: 'Submit 3 Closed Deals',
-    timing: '5 min written intake',
-    detail:
-      'Enter three recent settlement references, contracted split percentages, and paid amounts in our on-page modal. 100% written intake with zero live calls or Zoom booking required.',
-  },
-  {
-    step: '02',
-    title: 'Forensic Ledger Reconciliation',
-    timing: 'Hours 1 – 36',
-    detail:
-      'Our audit desk checks agent split tiers, cap thresholds, referral deductions, compliance fees, and override calculations row by row.',
-  },
-  {
-    step: '03',
-    title: 'Written PDF & Private Loom',
-    timing: 'Delivered within 48h',
-    detail:
-      'Receive a confidential PDF discrepancy report, copyable executive recovery ledger, and private async walkthrough directly at your work email.',
-  },
-] as const;
-
-function formatUsd(val: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(val);
-}
 
 export default function LandingClientShell() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -108,66 +43,64 @@ export default function LandingClientShell() {
     setModalOpen(true);
   };
 
-  const handleOpenWithSandboxPreset = (preset: SandboxAuditPreset) => {
-    setPrefilledNotes(
-      `Sandbox baseline: ${preset.monthlyDeals} closed sides/mo @ ${formatUsd(preset.avgGci)} avg GCI (${preset.auditScopeLabel}). Est. annual leakage ${formatUsd(preset.annualLeakage)}; projected 90-day recovery +${formatUsd(preset.projected90dRecovery)}.`,
-    );
+  const handleOpenModalWithNote = (note: string) => {
+    setPrefilledNotes(note);
     setModalOpen(true);
   };
 
-  const handleScrollToSandbox = () => {
-    const el = document.getElementById('sandbox');
+  const handleScrollToTool = () => {
+    const el = document.getElementById('tool');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-[#040807] text-slate-100 flex flex-col overflow-x-clip">
+    <div className="relative min-h-screen bg-[#050807] text-white flex flex-col overflow-x-clip">
       <AtmosphericBackdrop />
 
-      {/* Clean Executive Glass Top Navigation */}
-      <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#040807]/80 backdrop-blur-xl">
+      {/* 1. FIXED GLASS NAVBAR (3-Zone Top Bar Contract) */}
+      <header className="sticky top-0 z-40 border-b border-emerald-500/15 bg-[#050807]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
-          {/* Left: Brand Lockup */}
+          {/* Brand Zone */}
           <Link href="/" className="flex items-center gap-3 min-w-0 shrink-0">
-            <div className="h-8 w-8 rounded-lg bg-[#0A110F] border border-white/[0.1] border-t-emerald-400/30 shadow-[0_2px_12px_rgba(16,185,129,0.12)] flex items-center justify-center overflow-hidden shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#0A110F] border border-emerald-500/30 shadow-[0_0_16px_rgba(16,185,129,0.2)] flex items-center justify-center overflow-hidden shrink-0">
               <Image
                 src="/assets/aistudio/ZED_SVG_e2b1063b.svg"
-                alt="Zed Automation logo"
+                alt="ZED Automation logo"
                 width={32}
                 height={32}
                 referrerPolicy="no-referrer"
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="font-[family-name:var(--font-display)] text-sm sm:text-base font-bold tracking-[-0.03em] text-white whitespace-nowrap shrink-0">
-              Zed Automation
+            <span className="font-[family-name:var(--font-display)] text-sm sm:text-base font-extrabold tracking-[-0.02em] text-white whitespace-nowrap shrink-0">
+              ZED AUTOMATION
             </span>
           </Link>
 
-          {/* Center: Clean Single-Line Anchor Links */}
+          {/* Center Nav Links */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-8 text-[13px] font-medium text-slate-300"
+            className="hidden md:flex items-center gap-8 text-sm font-medium text-[#9CA3AF]"
           >
             <a
-              href="#protocol"
+              href="#tool"
               className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
-              Audit Protocol
-            </a>
-            <a
-              href="#sandbox"
-              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
-            >
-              Leakage Calculator
+              Tool
             </a>
             <a
               href="#results"
               className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
-              Verified Recoveries
+              Results
+            </a>
+            <a
+              href="#protocol"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            >
+              Protocol
             </a>
             <a
               href="#faq"
@@ -177,22 +110,15 @@ export default function LandingClientShell() {
             </a>
           </nav>
 
-          {/* Right: 2 Clear Actions (Client Portal + Free 3-Deal Audit CTA) */}
-          <div className="flex items-center gap-3 shrink-0">
-            <Link
-              href="/commission-audit"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0A110F]/85 border border-white/[0.1] hover:border-emerald-400/35 px-3 py-2 text-xs font-medium text-slate-200 hover:text-white transition-all active:scale-[0.985] whitespace-nowrap shrink-0"
-            >
-              <Lock className="w-3.5 h-3.5 text-emerald-400" />
-              Client Portal
-            </Link>
+          {/* Primary Action */}
+          <div className="flex items-center shrink-0">
             <MagneticButton>
               <button
                 type="button"
                 onClick={handleOpenModal}
-                className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-4 py-2 text-xs font-semibold shadow-[0_2px_16px_rgba(16,185,129,0.2)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#050807] px-4 sm:px-5 h-10 text-xs sm:text-sm font-bold shadow-[0_0_24px_rgba(16,185,129,0.34)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
               >
-                Get Free 3-Deal Audit
+                Request Written Audit
               </button>
             </MagneticButton>
           </div>
@@ -200,289 +126,306 @@ export default function LandingClientShell() {
       </header>
 
       <main className="relative z-10 flex-1">
-        {/* Asymmetric Split Hero + Smoked Glass GCI Ledger Terminal */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 sm:pt-16 sm:pb-20">
-          <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
-            {/* Editorial Copy Column */}
-            <ScrollReveal aboveFold={true} className="lg:col-span-5 space-y-7 pt-1">
-              <div className="text-xs font-medium text-emerald-300/90 tracking-normal">
-                Async Written Audit · 48h PDF + Loom · Zero Phone Calls
+        {/* 2. HERO SECTION */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 sm:pt-16 sm:pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-stretch">
+            {/* Left Copy & Conversion Column */}
+            <ScrollReveal
+              aboveFold={true}
+              className="lg:col-span-6 flex flex-col justify-center space-y-7"
+            >
+              <div className="text-xs font-medium text-[#34D399]">
+                Forensic GCI Verification · 48h PDF + Loom · 100% Written, Zero Calls
               </div>
 
               <div className="space-y-4">
-                <h1 className="text-[clamp(2.25rem,3.8vw,3.35rem)] font-bold tracking-[-0.03em] leading-[1.06] text-white [text-wrap:balance]">
-                  Recover{' '}
-                  <span className="text-emerald-400">
-                    hidden commission leakage
-                  </span>{' '}
-                  across every closed side.
+                <h1 className="text-[clamp(2.35rem,4.2vw,3.75rem)] font-extrabold tracking-[-0.03em] leading-[1.05] text-white [text-wrap:balance]">
+                  Stop Leaking Commissions.{' '}
+                  <span className="text-[#34D399]">
+                    Recover Your GCI in 48 Hours.
+                  </span>
                 </h1>
-                <p className="text-sm sm:text-[15px] text-slate-300 leading-relaxed max-w-xl">
-                  Forensic GCI verification for managing brokers. Detect agent
-                  split drift, uncollected referral fees, closing-disclosure
-                  mismatches, and waived compliance charges through a 100%
-                  asynchronous written workflow—zero phone calls or Zoom meetings.
+                <p className="text-base sm:text-lg text-[#9CA3AF] leading-relaxed max-w-xl">
+                  Forensic GCI verification for managing brokers. We find split
+                  drift, uncollected referral fees, and ALTA mismatches across
+                  every closed side. 100% written, zero calls.
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
                 <MagneticButton>
                   <button
                     type="button"
                     onClick={handleOpenModal}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm h-11 px-5 shadow-[0_4px_20px_rgba(16,185,129,0.22)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#050807] font-bold text-sm sm:text-base h-12 px-6 shadow-[0_0_34px_rgba(16,185,129,0.4)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
                   >
-                    Get Free 3-Deal Audit
-                    <ArrowRight className="w-4 h-4" />
+                    Get My Free 3-Deal Audit
+                    <ArrowRight className="w-4 h-4 shrink-0" />
                   </button>
                 </MagneticButton>
                 <button
                   type="button"
-                  onClick={handleScrollToSandbox}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0A110F]/80 backdrop-blur-xl border border-white/[0.1] border-t-emerald-400/25 hover:border-white/[0.18] text-slate-100 hover:text-white font-medium text-sm h-11 px-4 transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
+                  onClick={handleScrollToTool}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A0F0D]/85 backdrop-blur-xl border border-emerald-500/25 hover:border-emerald-400/50 text-slate-100 hover:text-white font-semibold text-sm h-12 px-5 transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
                 >
-                  Estimate Leakage
-                  <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
+                  Try the Audit Tool
+                  <ArrowDown className="w-4 h-4 text-[#34D399]" />
                 </button>
               </div>
 
-              {/* Smoked Glass Tabular Telemetry Baseline */}
+              {/* Hero Stats Bar */}
               <div className="border-t border-white/[0.08] pt-6 grid grid-cols-3 gap-4">
                 <div>
-                  <div className="text-xs font-medium text-slate-400">
-                    Sample Leakage
-                  </div>
-                  <div className="mt-1 text-lg sm:text-xl font-mono font-semibold text-white">
+                  <div className="text-xs text-[#9CA3AF]">Sample Leakage</div>
+                  <div className="mt-1 font-mono text-xl sm:text-2xl font-bold text-white">
                     <AnimatedNumber value={7445} prefix="$" />
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs font-medium text-slate-400">
-                    90d Audit Recovery
-                  </div>
-                  <div className="mt-1 text-lg sm:text-xl font-mono font-semibold text-emerald-400">
+                  <div className="text-xs text-[#9CA3AF]">90d Recovery</div>
+                  <div className="mt-1 font-mono text-xl sm:text-2xl font-bold text-[#34D399]">
                     <AnimatedNumber value={22335} prefix="+$" />
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs font-medium text-slate-400">
-                    Turnaround
-                  </div>
-                  <div className="mt-1 text-lg sm:text-xl font-semibold text-slate-100">
+                  <div className="text-xs text-[#9CA3AF]">Turnaround</div>
+                  <div className="mt-1 text-xl sm:text-2xl font-bold text-white">
                     <span className="font-mono tabular-nums">48h</span> Async
                   </div>
                 </div>
               </div>
             </ScrollReveal>
 
-            {/* Interactive Brokerage GCI Ledger Terminal */}
-            <ScrollReveal aboveFold={true} delay={0.1} className="lg:col-span-7">
-              <HeroAuditTerminal
-                onScrollToSandbox={handleScrollToSandbox}
-                onOpenModal={handleOpenModal}
+            {/* Right Visual Anchor: Smiling Female US Real Estate Broker + Floating Glass Cards */}
+            <ScrollReveal
+              aboveFold={true}
+              delay={0.08}
+              className="lg:col-span-6 relative"
+            >
+              {/* Soft Emerald Back-Glow */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -inset-4 rounded-[28px] bg-emerald-500/15 blur-3xl opacity-60"
               />
+
+              <div className="relative h-full min-h-[420px] sm:min-h-[500px] rounded-[20px] overflow-hidden border border-emerald-500/30 shadow-[0_28px_70px_rgba(0,0,0,0.6),0_0_44px_rgba(16,185,129,0.18)]">
+                <ParallaxPhoto
+                  src="/images/hero-female-broker.jpg"
+                  alt="Smiling professional US female real estate managing broker in a bright modern glass office"
+                  priority={true}
+                  className="w-full h-full"
+                  imgClassName="object-top"
+                  sizes="(max-width: 1024px) 100vw, 640px"
+                  strength={16}
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050807]/85 via-[#050807]/15 to-transparent"
+                />
+
+                {/* Floating Glass Cards over Hero Photo */}
+                <div className="absolute inset-x-4 sm:inset-x-6 bottom-4 sm:bottom-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {/* Floating Card 1: $7,445 Leakage */}
+                  <div className="rounded-2xl bg-[#050807]/85 backdrop-blur-xl border border-rose-400/35 p-4 shadow-[0_14px_34px_rgba(0,0,0,0.55)]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-medium text-slate-300">
+                        Sample Leakage Found
+                      </span>
+                      <TrendingDown className="w-4 h-4 text-rose-400 shrink-0" />
+                    </div>
+                    <div className="mt-1.5 font-mono text-2xl sm:text-3xl font-bold text-white tabular-nums">
+                      <AnimatedNumber value={7445} prefix="$" />
+                    </div>
+                    <div className="mt-1 text-[11px] text-[#9CA3AF]">
+                      Flagged across 3 closed sides
+                    </div>
+                  </div>
+
+                  {/* Floating Card 2: +$22,335 Recovered */}
+                  <div className="rounded-2xl bg-[#050807]/85 backdrop-blur-xl border border-emerald-400/45 p-4 shadow-[0_14px_34px_rgba(0,0,0,0.55),0_0_28px_rgba(16,185,129,0.28)]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-medium text-emerald-300">
+                        90-Day GCI Recovered
+                      </span>
+                      <TrendingUp className="w-4 h-4 text-[#34D399] shrink-0" />
+                    </div>
+                    <div className="mt-1.5 font-mono text-2xl sm:text-3xl font-bold text-[#34D399] tabular-nums">
+                      <AnimatedNumber value={22335} prefix="+$" />
+                    </div>
+                    <div className="mt-1 text-[11px] text-slate-300">
+                      Split drift + referrals + fees
+                    </div>
+                  </div>
+                </div>
+              </div>
             </ScrollReveal>
-          </section>
-        </div>
+          </div>
+        </section>
 
         {/* Continuous Platform Trust Marquee */}
         <TrustMarquee />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 space-y-24 sm:space-y-28">
-          {/* Section 01: Diagnostic Photo Frame + 3 Sparkline KPI Overlays */}
-          <DiagnosticProblemSection onScrollToSandbox={handleScrollToSandbox} />
+        {/* 3. PROBLEM SECTION */}
+        <ProblemSection
+          onScrollToTool={handleScrollToTool}
+          onRequestAudit={handleOpenModal}
+        />
 
-          {/* Section 02: Inline Leakage Sandbox over Blurred Brokerage Backdrop */}
-          <InlineLeakageSandbox
-            onRequestAuditWithContext={handleOpenWithSandboxPreset}
-          />
+        {/* 4. AUDIT TOOL — INTERACTIVE SAAS CORE + DELIVERABLE MOCKUPS */}
+        <LeakageAuditTool onRequestAuditWithNote={handleOpenModalWithNote} />
 
-          {/* Section 03: Protocol Pillars (4 Glass Preview Cards) + Forensic Coverage Matrix */}
-          <div className="space-y-8">
-            <InfrastructurePillarsSection />
+        {/* 5. COVERAGE — 4 GLASS CARDS (NO TABLE) */}
+        <CoverageCardsSection />
 
+        {/* 6. AUDIT SNAPSHOTS — REAL GCI RECOVERED WITH OWNER PHOTOS */}
+        <AuditSnapshotsSection onOpenPrivacy={() => setPrivacyOpen(true)} />
+
+        {/* 7. COMPARISON — MANUAL WAY VS ZED WAY */}
+        <ComparisonSection />
+
+        {/* 8. FAQ — 4-QUESTION EXECUTIVE ACCORDION */}
+        <ExecutiveFaqSection />
+
+        {/* 9. FINAL CTA SECTION */}
+        <section className="relative border-t border-emerald-500/15 bg-[#0A0F0D]/90 py-20 sm:py-28">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal>
-              <GlassSpotlightCard tilt={false} className="overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse min-w-[680px]">
-                    <thead>
-                      <tr className="border-b border-white/[0.08] text-xs font-medium text-slate-400">
-                        <th className="py-3.5 px-5 font-medium">
-                          Discrepancy Class
-                        </th>
-                        <th className="py-3.5 px-5 font-medium">
-                          Verification Source
-                        </th>
-                        <th className="py-3.5 px-5 font-medium text-right">
-                          Typical Impact
-                        </th>
-                        <th className="py-3.5 px-5 font-medium">
-                          Async Remediation
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/[0.06] text-sm">
-                      {PROTOCOL_ROWS.map((row) => (
-                        <tr
-                          key={row.code}
-                          className="hover:bg-emerald-400/[0.04] transition-colors"
-                        >
-                          <td className="py-4 px-5">
-                            <div className="flex items-baseline gap-2.5">
-                              <span className="text-[11px] font-mono text-emerald-400/80 tabular-nums">
-                                {row.code}
-                              </span>
-                              <span className="font-medium text-white">
-                                {row.discrepancy}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="py-4 px-5 text-xs text-slate-300">
-                            {row.source}
-                          </td>
-                          <td className="py-4 px-5 text-right font-mono text-xs sm:text-[13px] text-rose-400 tabular-nums whitespace-nowrap">
-                            {row.impact}
-                          </td>
-                          <td className="py-4 px-5 text-xs text-slate-200">
-                            {row.remediation}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              <GlassSpotlightCard
+                borderBeam={true}
+                tilt={false}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+                  {/* Left: Final Punchy Conversion Block */}
+                  <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-between gap-8">
+                    <div className="space-y-5">
+                      <div className="inline-flex items-center gap-2 text-xs font-medium text-[#34D399]">
+                        <ShieldCheck className="w-4 h-4 shrink-0" />
+                        Free 3-Deal Forensic Diagnostic · 100% Async
+                      </div>
+
+                      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-[-0.03em] leading-[1.06] text-white [text-wrap:balance]">
+                        Stop Leaking.{' '}
+                        <span className="text-[#34D399]">
+                          Start Recovering.
+                        </span>
+                      </h2>
+
+                      <p className="text-base sm:text-lg text-[#9CA3AF] leading-relaxed max-w-xl">
+                        Submit 3 closed deals in writing. Get your Executive PDF
+                        Summary, Line-by-Line Discrepancy CSV, and Private Loom
+                        walkthrough in 48h.
+                      </p>
+
+                      <div className="pt-2 space-y-3">
+                        <MagneticButton className="w-full sm:w-auto">
+                          <button
+                            type="button"
+                            onClick={handleOpenModal}
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-[#10B981] hover:bg-[#34D399] text-[#050807] font-bold text-sm sm:text-base h-13 px-7 shadow-[0_0_38px_rgba(16,185,129,0.45)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
+                          >
+                            Request Written Audit
+                            <ArrowRight className="w-4 h-4 shrink-0" />
+                          </button>
+                        </MagneticButton>
+                        <div className="text-xs text-slate-300">
+                          No commitment. Written report in 48h.
+                        </div>
+                      </div>
+                    </div>
+
+                    <ConfidentialityGuaranteeBar
+                      onOpenPrivacy={() => setPrivacyOpen(true)}
+                    />
+                  </div>
+
+                  {/* Right: Confident Brokerage Owner Portrait */}
+                  <div className="lg:col-span-5 relative min-h-[320px] lg:min-h-full border-t lg:border-t-0 lg:border-l border-emerald-500/20">
+                    <ParallaxPhoto
+                      src="/images/cta-confident-owner.jpg"
+                      alt="Confident US brokerage owner smiling with arms crossed in a modern sunlit office"
+                      className="w-full h-full"
+                      imgClassName="object-top"
+                      sizes="(max-width: 1024px) 100vw, 520px"
+                      strength={16}
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050807]/80 via-transparent to-transparent lg:bg-gradient-to-r lg:from-[#0A110F]/55 lg:via-transparent lg:to-transparent"
+                    />
+                  </div>
                 </div>
               </GlassSpotlightCard>
             </ScrollReveal>
           </div>
-
-          {/* Section 04: Anonymized Forensic Brokerage Audit Snapshots */}
-          <RealResultsSection />
-
-          {/* Section 05: Old Brokerage Way vs Zed Automation Comparison */}
-          <ComparisonSection />
-
-          {/* Section 06: 4-Question Executive FAQ */}
-          <ExecutiveFaqSection />
-
-          {/* Section 07: 48-Hour Deliverable Dossier + Async Workflow & Final CTA */}
-          <section id="async-workflow" className="scroll-mt-20 space-y-6">
-            <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-              <div className="space-y-2">
-                <div className="text-xs font-medium text-slate-400">
-                  Section 07 · Asynchronous Fulfillment
-                </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white [text-wrap:balance]">
-                  48-Hour Written Delivery.{' '}
-                  <span className="text-emerald-400">Zero Meetings Required.</span>
-                </h2>
-              </div>
-              <span className="text-xs font-medium text-emerald-300/90">
-                100% written email + PDF delivery
-              </span>
-            </ScrollReveal>
-
-            {/* Sample 48-Hour Audit Dossier Card */}
-            <AuditDossierPreviewCard />
-
-            <ScrollReveal delay={0.08}>
-              <GlassSpotlightCard tilt={false} className="overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.08]">
-                  {ASYNC_STEPS.map((item) => (
-                    <div key={item.step} className="p-6 sm:p-7 space-y-3">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono text-emerald-400 font-semibold tabular-nums">
-                          {item.step}
-                        </span>
-                        <span className="font-medium text-slate-400">
-                          {item.timing}
-                        </span>
-                      </div>
-                      <h3 className="text-base font-semibold tracking-[-0.02em] text-white">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                        {item.detail}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="px-5 sm:px-7 py-5 border-t border-white/[0.08] bg-[#060C0A]/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <div className="text-sm font-semibold text-white">
-                      Ready to verify 3 closed transactions?
-                    </div>
-                    <div className="text-xs text-slate-300">
-                      Confidential CSV, PDF &amp; Loom delivered in 48h ·{' '}
-                      zakaria@zedautomations.tech
-                    </div>
-                  </div>
-
-                  <MagneticButton className="w-full sm:w-auto">
-                    <button
-                      type="button"
-                      onClick={handleOpenModal}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-5 h-11 text-xs sm:text-sm font-semibold shadow-[0_4px_20px_rgba(16,185,129,0.22)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
-                    >
-                      Submit 3 Deals for Free Written Audit
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </MagneticButton>
-                </div>
-
-                {/* Confidentiality & Zero-Access Guarantee Bar */}
-                <ConfidentialityGuaranteeBar
-                  onOpenPrivacy={() => setPrivacyOpen(true)}
-                />
-              </GlassSpotlightCard>
-            </ScrollReveal>
-          </section>
-        </div>
+        </section>
       </main>
 
-      {/* Clean Quiet Footer */}
-      <footer className="relative z-10 border-t border-white/[0.08] bg-[#040807]/85 backdrop-blur-xl py-8 text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* 10. FOOTER */}
+      <footer className="relative z-10 border-t border-emerald-500/15 bg-[#050807] py-10 text-xs text-[#9CA3AF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="font-semibold text-white">Zed Automation</span>
+            <span className="font-[family-name:var(--font-display)] font-extrabold tracking-tight text-white">
+              ZED AUTOMATION
+            </span>
             <span aria-hidden="true" className="text-white/20">
               ·
             </span>
-            <span>Forensic Commission Audit &amp; GCI Recovery</span>
+            <span>Forensic Commission Audit</span>
             <span aria-hidden="true" className="text-white/20">
               ·
             </span>
             <a
               href="mailto:zakaria@zedautomations.tech"
-              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-[#34D399] transition-colors"
             >
-              <Mail className="w-3.5 h-3.5 text-emerald-400" />
+              <Mail className="w-3.5 h-3.5 text-[#34D399]" />
               zakaria@zedautomations.tech
             </a>
           </div>
 
           <div className="flex flex-wrap items-center gap-6 font-medium">
+            <a
+              href="#tool"
+              className="hover:text-white transition-colors whitespace-nowrap"
+            >
+              Tool
+            </a>
+            <a
+              href="#results"
+              className="hover:text-white transition-colors whitespace-nowrap"
+            >
+              Results
+            </a>
+            <a
+              href="#protocol"
+              className="hover:text-white transition-colors whitespace-nowrap"
+            >
+              Protocol
+            </a>
+            <a
+              href="#faq"
+              className="hover:text-white transition-colors whitespace-nowrap"
+            >
+              FAQ
+            </a>
             <button
               type="button"
               onClick={() => setPrivacyOpen(true)}
-              className="text-slate-300 hover:text-emerald-300 transition-colors cursor-pointer whitespace-nowrap"
+              className="hover:text-white transition-colors cursor-pointer whitespace-nowrap"
             >
               Privacy &amp; NDA
             </button>
-            <button
-              type="button"
-              onClick={handleOpenModal}
-              className="text-emerald-300 hover:text-emerald-200 transition-colors cursor-pointer whitespace-nowrap"
-            >
-              Request Free Audit
-            </button>
             <Link
               href="/commission-audit"
-              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 text-emerald-300 hover:text-[#34D399] transition-colors whitespace-nowrap"
             >
-              <Lock className="w-3.5 h-3.5 text-emerald-400" />
+              <Lock className="w-3.5 h-3.5" />
               Client Portal
             </Link>
+            <span className="text-slate-500 whitespace-nowrap">
+              &copy; 2026 ZED Automation
+            </span>
           </div>
         </div>
       </footer>

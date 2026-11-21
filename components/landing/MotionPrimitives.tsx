@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import {
   animate,
   motion,
   useMotionTemplate,
   useMotionValue,
+  useScroll,
   useSpring,
+  useTransform,
 } from 'motion/react';
 
 /* -------------------------------------------------------------------------- */
-/*  Native Viewport Hook (immune to motion whileInView/reactCompiler issues)  */
+/*  Native Viewport Hook (reliable across scroll & constrained viewports)     */
 /* -------------------------------------------------------------------------- */
 
 function useReliableInView(ref: React.RefObject<HTMLElement | null>): boolean {
@@ -62,13 +65,12 @@ function useReliableInView(ref: React.RefObject<HTMLElement | null>): boolean {
     window.addEventListener('scroll', onScroll, { passive: true, capture: true });
     window.addEventListener('resize', onScroll, { passive: true });
 
-    // Failsafe guarantee so sections can never remain hidden in constrained iframes
     const initialSettle = window.setTimeout(() => {
       checkRect();
-    }, 250);
+    }, 220);
     const fullRevealFallback = window.setTimeout(() => {
       setVisible(true);
-    }, 1800);
+    }, 1600);
 
     return () => {
       observer?.disconnect();
@@ -83,7 +85,7 @@ function useReliableInView(ref: React.RefObject<HTMLElement | null>): boolean {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Scroll Reveal                                                             */
+/*  Scroll Reveal Fade-Up                                                     */
 /* -------------------------------------------------------------------------- */
 
 export function ScrollReveal({
@@ -118,8 +120,8 @@ export function ScrollReveal({
     <motion.div
       ref={ref}
       initial={false}
-      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+      transition={{ duration: 0.52, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -128,7 +130,7 @@ export function ScrollReveal({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Animated Tabular Number Counter                                           */
+/*  Animated Tabular Number Counter (animates from 0 on enter & on change)    */
 /* -------------------------------------------------------------------------- */
 
 export function AnimatedNumber({
@@ -158,7 +160,7 @@ export function AnimatedNumber({
     prevValueRef.current = value;
 
     const controls = animate(from, value, {
-      duration: 0.85,
+      duration: 0.8,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (latest) => {
         setDisplayValue(latest);
@@ -183,7 +185,68 @@ export function AnimatedNumber({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Smoked Glass Card with Lift, 3D Tilt, Cursor Spotlight & Border Beam      */
+/*  Parallax Editorial Photography Container (with Resilient Fallback)        */
+/* -------------------------------------------------------------------------- */
+
+export function ParallaxPhoto({
+  src,
+  alt,
+  className = '',
+  imgClassName = '',
+  priority = false,
+  sizes = '(max-width: 1024px) 100vw, 50vw',
+  strength = 18,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  imgClassName?: string;
+  priority?: boolean;
+  sizes?: string;
+  strength?: number;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [failed, setFailed] = useState(false);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start'],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], [-strength, strength]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`relative overflow-hidden bg-[#0A110F] ${className}`}
+    >
+      {failed ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0A1411] via-[#070D0B] to-[#050807] p-6 text-center">
+          <span className="text-xs font-medium text-emerald-300/80">{alt}</span>
+        </div>
+      ) : (
+        <motion.div
+          style={{ y }}
+          className="absolute -inset-y-6 inset-x-0 will-change-transform"
+        >
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            priority={priority}
+            sizes={sizes}
+            referrerPolicy="no-referrer"
+            onError={() => setFailed(true)}
+            className={`object-cover ${imgClassName}`}
+          />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Glassmorphism Card (rounded-[20px], 1px emerald border, lift & shimmer)   */
 /* -------------------------------------------------------------------------- */
 
 export function GlassSpotlightCard({
@@ -215,10 +278,10 @@ export function GlassSpotlightCard({
     }
   }, []);
 
-  const spotlight = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, ${
+  const spotlight = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, ${
     variant === 'emerald'
-      ? 'rgba(16, 185, 129, 0.08)'
-      : 'rgba(255, 255, 255, 0.04)'
+      ? 'rgba(16, 185, 129, 0.12)'
+      : 'rgba(255, 255, 255, 0.05)'
   }, transparent 75%)`;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -230,8 +293,8 @@ export function GlassSpotlightCard({
     mouseY.set(y);
 
     if (tilt) {
-      const rx = ((y - rect.height / 2) / (rect.height / 2)) * -2.2;
-      const ry = ((x - rect.width / 2) / (rect.width / 2)) * 2.2;
+      const rx = ((y - rect.height / 2) / (rect.height / 2)) * -1.8;
+      const ry = ((x - rect.width / 2) / (rect.width / 2)) * 1.8;
       rotateX.set(rx);
       rotateY.set(ry);
     }
@@ -244,45 +307,45 @@ export function GlassSpotlightCard({
 
   const baseSurface =
     variant === 'emerald'
-      ? 'bg-[#0A110F]/80 border-white/[0.08] border-t-emerald-400/25 hover:border-white/[0.14] hover:border-t-emerald-400/35 shadow-[0_14px_38px_rgba(0,0,0,0.42),0_0_24px_rgba(16,185,129,0.05)] hover:shadow-[0_18px_44px_rgba(0,0,0,0.5),0_0_32px_rgba(16,185,129,0.08)]'
-      : 'bg-[#0A0F0E]/80 border-white/[0.08] border-t-white/[0.14] hover:border-white/[0.14] shadow-[0_12px_32px_rgba(0,0,0,0.42)]';
+      ? 'bg-[#0A110F]/80 border-emerald-500/20 border-t-emerald-400/35 hover:border-emerald-400/45 shadow-[0_18px_48px_rgba(0,0,0,0.48),0_0_28px_rgba(16,185,129,0.09)] hover:shadow-[0_22px_56px_rgba(0,0,0,0.55),0_0_38px_rgba(16,185,129,0.18)]'
+      : 'bg-[#0B0F0E]/80 border-white/[0.08] hover:border-white/[0.15] shadow-[0_14px_38px_rgba(0,0,0,0.45)]';
 
   return (
     <motion.div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={isFinePointer ? { y: -2 } : undefined}
+      whileHover={isFinePointer ? { y: -4 } : undefined}
       style={
         isFinePointer && tilt
           ? { rotateX, rotateY, transformPerspective: 1100 }
           : undefined
       }
-      transition={{ duration: 0.2, ease: 'easeOut' }}
-      className={`group relative rounded-2xl border backdrop-blur-xl overflow-hidden transition-colors duration-200 ${baseSurface} ${className}`}
+      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      className={`group relative rounded-[20px] border backdrop-blur-xl overflow-hidden transition-all duration-200 ${baseSurface} ${className}`}
     >
-      {/* Inner Top Specular Hairline Catch-Light */}
+      {/* Top Catch-Light Specular Hairline */}
       <div
         aria-hidden="true"
         className={`pointer-events-none absolute inset-x-0 top-0 h-px z-20 ${
           variant === 'emerald'
-            ? 'bg-gradient-to-r from-transparent via-emerald-400/35 to-transparent'
+            ? 'bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent'
             : 'bg-gradient-to-r from-transparent via-white/15 to-transparent'
         }`}
       />
 
-      {/* Restrained Ambient Border Hairline Trace */}
+      {/* Ambient Border Beam Trace */}
       {borderBeam && variant === 'emerald' && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 rounded-2xl overflow-hidden z-0"
+          className="pointer-events-none absolute inset-0 rounded-[20px] overflow-hidden z-0"
         >
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-            className="absolute -inset-[65%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_295deg,rgba(16,185,129,0.28)_330deg,rgba(110,231,183,0.48)_348deg,transparent_360deg)] will-change-transform"
+            className="absolute -inset-[65%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_290deg,rgba(16,185,129,0.34)_328deg,rgba(52,211,153,0.6)_348deg,transparent_360deg)] will-change-transform"
           />
-          <div className="absolute inset-px rounded-[15px] bg-[#0A110F]/95" />
+          <div className="absolute inset-px rounded-[19px] bg-[#0A110F]/95" />
         </div>
       )}
 
@@ -295,11 +358,11 @@ export function GlassSpotlightCard({
         />
       )}
 
-      {/* Diagonal Specular Light Shimmer on Hover */}
+      {/* Shimmer Shine Sweep on Hover */}
       {shimmer && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 -translate-x-full group-hover:translate-x-[150%] transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-emerald-300/[0.08] to-transparent skew-x-[-20deg]"
+          className="pointer-events-none absolute inset-0 z-10 -translate-x-full group-hover:translate-x-[150%] transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-emerald-300/[0.11] to-transparent skew-x-[-20deg]"
         />
       )}
 
@@ -309,7 +372,7 @@ export function GlassSpotlightCard({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Magnetic Primary Button Wrapper                                           */
+/*  Magnetic Primary CTA Wrapper                                              */
 /* -------------------------------------------------------------------------- */
 
 export function MagneticButton({
@@ -333,9 +396,9 @@ export function MagneticButton({
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isFinePointer || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    const offsetX = (e.clientX - (rect.left + rect.width / 2)) * 0.16;
-    const offsetY = (e.clientY - (rect.top + rect.height / 2)) * 0.22;
-    x.set(Math.max(-8, Math.min(8, offsetX)));
+    const offsetX = (e.clientX - (rect.left + rect.width / 2)) * 0.18;
+    const offsetY = (e.clientY - (rect.top + rect.height / 2)) * 0.24;
+    x.set(Math.max(-9, Math.min(9, offsetX)));
     y.set(Math.max(-6, Math.min(6, offsetY)));
   };
 
@@ -358,7 +421,7 @@ export function MagneticButton({
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Infinite Smooth Platform Trust Marquee                                    */
+/*  Continuous Platform Trust Marquee                                         */
 /* -------------------------------------------------------------------------- */
 
 const TRUST_PLATFORMS = [
@@ -368,14 +431,15 @@ const TRUST_PLATFORMS = [
   'Brokermint',
   'LoneWolf',
   'KVCore',
-  'ALTA',
+  'ALTA / HUD-1',
+  'QuickBooks Exports',
 ] as const;
 
 export function TrustMarquee() {
   return (
-    <div className="border-y border-white/[0.08] bg-[#070D0B]/70 backdrop-blur-md py-4 overflow-hidden">
+    <div className="border-y border-emerald-500/15 bg-[#0A0F0D]/80 backdrop-blur-md py-4 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-        <span className="text-xs font-medium tracking-wide text-emerald-300/85 whitespace-nowrap shrink-0">
+        <span className="text-xs font-medium tracking-wide text-emerald-300/90 whitespace-nowrap shrink-0">
           Reconciles Exports From
         </span>
 
@@ -399,7 +463,7 @@ export function TrustMarquee() {
                     <span className="text-sm font-medium tracking-tight text-slate-300">
                       {platform}
                     </span>
-                    <span className="text-white/20 text-xs" aria-hidden="true">
+                    <span className="text-emerald-500/35 text-xs" aria-hidden="true">
                       ·
                     </span>
                   </div>
