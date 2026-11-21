@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Inter, Manrope } from "next/font/google";
+import { Fraunces, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 
-const manrope = Manrope({
+const fraunces = Fraunces({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["600", "700", "800"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 const inter = Inter({
@@ -80,11 +81,11 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={`${manrope.variable} ${inter.variable} ${geistMono.variable} bg-[#050807] font-sans text-white antialiased selection:bg-emerald-500/30 selection:text-emerald-200`}
+        className={`${fraunces.variable} ${inter.variable} ${geistMono.variable} bg-[#060A08] font-sans text-[#F5F2EB] antialiased selection:bg-[#0B6B4A]/50 selection:text-[#F5F2EB]`}
       >
         <div
           aria-hidden="true"
-          className="fintech-noise pointer-events-none fixed inset-0 z-[60] opacity-[0.025]"
+          className="fintech-noise pointer-events-none fixed inset-0 z-[60] opacity-[0.05] mix-blend-overlay"
         />
         {children}
       </body>

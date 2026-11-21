@@ -171,31 +171,31 @@ export default function WrittenAuditModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto bg-[#0A110F]/95 backdrop-blur-2xl text-slate-100 border border-white/[0.09] border-t-emerald-400/30 shadow-[0_24px_70px_rgba(0,0,0,0.65)] p-0 gap-0">
+      <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto bg-[#0B110F]/95 backdrop-blur-2xl text-[#F5F2EB] border border-[#D8C8AE]/20 border-t-[#D8C8AE]/35 shadow-[0_24px_70px_rgba(0,0,0,0.65)] p-0 gap-0">
         {confirmed ? (
           <div className="p-5 sm:p-8 space-y-5">
             <div className="space-y-2.5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-emerald-400">
+                <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-[#58B38E]">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
                   {confirmed.savedToServer
                     ? 'Logged to Zed Audit Desk'
                     : 'Audit Brief Ready for Direct Dispatch'}
                 </div>
-                <span className="text-[11px] font-mono text-emerald-300/90 tabular-nums">
+                <span className="text-[11px] font-mono text-[#D8C8AE] tabular-nums">
                   Ref {confirmed.referenceId}
                 </span>
               </div>
-              <h3 className="text-xl font-bold tracking-[-0.03em] text-white">
+              <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#F7F3EB]">
                 3-Deal Commission Audit Request Confirmed
               </h3>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-[#D4D0C8] leading-[1.68]">
                 Thank you,{' '}
-                <span className="text-white font-medium">
+                <span className="text-[#F7F3EB] font-medium">
                   {confirmed.payload.ownerName}
                 </span>
                 . Your forensic audit for{' '}
-                <span className="text-white font-medium">
+                <span className="text-[#F7F3EB] font-medium">
                   {confirmed.payload.brokerageName}
                 </span>{' '}
                 {confirmed.savedToServer
@@ -203,44 +203,44 @@ export default function WrittenAuditModal({
                   : 'is formatted below for one-click dispatch.'}{' '}
                 Expect a line-by-line PDF discrepancy report and private Loom
                 walkthrough at{' '}
-                <span className="text-emerald-300 font-medium break-words">
+                <span className="text-[#D8C8AE] font-medium break-words">
                   {confirmed.payload.email}
                 </span>{' '}
                 within 48 hours.
               </p>
             </div>
 
-            <div className="rounded-lg bg-[#040807]/85 border border-white/[0.08] divide-y divide-white/[0.06] text-xs">
-              <div className="px-4 py-2.5 flex items-center justify-between gap-2 text-slate-400 uppercase tracking-[0.1em] font-medium text-[11px]">
+            <div className="rounded-lg bg-[#060A08]/85 border border-[#D8C8AE]/[0.12] divide-y divide-white/[0.06] text-xs">
+              <div className="px-4 py-2.5 flex items-center justify-between gap-2 text-[#A8A49B] uppercase tracking-[0.1em] font-medium text-[11px]">
                 <span>Submitted Transaction References</span>
-                <span className="text-emerald-300/90 font-mono tabular-nums">
+                <span className="text-[#D8C8AE] font-mono tabular-nums">
                   {confirmed.payload.agentCount} Agents
                 </span>
               </div>
-              <div className="px-4 py-2.5 text-slate-100 break-words">
-                <span className="font-mono tabular-nums text-slate-500 mr-1.5">1.</span>
+              <div className="px-4 py-2.5 text-[#F5F2EB] break-words">
+                <span className="font-mono tabular-nums text-[#78746C] mr-1.5">1.</span>
                 {confirmed.payload.dealOne}
               </div>
-              <div className="px-4 py-2.5 text-slate-100 break-words">
-                <span className="font-mono tabular-nums text-slate-500 mr-1.5">2.</span>
+              <div className="px-4 py-2.5 text-[#F5F2EB] break-words">
+                <span className="font-mono tabular-nums text-[#78746C] mr-1.5">2.</span>
                 {confirmed.payload.dealTwo}
               </div>
-              <div className="px-4 py-2.5 text-slate-100 break-words">
-                <span className="font-mono tabular-nums text-slate-500 mr-1.5">3.</span>
+              <div className="px-4 py-2.5 text-[#F5F2EB] break-words">
+                <span className="font-mono tabular-nums text-[#78746C] mr-1.5">3.</span>
                 {confirmed.payload.dealThree}
               </div>
             </div>
 
             {/* Guaranteed Dual-Backup Lead Delivery Actions */}
-            <div className="rounded-xl bg-[#040807]/90 border border-white/[0.08] border-t-emerald-400/20 p-4 space-y-3">
-              <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-300">
+            <div className="rounded-xl bg-[#060A08]/90 border border-[#D8C8AE]/[0.14] p-4 space-y-3">
+              <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#D8C8AE]">
                 Keep a Copy or Send Directly to Audit Desk
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={handleCopyBrief}
-                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] text-xs font-semibold shadow-[0_1px_0_rgba(255,255,255,0.22)_inset,0_8px_24px_rgba(16,185,129,0.2)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#0B6B4A] hover:bg-[#117C57] text-[#F7F3EB] border border-[#D8C8AE]/20 text-xs font-semibold shadow-[0_8px_22px_rgba(0,0,0,0.4)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
                 >
                   {copiedBrief ? (
                     <>
@@ -257,17 +257,17 @@ export default function WrittenAuditModal({
 
                 <a
                   href={mailtoUrl}
-                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#0A110F] hover:bg-white/[0.04] border border-white/[0.12] hover:border-emerald-400/35 text-emerald-300 hover:text-emerald-200 text-xs font-semibold transition-all active:scale-[0.985] whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#0B110F] hover:bg-white/[0.04] border border-[#D8C8AE]/20 hover:border-[#D8C8AE]/45 text-[#D8C8AE] hover:text-[#F7F3EB] text-xs font-semibold transition-all active:scale-[0.985] whitespace-nowrap"
                 >
                   <Mail className="w-3.5 h-3.5 shrink-0" />
                   Email Pre-Filled Brief
                 </a>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-[#A8A49B] leading-relaxed">
                 Direct fallback desk:{' '}
                 <a
                   href={mailtoUrl}
-                  className="text-emerald-300 hover:underline break-words"
+                  className="text-[#D8C8AE] hover:underline break-words"
                 >
                   {AUDIT_DESK_EMAIL}
                 </a>
@@ -298,29 +298,29 @@ export default function WrittenAuditModal({
           </div>
         ) : (
           <>
-            <DialogHeader className="px-5 sm:px-6 pt-6 pb-5 border-b border-white/[0.08] text-left space-y-2">
-              <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-emerald-300/90">
+            <DialogHeader className="px-5 sm:px-6 pt-6 pb-5 border-b border-[#D8C8AE]/[0.12] text-left space-y-2">
+              <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#D8C8AE]">
                 Async Written Audit · 48-Hour Turnaround · Written Delivery Only
               </div>
-              <DialogTitle className="font-display text-xl font-bold tracking-[-0.03em] text-white">
+              <DialogTitle className="font-display text-xl font-semibold tracking-[-0.02em] text-[#F7F3EB]">
                 Request Your 3-Deal Written Commission Audit
               </DialogTitle>
-              <DialogDescription className="text-sm text-slate-300 leading-relaxed">
+              <DialogDescription className="text-sm text-[#B0ACA3] leading-[1.68]">
                 Submit 3 recent closed transactions. Receive a confidential PDF
                 reconciliation ledger and private async Loom breakdown via
                 email.
               </DialogDescription>
-              <div className="pt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-slate-300">
+              <div className="pt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-[#D4D0C8]">
                 <span className="inline-flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5 text-emerald-400" />
+                  <FileText className="w-3.5 h-3.5 text-[#D8C8AE]" />
                   Line-by-line PDF ledger
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Video className="w-3.5 h-3.5 text-emerald-400" />
+                  <Video className="w-3.5 h-3.5 text-[#D8C8AE]" />
                   Async Loom walkthrough
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#58B38E]" />
                   Written delivery only
                 </span>
               </div>
@@ -457,7 +457,7 @@ export default function WrittenAuditModal({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-11 rounded-lg bg-[#10B981] hover:bg-emerald-400 disabled:opacity-70 disabled:cursor-not-allowed text-[#040807] font-semibold text-sm shadow-[0_1px_0_rgba(255,255,255,0.22)_inset,0_10px_28px_rgba(16,185,129,0.2)] transition-all active:scale-[0.985] cursor-pointer inline-flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-lg bg-[#0B6B4A] hover:bg-[#117C57] disabled:opacity-70 disabled:cursor-not-allowed text-[#F7F3EB] border border-[#D8C8AE]/20 font-semibold text-sm shadow-[0_10px_28px_rgba(0,0,0,0.45),0_4px_16px_rgba(11,107,74,0.28)] transition-all active:scale-[0.985] cursor-pointer inline-flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -468,8 +468,8 @@ export default function WrittenAuditModal({
                     <>Submit 3 Deals for Async Written Audit &rarr;</>
                   )}
                 </button>
-                <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
-                  <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
+                <div className="flex items-center justify-center gap-2 text-[11px] text-[#A8A49B] text-center">
+                  <Lock className="w-3 h-3 text-[#D8C8AE] shrink-0" />
                   <span>
                     Encrypted async review · Direct email delivery via{' '}
                     {AUDIT_DESK_EMAIL}

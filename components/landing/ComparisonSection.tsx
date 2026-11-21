@@ -24,15 +24,15 @@ const ZED_WAY_POINTS = [
 
 export default function ComparisonSection() {
   return (
-    <section className="relative border-y border-emerald-500/10 bg-[#0A0F0D]/80 py-20 sm:py-28">
+    <section className="relative border-y border-[#D8C8AE]/[0.1] bg-[#0A0F0D]/85 py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <ScrollReveal className="space-y-3 max-w-3xl">
-          <div className="text-xs font-medium text-emerald-300/90">
+          <div className="text-xs font-medium tracking-[0.04em] text-[#D8C8AE]">
             Operational Margin Comparison
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-[-0.03em] leading-[1.06] text-white [text-wrap:balance]">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-[-0.02em] leading-[1.08] text-[#F7F3EB] [text-wrap:balance]">
             Manual Spreadsheets Drain Margin.{' '}
-            <span className="text-[#34D399]">ZED Audits Async.</span>
+            <span className="italic font-medium text-[#D8C8AE]">ZED Audits Async.</span>
           </h2>
         </ScrollReveal>
 
@@ -47,10 +47,10 @@ export default function ComparisonSection() {
               <div>
                 <div className="relative h-60 w-full overflow-hidden border-b border-white/[0.08]">
                   <ParallaxPhoto
-                    src="/images/old-way-desk.jpg"
+                    src="/images/candid/messy-desk.jpg"
                     alt="Messy brokerage desk stacked with closing folders, sticky notes, and manual spreadsheets"
                     className="w-full h-full"
-                    imgClassName="grayscale-[55%] brightness-75"
+                    imgClassName="grayscale-[40%] brightness-80"
                     sizes="(max-width: 1024px) 100vw, 600px"
                     strength={14}
                   />
@@ -60,10 +60,10 @@ export default function ComparisonSection() {
                   />
                   <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
                     <div>
-                      <div className="text-xs font-medium text-rose-400">
+                      <div className="text-xs font-medium text-[#D98276]">
                         Slow · Missed · Messy CRM
                       </div>
-                      <h3 className="text-2xl font-bold text-slate-200 mt-0.5">
+                      <h3 className="text-2xl font-semibold text-[#E8E2D6] mt-0.5">
                         Manual Way
                       </h3>
                     </div>
@@ -74,9 +74,9 @@ export default function ComparisonSection() {
                   {MANUAL_WAY_POINTS.map((point) => (
                     <li
                       key={point}
-                      className="flex items-start gap-3 text-sm text-[#9CA3AF] leading-relaxed"
+                      className="flex items-start gap-3 text-sm text-[#B0ACA3] leading-[1.68] tracking-[0.01em]"
                     >
-                      <span className="mt-0.5 h-5 w-5 rounded-md bg-rose-500/10 border border-rose-500/25 flex items-center justify-center text-rose-400 shrink-0">
+                      <span className="mt-1 h-5 w-5 rounded-md bg-[#D98276]/12 border border-[#D98276]/25 flex items-center justify-center text-[#D98276] shrink-0">
                         <X className="w-3.5 h-3.5" />
                       </span>
                       <span>{point}</span>
@@ -87,16 +87,16 @@ export default function ComparisonSection() {
             </GlassSpotlightCard>
           </ScrollReveal>
 
-          {/* Right Glowing Panel: ZED Way */}
+          {/* Right Panel: ZED Way */}
           <ScrollReveal delay={0.08}>
             <GlassSpotlightCard
               borderBeam={true}
               className="h-full flex flex-col justify-between"
             >
               <div>
-                <div className="relative h-60 w-full overflow-hidden border-b border-emerald-500/20">
+                <div className="relative h-60 w-full overflow-hidden border-b border-[#D8C8AE]/15">
                   <ParallaxPhoto
-                    src="/images/zed-team.jpg"
+                    src="/images/candid/modern-team.jpg"
                     alt="Modern brokerage team collaborating cleanly in a bright architectural office"
                     className="w-full h-full"
                     sizes="(max-width: 1024px) 100vw, 600px"
@@ -104,14 +104,14 @@ export default function ComparisonSection() {
                   />
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0A110F] via-[#0A110F]/30 to-transparent"
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B110F] via-[#0B110F]/30 to-transparent"
                   />
                   <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
                     <div>
-                      <div className="text-xs font-medium text-[#34D399]">
+                      <div className="text-xs font-medium text-[#D8C8AE]">
                         24/7 · Instant · Clean · Async
                       </div>
-                      <h3 className="text-2xl font-bold text-white mt-0.5">
+                      <h3 className="text-2xl font-semibold text-[#F7F3EB] mt-0.5">
                         ZED Way
                       </h3>
                     </div>
@@ -122,9 +122,9 @@ export default function ComparisonSection() {
                   {ZED_WAY_POINTS.map((point) => (
                     <li
                       key={point}
-                      className="flex items-start gap-3 text-sm text-slate-100 leading-relaxed"
+                      className="flex items-start gap-3 text-sm text-[#E8E2D6] leading-[1.68] tracking-[0.01em]"
                     >
-                      <span className="mt-0.5 h-5 w-5 rounded-md bg-emerald-500/15 border border-emerald-400/35 flex items-center justify-center text-[#34D399] shrink-0">
+                      <span className="mt-1 h-5 w-5 rounded-md bg-[#0B6B4A]/30 border border-[#0B6B4A]/80 flex items-center justify-center text-[#58B38E] shrink-0">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                       <span>{point}</span>

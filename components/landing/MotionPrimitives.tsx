@@ -278,10 +278,10 @@ export function GlassSpotlightCard({
     }
   }, []);
 
-  const spotlight = useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, ${
+  const spotlight = useMotionTemplate`radial-gradient(420px circle at ${mouseX}px ${mouseY}px, ${
     variant === 'emerald'
-      ? 'rgba(16, 185, 129, 0.12)'
-      : 'rgba(255, 255, 255, 0.05)'
+      ? 'rgba(216, 200, 174, 0.065)'
+      : 'rgba(255, 255, 255, 0.04)'
   }, transparent 75%)`;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -293,8 +293,8 @@ export function GlassSpotlightCard({
     mouseY.set(y);
 
     if (tilt) {
-      const rx = ((y - rect.height / 2) / (rect.height / 2)) * -1.8;
-      const ry = ((x - rect.width / 2) / (rect.width / 2)) * 1.8;
+      const rx = ((y - rect.height / 2) / (rect.height / 2)) * -1.4;
+      const ry = ((x - rect.width / 2) / (rect.width / 2)) * 1.4;
       rotateX.set(rx);
       rotateY.set(ry);
     }
@@ -307,15 +307,15 @@ export function GlassSpotlightCard({
 
   const baseSurface =
     variant === 'emerald'
-      ? 'bg-[#0A110F]/80 border-emerald-500/20 border-t-emerald-400/35 hover:border-emerald-400/45 shadow-[0_18px_48px_rgba(0,0,0,0.48),0_0_28px_rgba(16,185,129,0.09)] hover:shadow-[0_22px_56px_rgba(0,0,0,0.55),0_0_38px_rgba(16,185,129,0.18)]'
-      : 'bg-[#0B0F0E]/80 border-white/[0.08] hover:border-white/[0.15] shadow-[0_14px_38px_rgba(0,0,0,0.45)]';
+      ? 'bg-[#0B110F]/85 border-[#D8C8AE]/[0.13] border-t-[#D8C8AE]/25 hover:border-[#0B6B4A]/70 shadow-[0_18px_46px_rgba(0,0,0,0.48)] hover:shadow-[0_22px_54px_rgba(0,0,0,0.56)]'
+      : 'bg-[#0B0F0E]/85 border-white/[0.08] hover:border-white/[0.15] shadow-[0_14px_38px_rgba(0,0,0,0.45)]';
 
   return (
     <motion.div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={isFinePointer ? { y: -4 } : undefined}
+      whileHover={isFinePointer ? { y: -3 } : undefined}
       style={
         isFinePointer && tilt
           ? { rotateX, rotateY, transformPerspective: 1100 }
@@ -329,12 +329,12 @@ export function GlassSpotlightCard({
         aria-hidden="true"
         className={`pointer-events-none absolute inset-x-0 top-0 h-px z-20 ${
           variant === 'emerald'
-            ? 'bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent'
+            ? 'bg-gradient-to-r from-transparent via-[#D8C8AE]/35 to-transparent'
             : 'bg-gradient-to-r from-transparent via-white/15 to-transparent'
         }`}
       />
 
-      {/* Ambient Border Beam Trace */}
+      {/* Restrained Ambient Border Trace */}
       {borderBeam && variant === 'emerald' && (
         <div
           aria-hidden="true"
@@ -342,10 +342,10 @@ export function GlassSpotlightCard({
         >
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-            className="absolute -inset-[65%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_290deg,rgba(16,185,129,0.34)_328deg,rgba(52,211,153,0.6)_348deg,transparent_360deg)] will-change-transform"
+            transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
+            className="absolute -inset-[65%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_300deg,rgba(11,107,74,0.45)_332deg,rgba(216,200,174,0.45)_350deg,transparent_360deg)] will-change-transform"
           />
-          <div className="absolute inset-px rounded-[19px] bg-[#0A110F]/95" />
+          <div className="absolute inset-px rounded-[19px] bg-[#0B110F]/96" />
         </div>
       )}
 
@@ -358,11 +358,11 @@ export function GlassSpotlightCard({
         />
       )}
 
-      {/* Shimmer Shine Sweep on Hover */}
+      {/* Subtle Warm Shimmer Sweep on Hover */}
       {shimmer && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-10 -translate-x-full group-hover:translate-x-[150%] transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-emerald-300/[0.11] to-transparent skew-x-[-20deg]"
+          className="pointer-events-none absolute inset-0 z-10 -translate-x-full group-hover:translate-x-[150%] transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-[#D8C8AE]/[0.07] to-transparent skew-x-[-20deg]"
         />
       )}
 
@@ -396,10 +396,10 @@ export function MagneticButton({
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isFinePointer || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
-    const offsetX = (e.clientX - (rect.left + rect.width / 2)) * 0.18;
-    const offsetY = (e.clientY - (rect.top + rect.height / 2)) * 0.24;
-    x.set(Math.max(-9, Math.min(9, offsetX)));
-    y.set(Math.max(-6, Math.min(6, offsetY)));
+    const offsetX = (e.clientX - (rect.left + rect.width / 2)) * 0.16;
+    const offsetY = (e.clientY - (rect.top + rect.height / 2)) * 0.2;
+    x.set(Math.max(-8, Math.min(8, offsetX)));
+    y.set(Math.max(-5, Math.min(5, offsetY)));
   };
 
   const handleMouseLeave = () => {
@@ -437,16 +437,16 @@ const TRUST_PLATFORMS = [
 
 export function TrustMarquee() {
   return (
-    <div className="border-y border-emerald-500/15 bg-[#0A0F0D]/80 backdrop-blur-md py-4 overflow-hidden">
+    <div className="border-y border-[#D8C8AE]/[0.12] bg-[#0A0F0D]/85 backdrop-blur-md py-4 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-        <span className="text-xs font-medium tracking-wide text-emerald-300/90 whitespace-nowrap shrink-0">
+        <span className="text-xs font-medium tracking-wide text-[#D8C8AE] whitespace-nowrap shrink-0">
           Reconciles Exports From
         </span>
 
         <div className="relative flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
           <motion.div
             animate={{ x: ['0%', '-50%'] }}
-            transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
             className="flex w-max items-center gap-8 will-change-transform"
           >
             {[0, 1].map((trackIdx) => (
@@ -460,10 +460,10 @@ export function TrustMarquee() {
                     key={`${trackIdx}-${platform}`}
                     className="flex items-center gap-8 whitespace-nowrap"
                   >
-                    <span className="text-sm font-medium tracking-tight text-slate-300">
+                    <span className="text-sm font-medium tracking-wide text-[#D4D0C8]">
                       {platform}
                     </span>
-                    <span className="text-emerald-500/35 text-xs" aria-hidden="true">
+                    <span className="text-[#D8C8AE]/40 text-xs" aria-hidden="true">
                       ·
                     </span>
                   </div>
