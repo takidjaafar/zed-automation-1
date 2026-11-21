@@ -105,7 +105,7 @@ export default function ProblemSection({
             <ScrollReveal delay={0.08}>
               <div className="relative rounded-[20px] overflow-hidden border border-[#D8C8AE]/18 shadow-[0_24px_60px_rgba(0,0,0,0.55)] aspect-[16/9]">
                 <ParallaxPhoto
-                  src="/images/candid/problem-team.jpg"
+                  src="/images/candid/problem-team-clean.jpg"
                   alt="Brokerage leadership team reviewing commission spreadsheets in a modern glass office"
                   className="w-full h-full"
                   imgClassName="object-center"
@@ -165,11 +165,11 @@ export default function ProblemSection({
                           <h3 className="text-base font-semibold text-[#F7F3EB]">
                             {card.title}
                           </h3>
-                          <p className="text-xs text-[#B0ACA3] leading-[1.68] tracking-[0.01em]">
+                          <p className="text-[14px] text-[#B8B4AB] leading-[1.6] tracking-[0.01em]">
                             {card.description}
                           </p>
                         </div>
-                        <div className="pt-2.5 border-t border-[#D8C8AE]/[0.1] font-mono text-xs font-semibold text-[#D98276] tabular-nums">
+                        <div className="pt-2.5 border-t border-[#D8C8AE]/[0.1] font-mono text-[13px] font-semibold text-[#D98276] tabular-nums">
                           {card.stat}
                         </div>
                       </div>

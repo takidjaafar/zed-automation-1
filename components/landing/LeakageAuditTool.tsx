@@ -303,13 +303,13 @@ export default function LeakageAuditTool({
                 src="/images/candid/broker-laptop.jpg"
                 alt="Managing broker checking commission audit diagnostics on a laptop in a modern office"
                 className="absolute inset-0 w-full h-full"
-                imgClassName="object-top"
+                imgClassName="object-top brightness-[1.12] contrast-[1.02]"
                 sizes="(max-width: 1024px) 100vw, 520px"
                 strength={16}
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#060A08] via-[#060A08]/45 to-transparent"
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#060A08]/90 via-[#060A08]/22 to-transparent"
               />
 
               <div className="relative z-10 p-5 sm:p-6 space-y-4">

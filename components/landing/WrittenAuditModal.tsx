@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import {
   Check,
   CheckCircle2,
@@ -468,12 +469,20 @@ export default function WrittenAuditModal({
                     <>Submit 3 Deals for Async Written Audit &rarr;</>
                   )}
                 </button>
-                <div className="flex items-center justify-center gap-2 text-[11px] text-[#A8A49B] text-center">
+                <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] text-[#A8A49B] text-center">
                   <Lock className="w-3 h-3 text-[#D8C8AE] shrink-0" />
                   <span>
                     Encrypted async review · Direct email delivery via{' '}
                     {AUDIT_DESK_EMAIL}
                   </span>
+                  <span aria-hidden="true">·</span>
+                  <Link
+                    href="/privacy"
+                    onClick={() => handleOpenChange(false)}
+                    className="text-[#D8C8AE] hover:text-[#F7F3EB] underline underline-offset-4 transition-colors"
+                  >
+                    Privacy &amp; NDA Terms
+                  </Link>
                 </div>
               </div>
             </form>

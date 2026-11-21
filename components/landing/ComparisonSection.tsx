@@ -50,13 +50,13 @@ export default function ComparisonSection() {
                     src="/images/candid/messy-desk.jpg"
                     alt="Messy brokerage desk stacked with closing folders, sticky notes, and manual spreadsheets"
                     className="w-full h-full"
-                    imgClassName="grayscale-[40%] brightness-80"
+                    imgClassName="grayscale-[18%] brightness-[1.14] sepia-[0.06]"
                     sizes="(max-width: 1024px) 100vw, 600px"
                     strength={14}
                   />
                   <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0F0E] via-[#0B0F0E]/35 to-transparent"
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B0F0E]/85 via-[#0B0F0E]/18 to-transparent"
                   />
                   <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
                     <div>

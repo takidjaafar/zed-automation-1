@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zedautomations.tech"),
-  title: "ZED Automation - Forensic Commission Audit",
+  title: "ZED Automation - Forensic Commission Audit for US Real Estate Brokerages",
   description:
     "Forensic GCI verification for US managing brokers. Detect split drift, uncollected referral fees, and ALTA mismatches across every closed side in 48 hours—100% written and async.",
   keywords: [
@@ -52,13 +52,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://zedautomations.tech",
     siteName: "ZED Automation",
-    title: "ZED Automation - Forensic Commission Audit",
+    title: "ZED Automation - Forensic Commission Audit for US Real Estate Brokerages",
     description:
       "Stop leaking commissions. Recover your GCI in 48 hours with a free 3-deal forensic audit delivered via Executive PDF, Discrepancy CSV, and Private Loom—zero calls.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZED Automation - Forensic Commission Audit",
+    title: "ZED Automation - Forensic Commission Audit for US Real Estate Brokerages",
     description:
       "Forensic GCI verification for managing brokers. Free 3-deal audit delivered in 48h via PDF, CSV, and Loom—100% written, zero calls.",
   },

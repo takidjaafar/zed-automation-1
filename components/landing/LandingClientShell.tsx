@@ -18,6 +18,7 @@ import ProblemSection from '@/components/landing/ProblemSection';
 import LeakageAuditTool from '@/components/landing/LeakageAuditTool';
 import CoverageCardsSection from '@/components/landing/CoverageCardsSection';
 import AuditSnapshotsSection from '@/components/landing/AuditSnapshotsSection';
+import FounderTrustSection from '@/components/landing/FounderTrustSection';
 import ComparisonSection from '@/components/landing/ComparisonSection';
 import {
   ConfidentialityGuaranteeBar,
@@ -61,9 +62,9 @@ export default function LandingClientShell() {
 
       {/* 1. FIXED GLASS NAVBAR (3-Zone Top Bar Contract) */}
       <header className="sticky top-0 z-40 border-b border-[#D8C8AE]/[0.12] bg-[#060A08]/85 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-6 lg:gap-8">
           {/* Brand Zone */}
-          <Link href="/" className="flex items-center gap-3 min-w-0 shrink-0">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 min-w-0 shrink-0">
             <div className="h-8 w-8 rounded-lg bg-[#0B110F] border border-[#D8C8AE]/25 flex items-center justify-center overflow-hidden shrink-0">
               <Image
                 src="/assets/aistudio/ZED_SVG_e2b1063b.svg"
@@ -74,7 +75,7 @@ export default function LandingClientShell() {
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="font-[family-name:var(--font-display)] text-sm sm:text-base font-semibold tracking-[0.02em] text-[#F5F2EB] whitespace-nowrap shrink-0">
+            <span className="font-[family-name:var(--font-display)] text-[13px] sm:text-base font-semibold tracking-[0.02em] text-[#F5F2EB] whitespace-nowrap shrink-0">
               ZED AUTOMATION
             </span>
           </Link>
@@ -116,7 +117,7 @@ export default function LandingClientShell() {
               <button
                 type="button"
                 onClick={handleOpenModal}
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0B6B4A] hover:bg-[#117C57] text-[#F7F3EB] border border-[#D8C8AE]/20 px-4 sm:px-5 h-10 text-xs sm:text-sm font-semibold shadow-[0_8px_22px_rgba(0,0,0,0.4),0_2px_12px_rgba(11,107,74,0.28)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#0B6B4A] hover:bg-[#117C57] text-[#F7F3EB] border border-[#D8C8AE]/20 px-3 sm:px-5 h-9 sm:h-10 text-xs sm:text-sm font-semibold shadow-[0_8px_22px_rgba(0,0,0,0.4),0_2px_12px_rgba(11,107,74,0.28)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
               >
                 Request Written Audit
               </button>
@@ -135,7 +136,7 @@ export default function LandingClientShell() {
               className="lg:col-span-6 flex flex-col justify-center space-y-7"
             >
               <div className="text-xs font-medium tracking-[0.04em] text-[#D8C8AE]">
-                Forensic GCI Verification · 48h PDF + Loom · 100% Written, Zero Calls
+                Forensic GCI Verification for US Real Estate Brokerages · 48h PDF + Loom · 100% Written, Zero Calls
               </div>
 
               <div className="space-y-4">
@@ -208,51 +209,56 @@ export default function LandingClientShell() {
                 className="pointer-events-none absolute -inset-3 rounded-[26px] bg-[#0B6B4A]/15 blur-3xl opacity-50"
               />
 
-              <div className="relative h-full min-h-[420px] sm:min-h-[500px] rounded-[20px] overflow-hidden border border-[#D8C8AE]/20 shadow-[0_28px_70px_rgba(0,0,0,0.6)]">
-                <ParallaxPhoto
-                  src="/images/candid/hero-broker.jpg"
-                  alt="Smiling professional US female real estate managing broker in a bright modern glass office"
-                  priority={true}
-                  className="w-full h-full"
-                  imgClassName="object-top"
-                  sizes="(max-width: 1024px) 100vw, 640px"
-                  strength={16}
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#060A08]/88 via-[#060A08]/18 to-transparent"
-                />
+              <div className="relative sm:h-full flex flex-col">
+                <div className="relative h-[320px] sm:h-full sm:min-h-[500px] rounded-[20px] overflow-hidden border border-[#D8C8AE]/20 shadow-[0_28px_70px_rgba(0,0,0,0.6)]">
+                  <ParallaxPhoto
+                    src="/images/candid/hero-broker.jpg"
+                    alt="Smiling professional US female real estate managing broker in a bright modern glass office"
+                    priority={true}
+                    className="w-full h-full"
+                    imgClassName="object-top"
+                    sizes="(max-width: 1024px) 100vw, 640px"
+                    strength={16}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#060A08]/45 via-transparent to-transparent sm:from-[#060A08]/88 sm:via-[#060A08]/18 sm:to-transparent"
+                  />
+                </div>
 
-                {/* Floating Glass Cards over Hero Photo */}
-                <div className="absolute inset-x-4 sm:inset-x-6 bottom-4 sm:bottom-6 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* Floating Glass Cards: stacked below photo on mobile so face stays unobstructed; floating overlay on sm+ desktop */}
+                <div
+                  data-testid="hero-metric-cards"
+                  className="relative sm:absolute sm:inset-x-6 sm:bottom-6 mt-3.5 sm:mt-0 grid grid-cols-2 gap-3 sm:gap-3.5"
+                >
                   {/* Floating Card 1: $7,445 Leakage */}
-                  <div className="rounded-2xl bg-[#060A08]/88 backdrop-blur-xl border border-[#D8C8AE]/20 p-4 shadow-[0_14px_34px_rgba(0,0,0,0.55)]">
+                  <div className="rounded-2xl bg-[#0B110F]/95 sm:bg-[#060A08]/88 backdrop-blur-xl border border-[#D8C8AE]/20 p-3.5 sm:p-4 shadow-[0_14px_34px_rgba(0,0,0,0.55)]">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-medium text-[#D4D0C8]">
                         Sample Leakage Found
                       </span>
                       <TrendingDown className="w-4 h-4 text-[#D98276] shrink-0" />
                     </div>
-                    <div className="mt-1.5 font-mono text-2xl sm:text-3xl font-semibold text-[#F7F3EB] tabular-nums">
+                    <div className="mt-1.5 font-mono text-xl sm:text-3xl font-semibold text-[#F7F3EB] tabular-nums">
                       <AnimatedNumber value={7445} prefix="$" />
                     </div>
-                    <div className="mt-1 text-[11px] text-[#A8A49B]">
+                    <div className="mt-1 text-xs sm:text-[11px] text-[#A8A49B] leading-[1.5]">
                       Flagged across 3 closed sides
                     </div>
                   </div>
 
                   {/* Floating Card 2: +$22,335 Recovered */}
-                  <div className="rounded-2xl bg-[#060A08]/88 backdrop-blur-xl border border-[#0B6B4A]/70 p-4 shadow-[0_14px_34px_rgba(0,0,0,0.55)]">
+                  <div className="rounded-2xl bg-[#0B110F]/95 sm:bg-[#060A08]/88 backdrop-blur-xl border border-[#0B6B4A]/70 p-3.5 sm:p-4 shadow-[0_14px_34px_rgba(0,0,0,0.55)]">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-medium text-[#D8C8AE]">
                         90-Day GCI Recovered
                       </span>
                       <TrendingUp className="w-4 h-4 text-[#58B38E] shrink-0" />
                     </div>
-                    <div className="mt-1.5 font-mono text-2xl sm:text-3xl font-semibold text-[#58B38E] tabular-nums">
+                    <div className="mt-1.5 font-mono text-xl sm:text-3xl font-semibold text-[#58B38E] tabular-nums">
                       <AnimatedNumber value={22335} prefix="+$" />
                     </div>
-                    <div className="mt-1 text-[11px] text-[#D4D0C8]">
+                    <div className="mt-1 text-xs sm:text-[11px] text-[#D4D0C8] leading-[1.5]">
                       Split drift + referrals + fees
                     </div>
                   </div>
@@ -279,6 +285,9 @@ export default function LandingClientShell() {
 
         {/* 6. AUDIT SNAPSHOTS — REAL GCI RECOVERED WITH OWNER PHOTOS */}
         <AuditSnapshotsSection onOpenPrivacy={() => setPrivacyOpen(true)} />
+
+        {/* 6B. TRUST — WHO'S BEHIND ZED */}
+        <FounderTrustSection />
 
         {/* 7. COMPARISON — MANUAL WAY VS ZED WAY */}
         <ComparisonSection />
@@ -362,7 +371,7 @@ export default function LandingClientShell() {
       </main>
 
       {/* 10. FOOTER */}
-      <footer className="relative z-10 border-t border-[#D8C8AE]/[0.12] bg-[#060A08] py-10 text-xs text-[#A8A49B]">
+      <footer className="relative z-10 border-t border-[#D8C8AE]/[0.12] bg-[#060A08] pt-10 pb-24 md:py-10 text-xs text-[#A8A49B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="font-[family-name:var(--font-display)] font-semibold tracking-[0.02em] text-[#F5F2EB]">
@@ -409,13 +418,12 @@ export default function LandingClientShell() {
             >
               FAQ
             </a>
-            <button
-              type="button"
-              onClick={() => setPrivacyOpen(true)}
-              className="hover:text-[#F5F2EB] transition-colors cursor-pointer whitespace-nowrap"
+            <Link
+              href="/privacy"
+              className="hover:text-[#F5F2EB] transition-colors whitespace-nowrap"
             >
-              Privacy &amp; NDA
-            </button>
+              Privacy &amp; NDA Terms
+            </Link>
             <Link
               href="/commission-audit"
               className="inline-flex items-center gap-1.5 text-[#D8C8AE] hover:text-[#F7F3EB] transition-colors whitespace-nowrap"
@@ -429,6 +437,21 @@ export default function LandingClientShell() {
           </div>
         </div>
       </footer>
+
+      {/* MOBILE-ONLY FIXED STICKY CTA BAR */}
+      <div
+        data-testid="mobile-sticky-cta"
+        className="md:hidden fixed inset-x-0 bottom-0 z-40 border-t border-[#D8C8AE]/20 bg-[#050807]/90 backdrop-blur-xl px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-12px_32px_rgba(0,0,0,0.55)]"
+      >
+        <button
+          type="button"
+          onClick={handleOpenModal}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#0B6B4A] hover:bg-[#117C57] text-[#F7F3EB] border border-[#D8C8AE]/20 font-semibold text-sm h-11 px-5 shadow-[0_8px_22px_rgba(0,0,0,0.4)] transition-all active:scale-[0.985] cursor-pointer"
+        >
+          Request Written Audit
+          <ArrowRight className="w-4 h-4 shrink-0" />
+        </button>
+      </div>
 
       <WrittenAuditModal
         open={modalOpen}
