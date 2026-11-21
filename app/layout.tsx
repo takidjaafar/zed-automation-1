@@ -1,30 +1,65 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist_Mono, Instrument_Sans, Inter } from "next/font/google";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-geist-sans",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["600", "700"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://zedautomations.tech"),
   title: "Zed Automation - Real Estate Commission Audit",
   description:
-    "Commission audit, leakage detection, and real estate admin dashboard for brokerages.",
+    "Forensic real estate commission audit and GCI leakage recovery for US managing brokers. Detect split drift, uncollected referral fees, and waived admin fees in 48 hours—100% written and async.",
+  keywords: [
+    "forensic commission audit",
+    "real estate commission audit",
+    "brokerage GCI recovery",
+    "commission leakage detection",
+    "agent split drift audit",
+    "uncollected referral fee recovery",
+    "closing disclosure reconciliation",
+    "ALTA settlement statement audit",
+    "real estate brokerage margin audit",
+    "Zed Automation",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: "/favicon.svg",
   },
   openGraph: {
+    type: "website",
+    url: "https://zedautomations.tech",
+    siteName: "Zed Automation",
     title: "Zed Automation - Real Estate Commission Audit",
     description:
-      "Commission audit, leakage detection, and real estate admin dashboard for brokerages.",
+      "Forensic real estate commission audit and GCI leakage recovery for US managing brokers. 48-hour written PDF, CSV, and Loom delivery with zero calls.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zed Automation - Real Estate Commission Audit",
+    description:
+      "Detect agent split drift, uncollected referral fees, and waived compliance charges in 48 hours—100% written and asynchronous.",
   },
 };
 
@@ -45,8 +80,12 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={`${plusJakarta.variable} ${jetbrainsMono.variable} bg-[#05080F] text-slate-100 antialiased selection:bg-emerald-500/25 selection:text-emerald-200`}
+        className={`${instrumentSans.variable} ${inter.variable} ${geistMono.variable} bg-[#040807] font-sans text-slate-100 antialiased selection:bg-emerald-500/25 selection:text-emerald-200`}
       >
+        <div
+          aria-hidden="true"
+          className="fintech-noise pointer-events-none fixed inset-0 z-[60] opacity-[0.025]"
+        />
         {children}
       </body>
     </html>

@@ -28,6 +28,12 @@ import {
   InfrastructurePillarsSection,
   RealResultsSection,
 } from '@/components/landing/VisualShowcaseSections';
+import {
+  AuditDossierPreviewCard,
+  ConfidentialityGuaranteeBar,
+  ExecutiveFaqSection,
+} from '@/components/landing/DeliverableAndFaqSections';
+import PrivacyConfidentialityModal from '@/components/landing/PrivacyConfidentialityModal';
 import WrittenAuditModal from '@/components/landing/WrittenAuditModal';
 
 const PROTOCOL_ROWS = [
@@ -95,6 +101,7 @@ function formatUsd(val: number): string {
 
 export default function LandingClientShell() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const [prefilledNotes, setPrefilledNotes] = useState('');
 
   const handleOpenModal = () => {
@@ -120,11 +127,11 @@ export default function LandingClientShell() {
       <AtmosphericBackdrop />
 
       {/* Clean Executive Glass Top Navigation */}
-      <header className="sticky top-0 z-40 border-b border-emerald-400/15 bg-[#040807]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#040807]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-8">
           {/* Left: Brand Lockup */}
           <Link href="/" className="flex items-center gap-3 min-w-0 shrink-0">
-            <div className="h-8 w-8 rounded-lg bg-[#0B1210] border border-emerald-400/30 shadow-[0_0_18px_rgba(16,185,129,0.2)] flex items-center justify-center overflow-hidden shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-[#0A110F] border border-white/[0.1] border-t-emerald-400/30 shadow-[0_2px_12px_rgba(16,185,129,0.12)] flex items-center justify-center overflow-hidden shrink-0">
               <Image
                 src="/assets/aistudio/ZED_SVG_e2b1063b.svg"
                 alt="Zed Automation logo"
@@ -134,33 +141,39 @@ export default function LandingClientShell() {
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="text-sm sm:text-base font-bold tracking-[-0.02em] text-white whitespace-nowrap shrink-0">
+            <span className="font-[family-name:var(--font-display)] text-sm sm:text-base font-bold tracking-[-0.03em] text-white whitespace-nowrap shrink-0">
               Zed Automation
             </span>
           </Link>
 
-          {/* Center: Strictly 3 Clean Anchor Links */}
+          {/* Center: Clean Single-Line Anchor Links */}
           <nav
             aria-label="Primary navigation"
-            className="hidden md:flex items-center gap-8 text-xs font-medium text-slate-300"
+            className="hidden md:flex items-center gap-8 text-[13px] font-medium text-slate-300"
           >
             <a
               href="#protocol"
-              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
               Audit Protocol
             </a>
             <a
               href="#sandbox"
-              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
               Leakage Calculator
             </a>
             <a
               href="#results"
-              className="hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
             >
               Verified Recoveries
+            </a>
+            <a
+              href="#faq"
+              className="hover:text-white transition-colors whitespace-nowrap shrink-0"
+            >
+              FAQ
             </a>
           </nav>
 
@@ -168,7 +181,7 @@ export default function LandingClientShell() {
           <div className="flex items-center gap-3 shrink-0">
             <Link
               href="/commission-audit"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0B1210]/85 border border-emerald-400/25 hover:border-emerald-400/55 px-3 py-2 text-xs font-medium text-slate-200 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#0A110F]/85 border border-white/[0.1] hover:border-emerald-400/35 px-3 py-2 text-xs font-medium text-slate-200 hover:text-white transition-all active:scale-[0.985] whitespace-nowrap shrink-0"
             >
               <Lock className="w-3.5 h-3.5 text-emerald-400" />
               Client Portal
@@ -177,7 +190,7 @@ export default function LandingClientShell() {
               <button
                 type="button"
                 onClick={handleOpenModal}
-                className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-4 py-2 text-xs font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                className="hidden sm:inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-4 py-2 text-xs font-semibold shadow-[0_2px_16px_rgba(16,185,129,0.2)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
               >
                 Get Free 3-Deal Audit
               </button>
@@ -192,7 +205,7 @@ export default function LandingClientShell() {
           <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
             {/* Editorial Copy Column */}
             <ScrollReveal aboveFold={true} className="lg:col-span-5 space-y-7 pt-1">
-              <div className="text-xs font-mono text-emerald-300/90 tracking-wide">
+              <div className="text-xs font-medium text-emerald-300/90 tracking-normal">
                 Async Written Audit · 48h PDF + Loom · Zero Phone Calls
               </div>
 
@@ -204,7 +217,7 @@ export default function LandingClientShell() {
                   </span>{' '}
                   across every closed side.
                 </h1>
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+                <p className="text-sm sm:text-[15px] text-slate-300 leading-relaxed max-w-xl">
                   Forensic GCI verification for managing brokers. Detect agent
                   split drift, uncollected referral fees, closing-disclosure
                   mismatches, and waived compliance charges through a 100%
@@ -217,7 +230,7 @@ export default function LandingClientShell() {
                   <button
                     type="button"
                     onClick={handleOpenModal}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm h-11 px-5 shadow-[0_0_28px_rgba(16,185,129,0.35)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm h-11 px-5 shadow-[0_4px_20px_rgba(16,185,129,0.22)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
                   >
                     Get Free 3-Deal Audit
                     <ArrowRight className="w-4 h-4" />
@@ -226,7 +239,7 @@ export default function LandingClientShell() {
                 <button
                   type="button"
                   onClick={handleScrollToSandbox}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 hover:border-emerald-400/55 text-slate-100 hover:text-white font-medium text-sm h-11 px-4 shadow-[0_0_24px_rgba(16,185,129,0.1)] transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#0A110F]/80 backdrop-blur-xl border border-white/[0.1] border-t-emerald-400/25 hover:border-white/[0.18] text-slate-100 hover:text-white font-medium text-sm h-11 px-4 transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap shrink-0"
                 >
                   Estimate Leakage
                   <ArrowDown className="w-3.5 h-3.5 text-emerald-400" />
@@ -234,9 +247,9 @@ export default function LandingClientShell() {
               </div>
 
               {/* Smoked Glass Tabular Telemetry Baseline */}
-              <div className="border-t border-emerald-400/20 pt-6 grid grid-cols-3 gap-4">
+              <div className="border-t border-white/[0.08] pt-6 grid grid-cols-3 gap-4">
                 <div>
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                  <div className="text-xs font-medium text-slate-400">
                     Sample Leakage
                   </div>
                   <div className="mt-1 text-lg sm:text-xl font-mono font-semibold text-white">
@@ -244,7 +257,7 @@ export default function LandingClientShell() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                  <div className="text-xs font-medium text-slate-400">
                     90d Audit Recovery
                   </div>
                   <div className="mt-1 text-lg sm:text-xl font-mono font-semibold text-emerald-400">
@@ -252,11 +265,11 @@ export default function LandingClientShell() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                  <div className="text-xs font-medium text-slate-400">
                     Turnaround
                   </div>
-                  <div className="mt-1 text-lg sm:text-xl font-mono font-semibold text-slate-100 tabular-nums">
-                    48h Async
+                  <div className="mt-1 text-lg sm:text-xl font-semibold text-slate-100">
+                    <span className="font-mono tabular-nums">48h</span> Async
                   </div>
                 </div>
               </div>
@@ -293,7 +306,7 @@ export default function LandingClientShell() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse min-w-[680px]">
                     <thead>
-                      <tr className="border-b border-emerald-400/15 text-[11px] font-mono uppercase tracking-wider text-slate-400">
+                      <tr className="border-b border-white/[0.08] text-xs font-medium text-slate-400">
                         <th className="py-3.5 px-5 font-medium">
                           Discrepancy Class
                         </th>
@@ -308,7 +321,7 @@ export default function LandingClientShell() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-emerald-400/10 text-sm">
+                    <tbody className="divide-y divide-white/[0.06] text-sm">
                       {PROTOCOL_ROWS.map((row) => (
                         <tr
                           key={row.code}
@@ -342,39 +355,45 @@ export default function LandingClientShell() {
             </ScrollReveal>
           </div>
 
-          {/* Section 04: Real Results / Case Studies with Executive Portraits */}
+          {/* Section 04: Anonymized Forensic Brokerage Audit Snapshots */}
           <RealResultsSection />
 
           {/* Section 05: Old Brokerage Way vs Zed Automation Comparison */}
           <ComparisonSection />
 
-          {/* Section 06: Async 48-Hour Written Workflow (Single Dominant CTA) */}
-          <section id="async-workflow" className="space-y-6">
+          {/* Section 06: 4-Question Executive FAQ */}
+          <ExecutiveFaqSection />
+
+          {/* Section 07: 48-Hour Deliverable Dossier + Async Workflow & Final CTA */}
+          <section id="async-workflow" className="scroll-mt-20 space-y-6">
             <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
               <div className="space-y-2">
-                <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
-                  Section 06 · Asynchronous Fulfillment
+                <div className="text-xs font-medium text-slate-400">
+                  Section 07 · Asynchronous Fulfillment
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white">
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white [text-wrap:balance]">
                   48-Hour Written Delivery.{' '}
                   <span className="text-emerald-400">Zero Meetings Required.</span>
                 </h2>
               </div>
-              <span className="text-xs font-mono text-emerald-300/90">
+              <span className="text-xs font-medium text-emerald-300/90">
                 100% written email + PDF delivery
               </span>
             </ScrollReveal>
 
+            {/* Sample 48-Hour Audit Dossier Card */}
+            <AuditDossierPreviewCard />
+
             <ScrollReveal delay={0.08}>
               <GlassSpotlightCard tilt={false} className="overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-emerald-400/15">
+                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/[0.08]">
                   {ASYNC_STEPS.map((item) => (
                     <div key={item.step} className="p-6 sm:p-7 space-y-3">
-                      <div className="flex items-center justify-between text-xs font-mono">
-                        <span className="text-emerald-400 font-semibold">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-mono text-emerald-400 font-semibold tabular-nums">
                           {item.step}
                         </span>
-                        <span className="text-slate-400 tabular-nums">
+                        <span className="font-medium text-slate-400">
                           {item.timing}
                         </span>
                       </div>
@@ -388,13 +407,13 @@ export default function LandingClientShell() {
                   ))}
                 </div>
 
-                <div className="px-6 sm:px-7 py-5 border-t border-emerald-400/15 bg-[#060C0A]/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="px-5 sm:px-7 py-5 border-t border-white/[0.08] bg-[#060C0A]/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div className="space-y-0.5">
                     <div className="text-sm font-semibold text-white">
                       Ready to verify 3 closed transactions?
                     </div>
-                    <div className="text-xs font-mono text-slate-300">
-                      Confidential written PDF &amp; Loom delivered in 48h ·{' '}
+                    <div className="text-xs text-slate-300">
+                      Confidential CSV, PDF &amp; Loom delivered in 48h ·{' '}
                       zakaria@zedautomations.tech
                     </div>
                   </div>
@@ -403,13 +422,18 @@ export default function LandingClientShell() {
                     <button
                       type="button"
                       onClick={handleOpenModal}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-5 h-11 text-xs sm:text-sm font-semibold shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer whitespace-nowrap"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] px-5 h-11 text-xs sm:text-sm font-semibold shadow-[0_4px_20px_rgba(16,185,129,0.22)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
                     >
                       Submit 3 Deals for Free Written Audit
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </MagneticButton>
                 </div>
+
+                {/* Confidentiality & Zero-Access Guarantee Bar */}
+                <ConfidentialityGuaranteeBar
+                  onOpenPrivacy={() => setPrivacyOpen(true)}
+                />
               </GlassSpotlightCard>
             </ScrollReveal>
           </section>
@@ -417,27 +441,34 @@ export default function LandingClientShell() {
       </main>
 
       {/* Clean Quiet Footer */}
-      <footer className="relative z-10 border-t border-emerald-400/15 bg-[#040807]/85 backdrop-blur-xl py-8 text-xs text-slate-400">
+      <footer className="relative z-10 border-t border-white/[0.08] bg-[#040807]/85 backdrop-blur-xl py-8 text-xs text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-            <span className="font-medium text-white">Zed Automation</span>
-            <span aria-hidden="true" className="text-emerald-400/40">
+            <span className="font-semibold text-white">Zed Automation</span>
+            <span aria-hidden="true" className="text-white/20">
               ·
             </span>
             <span>Forensic Commission Audit &amp; GCI Recovery</span>
-            <span aria-hidden="true" className="text-emerald-400/40">
+            <span aria-hidden="true" className="text-white/20">
               ·
             </span>
             <a
               href="mailto:zakaria@zedautomations.tech"
-              className="inline-flex items-center gap-1.5 font-mono text-slate-300 hover:text-emerald-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-emerald-300 transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-emerald-400" />
               zakaria@zedautomations.tech
             </a>
           </div>
 
-          <div className="flex items-center gap-6 font-mono">
+          <div className="flex flex-wrap items-center gap-6 font-medium">
+            <button
+              type="button"
+              onClick={() => setPrivacyOpen(true)}
+              className="text-slate-300 hover:text-emerald-300 transition-colors cursor-pointer whitespace-nowrap"
+            >
+              Privacy &amp; NDA
+            </button>
             <button
               type="button"
               onClick={handleOpenModal}
@@ -460,6 +491,11 @@ export default function LandingClientShell() {
         open={modalOpen}
         onOpenChange={setModalOpen}
         initialNotes={prefilledNotes}
+      />
+
+      <PrivacyConfidentialityModal
+        open={privacyOpen}
+        onOpenChange={setPrivacyOpen}
       />
     </div>
   );

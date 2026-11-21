@@ -10,8 +10,8 @@ import {
   FileCheck2,
   FileText,
   Layers,
+  Lock,
   ShieldCheck,
-  Star,
   TrendingUp,
   XCircle,
 } from 'lucide-react';
@@ -22,6 +22,10 @@ import {
   MagneticButton,
   ScrollReveal,
 } from '@/components/landing/MotionPrimitives';
+import {
+  ANONYMIZED_AUDIT_SNAPSHOTS,
+  formatSnapshotUsd,
+} from '@/lib/commission-audit/landing-proof';
 
 /* -------------------------------------------------------------------------- */
 /*  Diagnostic / Problem Photo Frame + 3 Frosted Sparkline KPI Overlays       */
@@ -40,7 +44,7 @@ export function DiagnosticProblemSection({
     <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
       {/* Left Diagnostic Narrative */}
       <ScrollReveal className="lg:col-span-6 space-y-6">
-        <div className="text-xs font-mono uppercase tracking-[0.16em] text-emerald-300/90">
+        <div className="text-xs font-medium text-emerald-300/90">
           Section 01 · Diagnostic · Closing File Reconciliation
         </div>
 
@@ -51,7 +55,7 @@ export function DiagnosticProblemSection({
           </span>
         </h2>
 
-        <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
+        <p className="text-sm sm:text-[15px] text-slate-300 leading-relaxed max-w-xl">
           Every month, silent split drift, uncollected outbound referral fees,
           waived compliance charges, and ALTA settlement mismatches drain
           brokerage net margin. Zed Automation reconciles every closing file
@@ -63,39 +67,71 @@ export function DiagnosticProblemSection({
             <button
               type="button"
               onClick={onScrollToSandbox}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#0B1210]/85 border border-emerald-400/35 hover:border-emerald-400/70 text-white px-5 h-11 text-sm font-semibold shadow-[0_0_24px_rgba(16,185,129,0.16)] transition-colors cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#0A110F]/85 border border-white/[0.1] border-t-emerald-400/25 hover:border-white/[0.18] text-white px-5 h-11 text-sm font-semibold transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
             >
               Estimate Your Leakage
               <ArrowRight className="w-4 h-4 text-emerald-400" />
             </button>
           </MagneticButton>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-xs text-slate-400">
             100% written audit · Zero live calls
           </span>
         </div>
       </ScrollReveal>
 
-      {/* Right Vertical Glass-Framed Photo + 3 Frosted KPI Sparkline Overlays */}
+      {/* Right Vertical Glass-Framed Architectural Frame + 3 Frosted KPI Overlays */}
       <ScrollReveal delay={0.12} className="lg:col-span-6">
         <GlassSpotlightCard
           tilt={true}
           className="p-2 sm:p-3 rounded-3xl"
         >
-          <div className="relative h-[430px] sm:h-[490px] w-full rounded-2xl overflow-hidden border border-emerald-400/20">
+          <div className="relative h-[430px] sm:h-[490px] w-full rounded-2xl overflow-hidden border border-white/[0.08]">
             <Image
-              src="/images/diagnostic-ops.jpg"
-              alt="Brokerage operations director reviewing commission ledgers"
+              src="/images/office-backdrop.jpg"
+              alt="Brokerage executive suite dark architectural ledger environment"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               referrerPolicy="no-referrer"
-              className="object-cover object-top"
+              className="object-cover object-center opacity-75"
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#040807] via-[#040807]/30 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#040807] via-[#040807]/55 to-[#040807]/30" />
+
+            {/* Top Forensic Ledger Verification Strip */}
+            <div className="absolute inset-x-3 top-3 rounded-xl bg-[#0A110F]/85 backdrop-blur-xl border border-white/[0.08] border-t-emerald-400/25 p-3.5 space-y-2.5">
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <span className="text-emerald-300 font-semibold">
+                  Forensic Closing File Check
+                </span>
+                <span className="text-slate-400">
+                  ALTA / CD Reconciliation
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="rounded-lg bg-[#040807]/85 border border-white/[0.06] px-2.5 py-2">
+                  <div className="text-slate-400 text-[11px]">Split Drift</div>
+                  <div className="font-mono tabular-nums text-rose-400 font-semibold mt-0.5">
+                    -$1,840
+                  </div>
+                </div>
+                <div className="rounded-lg bg-[#040807]/85 border border-white/[0.06] px-2.5 py-2">
+                  <div className="text-slate-400 text-[11px]">Referral AR</div>
+                  <div className="font-mono tabular-nums text-amber-300 font-semibold mt-0.5">
+                    -$2,750
+                  </div>
+                </div>
+                <div className="rounded-lg bg-[#040807]/85 border border-white/[0.06] px-2.5 py-2">
+                  <div className="text-slate-400 text-[11px]">Admin Fee</div>
+                  <div className="font-mono tabular-nums text-rose-400 font-semibold mt-0.5">
+                    -$495
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* 3 Frosted-Glass KPI Overlays */}
             <div className="absolute inset-x-3 bottom-3 grid grid-cols-3 gap-2 sm:gap-3">
               {/* Overlay 1: -80% */}
-              <div className="rounded-xl bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 p-3 shadow-[0_0_24px_rgba(16,185,129,0.15)]">
+              <div className="rounded-xl bg-[#0A110F]/85 backdrop-blur-xl border border-white/[0.08] border-t-emerald-400/25 p-3">
                 <div className="text-lg sm:text-2xl font-mono font-bold text-emerald-400 tabular-nums">
                   <AnimatedNumber value={-80} suffix="%" />
                 </div>
@@ -110,14 +146,14 @@ export function DiagnosticProblemSection({
                       animate={{ scaleY: 1 }}
                       transition={{ duration: 0.55, delay: 0.1 + i * 0.05 }}
                       style={{ height: `${height}%` }}
-                      className="flex-1 origin-bottom rounded-t-sm bg-emerald-400/80"
+                      className="flex-1 origin-bottom rounded-t-sm bg-emerald-400/75"
                     />
                   ))}
                 </div>
               </div>
 
               {/* Overlay 2: 48h Written */}
-              <div className="rounded-xl bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 p-3 shadow-[0_0_24px_rgba(16,185,129,0.15)]">
+              <div className="rounded-xl bg-[#0A110F]/85 backdrop-blur-xl border border-white/[0.08] border-t-emerald-400/25 p-3">
                 <div className="text-lg sm:text-2xl font-mono font-bold text-emerald-400 tabular-nums">
                   <AnimatedNumber value={48} suffix="h" />
                 </div>
@@ -132,18 +168,18 @@ export function DiagnosticProblemSection({
                       animate={{ scaleY: 1 }}
                       transition={{ duration: 0.55, delay: 0.15 + i * 0.05 }}
                       style={{ height: `${height}%` }}
-                      className="flex-1 origin-bottom rounded-t-sm bg-emerald-400"
+                      className="flex-1 origin-bottom rounded-t-sm bg-emerald-400/90"
                     />
                   ))}
                 </div>
               </div>
 
               {/* Overlay 3: $4,000+/mo */}
-              <div className="rounded-xl bg-[#0B1210]/80 backdrop-blur-xl border border-emerald-400/25 p-3 shadow-[0_0_24px_rgba(16,185,129,0.15)]">
+              <div className="rounded-xl bg-[#0A110F]/85 backdrop-blur-xl border border-white/[0.08] border-t-emerald-400/25 p-3">
                 <div className="flex items-center justify-between gap-1">
                   <span className="text-base sm:text-xl font-mono font-bold text-emerald-400 tabular-nums truncate">
                     $<AnimatedNumber value={4000} suffix="+" />
-                    <span className="text-xs font-normal">/mo</span>
+                    <span className="text-xs font-sans font-normal">/mo</span>
                   </span>
                   <TrendingUp className="w-3.5 h-3.5 text-emerald-400 shrink-0 hidden sm:block" />
                 </div>
@@ -158,7 +194,7 @@ export function DiagnosticProblemSection({
                       animate={{ scaleY: 1 }}
                       transition={{ duration: 0.55, delay: 0.2 + i * 0.05 }}
                       style={{ height: `${height}%` }}
-                      className="flex-1 origin-bottom rounded-t-sm bg-gradient-to-t from-emerald-500/60 to-emerald-300"
+                      className="flex-1 origin-bottom rounded-t-sm bg-gradient-to-t from-emerald-500/50 to-emerald-300/90"
                     />
                   ))}
                 </div>
@@ -239,7 +275,7 @@ export function InfrastructurePillarsSection() {
     <section id="protocol" className="scroll-mt-20 space-y-8">
       <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-2">
-          <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
+          <div className="text-xs font-medium text-slate-400">
             Section 03 · Forensic Coverage Matrix
           </div>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white">
@@ -247,7 +283,7 @@ export function InfrastructurePillarsSection() {
             <span className="text-emerald-400">Audit Protocol</span>
           </h2>
         </div>
-        <span className="text-xs font-mono text-slate-400">
+        <span className="text-xs text-slate-400">
           4 verification classes reconciled per transaction
         </span>
       </ScrollReveal>
@@ -260,19 +296,19 @@ export function InfrastructurePillarsSection() {
             <ScrollReveal key={pillar.code} delay={idx * 0.08}>
               <GlassSpotlightCard className="p-4 h-full flex flex-col">
                 {/* Rounded Top Visual UI Preview */}
-                <div className="rounded-xl bg-[#040807]/85 border border-emerald-400/20 p-3.5 space-y-2.5">
-                  <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                <div className="rounded-xl bg-[#040807]/85 border border-white/[0.08] p-3.5 space-y-2.5">
+                  <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
                     <span>{pillar.previewTitle}</span>
-                    <span className="text-emerald-400">{pillar.code}</span>
+                    <span className="font-mono text-emerald-400">{pillar.code}</span>
                   </div>
                   <div className="space-y-1.5">
                     {pillar.previewRows.map((row) => (
                       <div
                         key={row.label}
-                        className="flex items-center justify-between rounded-md bg-[#0B1210]/90 border border-white/[0.06] px-2.5 py-1.5 text-[11px] font-mono tabular-nums"
+                        className="flex items-center justify-between rounded-md bg-[#0A110F]/90 border border-white/[0.06] px-2.5 py-1.5 text-[11px]"
                       >
                         <span className="text-slate-400">{row.label}</span>
-                        <span className={`font-semibold ${row.tone}`}>
+                        <span className={`font-mono tabular-nums font-semibold ${row.tone}`}>
                           {row.value}
                         </span>
                       </div>
@@ -280,9 +316,9 @@ export function InfrastructurePillarsSection() {
                   </div>
                 </div>
 
-                {/* Centered Glowing Emerald Icon Badge */}
+                {/* Centered Subtle Emerald Icon Badge */}
                 <div className="-mt-5 mb-3 flex justify-center relative z-10">
-                  <div className="h-10 w-10 rounded-xl bg-[#0B1210] border border-emerald-400/45 shadow-[0_0_24px_rgba(16,185,129,0.35)] flex items-center justify-center text-emerald-400">
+                  <div className="h-10 w-10 rounded-xl bg-[#0A110F] border border-white/[0.1] border-t-emerald-400/35 shadow-[0_6px_18px_rgba(0,0,0,0.45)] flex items-center justify-center text-emerald-400">
                     <BadgeIcon className="w-5 h-5" />
                   </div>
                 </div>
@@ -298,7 +334,7 @@ export function InfrastructurePillarsSection() {
                 </div>
 
                 {/* Bottom Status Metric Bar */}
-                <div className="mt-5 pt-3 border-t border-emerald-400/15 flex items-center justify-center gap-1.5 text-[11px] font-mono text-emerald-300 tabular-nums">
+                <div className="mt-5 pt-3 border-t border-white/[0.08] flex items-center justify-center gap-1.5 text-xs font-mono text-emerald-300 tabular-nums">
                   <StatusIcon className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>{pillar.statusText}</span>
                 </div>
@@ -312,119 +348,154 @@ export function InfrastructurePillarsSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Real Results / Case Studies Section (Executive Portraits + 5-Star)        */
+/*  Anonymized Forensic Brokerage Audit Snapshots (#results)                  */
 /* -------------------------------------------------------------------------- */
-
-const CASE_STUDIES = [
-  {
-    image: '/images/broker-1.jpg',
-    alt: 'Managing Broker at Summit Key Realty',
-    prefix: '+$',
-    value: 184500,
-    decimals: 0,
-    suffix: '',
-    label: 'Annualized GCI Recovered',
-    brokerage: 'Summit Key Realty',
-    quote:
-      '"ZED uncovered split tier drift and omitted referral deductions across closed files we assumed were settled cleanly."',
-  },
-  {
-    image: '/images/broker-2.jpg',
-    alt: 'Brokerage Founder at Harborline Properties',
-    prefix: '',
-    value: 3.6,
-    decimals: 1,
-    suffix: 'x',
-    label: '90-Day Audit Recovery Ratio',
-    brokerage: 'Harborline Properties',
-    quote:
-      '"The written PDF audit and Loom walkthrough pinned down exact closing-disclosure errors within 48 hours."',
-  },
-  {
-    image: '/images/broker-3.jpg',
-    alt: 'Principal Broker at Northstar Realty Group',
-    prefix: '$',
-    value: 96400,
-    decimals: 0,
-    suffix: '',
-    label: 'Verified Direct Clawback',
-    brokerage: 'Northstar Realty Group',
-    quote:
-      '"Line-by-line commission reconciliation and referral fee tracking added pure net profit across our closing ledger asynchronously."',
-  },
-] as const;
 
 export function RealResultsSection() {
   return (
     <section id="results" className="scroll-mt-20 space-y-8">
-      <ScrollReveal className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
-          Section 04 · Verified Recoveries
+      <ScrollReveal className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="space-y-2 max-w-2xl">
+          <div className="text-xs font-medium text-slate-400">
+            Section 04 · Verified Forensic Breakdowns
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] text-white [text-wrap:balance]">
+            Anonymized Brokerage{' '}
+            <span className="text-emerald-400">Audit Snapshots.</span>
+          </h2>
+          <p className="text-sm text-slate-300 leading-relaxed">
+            Line-by-line commission leakage recovered across US residential
+            brokerages from split drift, uncollected referral receivables, and
+            waived admin fees.
+          </p>
         </div>
-        <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] text-white">
-          Real GCI <span className="text-emerald-400">Recovered.</span>
-        </h2>
-        <p className="text-sm text-slate-300 leading-relaxed">
-          Verified recoveries from split audits, referral receivables, and
-          transaction corrections delivered asynchronously to brokerage owners.
-        </p>
+        <span className="text-xs font-medium text-emerald-300/90 shrink-0">
+          All brokerage identities protected under mutual NDA
+        </span>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {CASE_STUDIES.map((study, idx) => (
-          <ScrollReveal key={study.brokerage} delay={idx * 0.1}>
-            <GlassSpotlightCard className="p-4 sm:p-5 h-full flex flex-col justify-between">
-              <div className="space-y-4">
-                {/* Top Executive Portrait Frame */}
-                <div className="relative h-52 w-full rounded-xl overflow-hidden border border-emerald-400/20">
-                  <Image
-                    src={study.image}
-                    alt={study.alt}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    referrerPolicy="no-referrer"
-                    className="object-cover object-top"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0B1210]/70 via-transparent to-transparent" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+        {ANONYMIZED_AUDIT_SNAPSHOTS.map((snapshot, idx) => (
+          <ScrollReveal key={snapshot.id} delay={idx * 0.08} className="h-full">
+            <GlassSpotlightCard className="p-5 sm:p-6 h-full flex flex-col justify-between gap-5">
+              <div className="space-y-5">
+                {/* Header & Brokerage Profile */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
+                    <span className="font-mono text-emerald-400/90 font-semibold">
+                      {snapshot.fileCode}
+                    </span>
+                    <span>{snapshot.reviewWindow}</span>
+                  </div>
+                  <div>
+                    <h3 className="text-base sm:text-lg font-semibold tracking-[-0.02em] text-white">
+                      {snapshot.brokerageProfile}
+                    </h3>
+                    <div className="mt-1 flex items-center gap-2 text-xs text-slate-400">
+                      <span>
+                        <span className="font-mono tabular-nums text-slate-300">
+                          {snapshot.agentCount}
+                        </span>{' '}
+                        Agents
+                      </span>
+                      <span aria-hidden="true" className="text-white/20">
+                        ·
+                      </span>
+                      <span>
+                        <span className="font-mono tabular-nums text-slate-300">
+                          {snapshot.closedSides}
+                        </span>{' '}
+                        Closed Sides Audited
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Bold Recovered Metric */}
-                <div className="text-center space-y-1 pt-1">
-                  <div className="text-3xl sm:text-4xl font-mono font-bold text-emerald-400 tracking-tight">
-                    <AnimatedNumber
-                      value={study.value}
-                      prefix={study.prefix}
-                      decimals={study.decimals}
-                      suffix={study.suffix}
-                    />
-                  </div>
-                  <div className="text-xs font-mono text-slate-300">
-                    {study.label}
+                {/* Primary Recovered Total */}
+                <div className="pt-4 border-t border-white/[0.08] flex items-baseline justify-between gap-3">
+                  <span className="text-xs font-medium text-slate-400">
+                    Total Leakage Recovered
+                  </span>
+                  <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-400 tracking-tight tabular-nums">
+                    +{formatSnapshotUsd(snapshot.totalRecovered)}
                   </div>
                 </div>
 
-                {/* Brokerage Name & Quote */}
-                <div className="text-center space-y-2 pt-1">
-                  <h3 className="text-base font-semibold text-white">
-                    {study.brokerage}
-                  </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    {study.quote}
-                  </p>
+                {/* Clean Tabular Breakdown */}
+                <div className="overflow-x-auto">
+                  <table
+                    aria-label={`${snapshot.brokerageProfile} leakage breakdown`}
+                    className="w-full text-left border-collapse"
+                  >
+                    <thead>
+                      <tr className="border-b border-white/[0.08] text-[11px] font-medium text-slate-400">
+                        <th className="py-2 pr-3 font-medium">
+                          Leakage Category
+                        </th>
+                        <th className="py-2 pl-3 font-medium text-right">
+                          Recovered
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/[0.06] text-xs">
+                      <tr>
+                        <td className="py-2.5 pr-3 align-top">
+                          <div className="font-medium text-slate-100">
+                            Split Drift
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                            {snapshot.splitDriftNote}
+                          </div>
+                        </td>
+                        <td className="py-2.5 pl-3 text-right align-top font-mono font-semibold text-white tabular-nums whitespace-nowrap">
+                          {formatSnapshotUsd(snapshot.splitDrift)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 pr-3 align-top">
+                          <div className="font-medium text-slate-100">
+                            Uncollected Referrals
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                            {snapshot.uncollectedReferralsNote}
+                          </div>
+                        </td>
+                        <td className="py-2.5 pl-3 text-right align-top font-mono font-semibold text-white tabular-nums whitespace-nowrap">
+                          {formatSnapshotUsd(snapshot.uncollectedReferrals)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-2.5 pr-3 align-top">
+                          <div className="font-medium text-slate-100">
+                            Waived Admin Fees
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-0.5 leading-snug">
+                            {snapshot.waivedAdminFeesNote}
+                          </div>
+                        </td>
+                        <td className="py-2.5 pl-3 text-right align-top font-mono font-semibold text-white tabular-nums whitespace-nowrap">
+                          {formatSnapshotUsd(snapshot.waivedAdminFees)}
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr className="border-t border-white/[0.12] text-xs">
+                        <td className="pt-3 pr-3 font-semibold text-emerald-300">
+                          Net Recovered Total
+                        </td>
+                        <td className="pt-3 pl-3 text-right font-mono font-bold text-emerald-400 tabular-nums whitespace-nowrap">
+                          {formatSnapshotUsd(snapshot.totalRecovered)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               </div>
 
-              {/* 5-Star Rating */}
-              <div
-                aria-label="5 out of 5 stars"
-                className="pt-4 mt-4 border-t border-emerald-400/15 flex items-center justify-center gap-1 text-amber-400"
-              >
-                {Array.from({ length: 5 }).map((_, starIdx) => (
-                  <Star
-                    key={starIdx}
-                    className="w-4 h-4 fill-amber-400 text-amber-400"
-                  />
-                ))}
+              {/* Explicit Mutual NDA Notice */}
+              <div className="pt-3.5 border-t border-white/[0.08] flex items-center gap-2 text-xs text-slate-400">
+                <Lock className="w-3.5 h-3.5 text-emerald-400/80 shrink-0" />
+                <span>{snapshot.ndaNotice}</span>
               </div>
             </GlassSpotlightCard>
           </ScrollReveal>
@@ -435,7 +506,7 @@ export function RealResultsSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Comparison Section (Old Brokerage Way vs Zed Automation Border Beam)      */
+/*  Comparison Section (Old Brokerage Way vs Zed Automation)                  */
 /* -------------------------------------------------------------------------- */
 
 const OLD_WAY_ITEMS = [
@@ -454,7 +525,7 @@ export function ComparisonSection() {
   return (
     <section id="comparison" className="space-y-8">
       <ScrollReveal className="text-center max-w-2xl mx-auto space-y-2.5">
-        <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
+        <div className="text-xs font-medium text-slate-400">
           Section 05 · Operational Comparison
         </div>
         <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.03em] text-white">
@@ -464,18 +535,18 @@ export function ComparisonSection() {
       </ScrollReveal>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-        {/* Old Brokerage Way: Muted Grey Glass */}
+        {/* Old Brokerage Way: Muted Matte Glass */}
         <ScrollReveal>
           <GlassSpotlightCard variant="muted" className="p-6 sm:p-7 h-full">
-            <div className="flex items-start justify-between gap-4 pb-6 border-b border-white/10">
-              <div className="inline-flex items-center gap-2.5 rounded-lg bg-white/[0.06] border border-white/10 px-3.5 py-2">
+            <div className="flex items-start justify-between gap-4 pb-6 border-b border-white/[0.08]">
+              <div className="inline-flex items-center gap-2.5 rounded-lg bg-white/[0.04] border border-white/[0.08] px-3.5 py-2">
                 <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
-                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-200">
+                <span className="text-xs font-semibold tracking-tight text-slate-200">
                   Old Brokerage Way
                 </span>
               </div>
 
-              <div className="relative h-16 w-28 rounded-lg overflow-hidden border border-white/15 shrink-0">
+              <div className="relative h-16 w-28 rounded-lg overflow-hidden border border-white/[0.1] shrink-0">
                 <Image
                   src="/images/old-way-desk.jpg"
                   alt="Cluttered manual commission paperwork desk"
@@ -487,11 +558,11 @@ export function ComparisonSection() {
               </div>
             </div>
 
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-6 space-y-3.5">
               {OLD_WAY_ITEMS.map((item) => (
                 <li
                   key={item}
-                  className="flex items-center gap-3 rounded-xl bg-white/[0.03] border border-white/[0.06] px-4 py-3 text-sm text-slate-300"
+                  className="flex items-center gap-3 rounded-xl bg-white/[0.025] border border-white/[0.06] px-4 py-3 text-sm text-slate-300"
                 >
                   <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
                   <span>{item}</span>
@@ -501,25 +572,25 @@ export function ComparisonSection() {
           </GlassSpotlightCard>
         </ScrollReveal>
 
-        {/* Zed Automation: Double-Rimmed Glowing Emerald Border + Border Beam */}
+        {/* Zed Automation: Top-Lit Emerald Hairline Surface */}
         <ScrollReveal delay={0.1}>
           <GlassSpotlightCard
             variant="emerald"
             borderBeam={true}
-            className="p-6 sm:p-7 h-full ring-1 ring-emerald-400/35"
+            className="p-6 sm:p-7 h-full"
           >
-            <div className="flex items-start justify-between gap-4 pb-6 border-b border-emerald-400/20">
-              <div className="inline-flex items-center gap-2.5 rounded-lg bg-emerald-500/15 border border-emerald-400/35 px-3.5 py-2 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+            <div className="flex items-start justify-between gap-4 pb-6 border-b border-white/[0.08]">
+              <div className="inline-flex items-center gap-2.5 rounded-lg bg-emerald-500/12 border border-emerald-400/25 px-3.5 py-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-300">
+                <span className="text-xs font-semibold tracking-tight text-emerald-300">
                   Zed Automation
                 </span>
               </div>
 
-              <div className="relative h-16 w-28 rounded-lg overflow-hidden border border-emerald-400/35 shrink-0">
+              <div className="relative h-16 w-28 rounded-lg overflow-hidden border border-white/[0.12] shrink-0">
                 <Image
-                  src="/images/zed-team.jpg"
-                  alt="Modern brokerage operations team reviewing analytics"
+                  src="/images/office-backdrop.jpg"
+                  alt="Zed Automation obsidian-emerald brokerage audit suite"
                   fill
                   sizes="112px"
                   referrerPolicy="no-referrer"
@@ -528,11 +599,11 @@ export function ComparisonSection() {
               </div>
             </div>
 
-            <ul className="mt-6 space-y-4">
+            <ul className="mt-6 space-y-3.5">
               {ZED_WAY_ITEMS.map((item) => (
                 <li
                   key={item}
-                  className="flex items-center gap-3 rounded-xl bg-emerald-500/[0.08] border border-emerald-400/20 px-4 py-3 text-sm font-medium text-white"
+                  className="flex items-center gap-3 rounded-xl bg-emerald-500/[0.06] border border-white/[0.08] px-4 py-3 text-sm font-medium text-white"
                 >
                   <span className="h-5 w-5 rounded-full bg-emerald-400 text-[#040807] flex items-center justify-center shrink-0">
                     <Check className="w-3.5 h-3.5 stroke-[2.5]" />

@@ -171,12 +171,12 @@ export default function WrittenAuditModal({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto bg-[#0B1210]/95 backdrop-blur-2xl text-slate-100 border border-emerald-400/30 shadow-[0_0_60px_rgba(16,185,129,0.2)] p-0 gap-0">
+      <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto bg-[#0A110F]/95 backdrop-blur-2xl text-slate-100 border border-white/[0.09] border-t-emerald-400/30 shadow-[0_24px_70px_rgba(0,0,0,0.65)] p-0 gap-0">
         {confirmed ? (
           <div className="p-5 sm:p-8 space-y-5">
             <div className="space-y-2.5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-400">
+                <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-emerald-400">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
                   {confirmed.savedToServer
                     ? 'Logged to Zed Audit Desk'
@@ -186,7 +186,7 @@ export default function WrittenAuditModal({
                   Ref {confirmed.referenceId}
                 </span>
               </div>
-              <h3 className="text-xl font-bold tracking-[-0.02em] text-white">
+              <h3 className="text-xl font-bold tracking-[-0.03em] text-white">
                 3-Deal Commission Audit Request Confirmed
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed">
@@ -203,41 +203,44 @@ export default function WrittenAuditModal({
                   : 'is formatted below for one-click dispatch.'}{' '}
                 Expect a line-by-line PDF discrepancy report and private Loom
                 walkthrough at{' '}
-                <span className="text-emerald-400 font-mono break-all">
+                <span className="text-emerald-300 font-medium break-words">
                   {confirmed.payload.email}
                 </span>{' '}
                 within 48 hours.
               </p>
             </div>
 
-            <div className="rounded-lg bg-[#040807]/85 border border-emerald-400/20 divide-y divide-emerald-400/10 text-xs font-mono">
-              <div className="px-4 py-2.5 flex items-center justify-between gap-2 text-slate-400 uppercase tracking-wider">
+            <div className="rounded-lg bg-[#040807]/85 border border-white/[0.08] divide-y divide-white/[0.06] text-xs">
+              <div className="px-4 py-2.5 flex items-center justify-between gap-2 text-slate-400 uppercase tracking-[0.1em] font-medium text-[11px]">
                 <span>Submitted Transaction References</span>
-                <span className="text-emerald-400/90 tabular-nums">
+                <span className="text-emerald-300/90 font-mono tabular-nums">
                   {confirmed.payload.agentCount} Agents
                 </span>
               </div>
               <div className="px-4 py-2.5 text-slate-100 break-words">
-                1. {confirmed.payload.dealOne}
+                <span className="font-mono tabular-nums text-slate-500 mr-1.5">1.</span>
+                {confirmed.payload.dealOne}
               </div>
               <div className="px-4 py-2.5 text-slate-100 break-words">
-                2. {confirmed.payload.dealTwo}
+                <span className="font-mono tabular-nums text-slate-500 mr-1.5">2.</span>
+                {confirmed.payload.dealTwo}
               </div>
               <div className="px-4 py-2.5 text-slate-100 break-words">
-                3. {confirmed.payload.dealThree}
+                <span className="font-mono tabular-nums text-slate-500 mr-1.5">3.</span>
+                {confirmed.payload.dealThree}
               </div>
             </div>
 
             {/* Guaranteed Dual-Backup Lead Delivery Actions */}
-            <div className="rounded-xl bg-[#040807]/90 border border-emerald-400/25 p-4 space-y-3">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-300">
+            <div className="rounded-xl bg-[#040807]/90 border border-white/[0.08] border-t-emerald-400/20 p-4 space-y-3">
+              <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-300">
                 Keep a Copy or Send Directly to Audit Desk
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <button
                   type="button"
                   onClick={handleCopyBrief}
-                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] text-xs font-semibold shadow-[0_1px_0_rgba(255,255,255,0.22)_inset,0_8px_24px_rgba(16,185,129,0.2)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
                 >
                   {copiedBrief ? (
                     <>
@@ -254,39 +257,39 @@ export default function WrittenAuditModal({
 
                 <a
                   href={mailtoUrl}
-                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#0B1210] hover:bg-emerald-400/10 border border-emerald-400/35 text-emerald-300 hover:text-emerald-200 text-xs font-semibold transition-colors whitespace-nowrap"
+                  className="inline-flex items-center justify-center gap-2 h-10 px-3.5 rounded-lg bg-[#0A110F] hover:bg-white/[0.04] border border-white/[0.12] hover:border-emerald-400/35 text-emerald-300 hover:text-emerald-200 text-xs font-semibold transition-all active:scale-[0.985] whitespace-nowrap"
                 >
                   <Mail className="w-3.5 h-3.5 shrink-0" />
                   Email Pre-Filled Brief
                 </a>
               </div>
-              <p className="text-[11px] font-mono text-slate-400 leading-relaxed">
+              <p className="text-[11px] text-slate-400 leading-relaxed">
                 Direct fallback desk:{' '}
                 <a
                   href={mailtoUrl}
-                  className="text-emerald-300 hover:underline break-all"
+                  className="text-emerald-300 hover:underline break-words"
                 >
                   {AUDIT_DESK_EMAIL}
                 </a>
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-emerald-400/15">
-              <span className="text-xs font-mono text-slate-400">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-white/[0.08]">
+              <span className="text-xs text-slate-400">
                 100% async delivery · {AUDIT_DESK_EMAIL}
               </span>
               <div className="flex items-center gap-2.5 w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => setConfirmed(null)}
-                  className="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-[#040807]/80 border border-white/15 text-xs font-medium text-slate-200 hover:text-white transition-colors cursor-pointer whitespace-nowrap"
+                  className="flex-1 sm:flex-initial px-3.5 py-2 rounded-lg bg-[#040807]/80 border border-white/[0.12] hover:border-white/[0.2] text-xs font-medium text-slate-200 hover:text-white transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
                 >
                   Edit Deals
                 </button>
                 <button
                   type="button"
                   onClick={() => handleOpenChange(false)}
-                  className="flex-1 sm:flex-initial px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap"
+                  className="flex-1 sm:flex-initial px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
                 >
                   Done
                 </button>
@@ -295,11 +298,11 @@ export default function WrittenAuditModal({
           </div>
         ) : (
           <>
-            <DialogHeader className="px-5 sm:px-6 pt-6 pb-5 border-b border-emerald-400/15 text-left space-y-2">
-              <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-300/90">
+            <DialogHeader className="px-5 sm:px-6 pt-6 pb-5 border-b border-white/[0.08] text-left space-y-2">
+              <div className="text-[11px] font-medium uppercase tracking-[0.12em] text-emerald-300/90">
                 Async Written Audit · 48-Hour Turnaround · Written Delivery Only
               </div>
-              <DialogTitle className="text-xl font-bold tracking-[-0.02em] text-white">
+              <DialogTitle className="font-display text-xl font-bold tracking-[-0.03em] text-white">
                 Request Your 3-Deal Written Commission Audit
               </DialogTitle>
               <DialogDescription className="text-sm text-slate-300 leading-relaxed">
@@ -307,7 +310,7 @@ export default function WrittenAuditModal({
                 reconciliation ledger and private async Loom breakdown via
                 email.
               </DialogDescription>
-              <div className="pt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-xs font-mono text-slate-200">
+              <div className="pt-1 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-slate-300">
                 <span className="inline-flex items-center gap-1.5">
                   <FileText className="w-3.5 h-3.5 text-emerald-400" />
                   Line-by-line PDF ledger
@@ -337,7 +340,7 @@ export default function WrittenAuditModal({
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
                     placeholder="Zakaria Mansour"
-                    className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 focus-visible:ring-emerald-400/40"
+                    className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                     required
                   />
                 </div>
@@ -353,7 +356,7 @@ export default function WrittenAuditModal({
                     value={brokerageName}
                     onChange={(e) => setBrokerageName(e.target.value)}
                     placeholder="Summit Realty Group"
-                    className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 focus-visible:ring-emerald-400/40"
+                    className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                     required
                   />
                 </div>
@@ -373,7 +376,7 @@ export default function WrittenAuditModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="zakaria@zedautomations.tech"
-                    className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 focus-visible:ring-emerald-400/40"
+                    className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                     required
                   />
                 </div>
@@ -390,7 +393,7 @@ export default function WrittenAuditModal({
                     min={1}
                     value={agentCount}
                     onChange={(e) => setAgentCount(e.target.value)}
-                    className="bg-[#040807]/80 border-emerald-400/20 text-white font-mono tabular-nums focus-visible:ring-emerald-400/40"
+                    className="bg-[#040807]/85 border-white/[0.09] text-white font-mono tabular-nums focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                   />
                 </div>
               </div>
@@ -404,7 +407,7 @@ export default function WrittenAuditModal({
                   value={dealOne}
                   onChange={(e) => setDealOne(e.target.value)}
                   placeholder="Deal 1: 412 Oak Ridge Dr — $485,000, 3% side, 70/30 split, paid $11,640"
-                  className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 text-xs focus-visible:ring-emerald-400/40"
+                  className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 text-xs focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                   required
                 />
                 <Input
@@ -412,7 +415,7 @@ export default function WrittenAuditModal({
                   value={dealTwo}
                   onChange={(e) => setDealTwo(e.target.value)}
                   placeholder="Deal 2: 1904 Pinehurst Ave — $620,000, 2.5% side, 25% referral, paid $15,500"
-                  className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 text-xs focus-visible:ring-emerald-400/40"
+                  className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 text-xs focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                   required
                 />
                 <Input
@@ -420,7 +423,7 @@ export default function WrittenAuditModal({
                   value={dealThree}
                   onChange={(e) => setDealThree(e.target.value)}
                   placeholder="Deal 3: 88 Maplewood Ln — $390,000, 3% side, 80/20 split, paid $9,855"
-                  className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 text-xs focus-visible:ring-emerald-400/40"
+                  className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 text-xs focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                   required
                 />
               </div>
@@ -437,7 +440,7 @@ export default function WrittenAuditModal({
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="e.g., $495 compliance fee per side, 80/20 split until $18k cap..."
-                  className="bg-[#040807]/80 border-emerald-400/20 text-white placeholder:text-slate-500 min-h-20 text-xs focus-visible:ring-emerald-400/40"
+                  className="bg-[#040807]/85 border-white/[0.09] text-white placeholder:text-slate-500 min-h-20 text-xs focus-visible:ring-emerald-400/35 focus-visible:border-emerald-400/40"
                 />
               </div>
 
@@ -454,7 +457,7 @@ export default function WrittenAuditModal({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-11 rounded-lg bg-[#10B981] hover:bg-emerald-400 disabled:opacity-70 disabled:cursor-not-allowed text-[#040807] font-semibold text-sm shadow-[0_0_24px_rgba(16,185,129,0.3)] transition-colors cursor-pointer inline-flex items-center justify-center gap-2"
+                  className="w-full h-11 rounded-lg bg-[#10B981] hover:bg-emerald-400 disabled:opacity-70 disabled:cursor-not-allowed text-[#040807] font-semibold text-sm shadow-[0_1px_0_rgba(255,255,255,0.22)_inset,0_10px_28px_rgba(16,185,129,0.2)] transition-all active:scale-[0.985] cursor-pointer inline-flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -465,7 +468,7 @@ export default function WrittenAuditModal({
                     <>Submit 3 Deals for Async Written Audit &rarr;</>
                   )}
                 </button>
-                <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-slate-400 text-center">
+                <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 text-center">
                   <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
                   <span>
                     Encrypted async review · Direct email delivery via{' '}

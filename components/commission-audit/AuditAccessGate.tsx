@@ -90,7 +90,7 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
   if (!hydrated) {
     return (
       <div className="min-h-screen bg-[#040807] text-slate-300 flex items-center justify-center p-6">
-        <div className="text-xs font-mono tracking-wide text-slate-400">
+        <div className="text-xs tracking-wide text-slate-400">
           Verifying terminal session…
         </div>
       </div>
@@ -102,11 +102,11 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
       <div className="min-h-screen bg-[#040807] text-slate-100 flex flex-col justify-between p-4 sm:p-6 relative overflow-hidden">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.12),transparent_65%)]"
+          className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.08),transparent_65%)]"
         />
         <header className="relative z-10 max-w-6xl w-full mx-auto flex items-center justify-between py-2">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-[#0B1210] border border-emerald-400/30 flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_18px_rgba(16,185,129,0.18)]">
+            <div className="h-9 w-9 rounded-lg bg-[#0A110F] border border-white/[0.1] border-t-emerald-400/25 flex items-center justify-center overflow-hidden shrink-0">
               <Image
                 src="/assets/aistudio/ZED_SVG_e2b1063b.svg"
                 alt="Zed Automation logo"
@@ -116,7 +116,7 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
                 className="h-full w-full object-contain"
               />
             </div>
-            <span className="text-base font-bold tracking-[-0.02em] text-white whitespace-nowrap shrink-0">
+            <span className="font-display text-base font-bold tracking-[-0.03em] text-white whitespace-nowrap shrink-0">
               Zed Automation
             </span>
           </div>
@@ -130,15 +130,14 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
         </header>
 
         <main className="relative z-10 flex-1 flex items-center justify-center py-12">
-          <div className="w-full max-w-md rounded-2xl bg-[#0B1210]/90 backdrop-blur-2xl border border-emerald-400/25 shadow-[0_0_50px_rgba(16,185,129,0.12)] overflow-hidden">
-            <div className="h-1 w-full bg-gradient-to-r from-emerald-500/80 via-[#10B981] to-teal-400/80" />
+          <div className="w-full max-w-md rounded-2xl bg-[#0A110F]/85 backdrop-blur-2xl border border-white/[0.09] border-t-emerald-400/30 shadow-[0_24px_70px_rgba(0,0,0,0.6)] overflow-hidden">
             <div className="p-7 sm:p-8 space-y-6">
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-300">
+                <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-emerald-300/90">
                   <ShieldCheck className="w-4 h-4 text-[#10B981] shrink-0" />
                   <span>Client Fulfillment Portal</span>
                 </div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-white [text-wrap:balance]">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-[-0.03em] text-white [text-wrap:balance]">
                   Zed Automation &bull; Private GCI Audit Terminal
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
@@ -169,8 +168,8 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
                         if (error) setError(null);
                       }}
                       placeholder="Enter Access Key"
-                      className={`w-full pl-10 pr-11 py-3 rounded-xl border text-sm font-mono bg-[#040807]/90 text-white placeholder:text-slate-600 outline-none transition focus:ring-2 focus:ring-emerald-400/40 focus:border-[#10B981] ${
-                        error ? 'border-rose-500/70' : 'border-emerald-400/20'
+                      className={`w-full pl-10 pr-11 py-3 rounded-xl border text-sm font-mono bg-[#040807]/90 text-white placeholder:text-slate-600 outline-none transition focus:ring-2 focus:ring-emerald-400/35 focus:border-emerald-400/50 ${
+                        error ? 'border-rose-500/70' : 'border-white/[0.1]'
                       }`}
                     />
                     <button
@@ -191,14 +190,14 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
 
                 <button
                   type="submit"
-                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-bold text-sm transition-colors shadow-[0_0_24px_rgba(16,185,129,0.28)] cursor-pointer whitespace-nowrap"
+                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-sm transition-all active:scale-[0.985] shadow-[0_1px_0_rgba(255,255,255,0.22)_inset,0_10px_28px_rgba(16,185,129,0.2)] cursor-pointer whitespace-nowrap"
                 >
                   <Lock className="w-4 h-4" />
                   Unlock Audit Workspace
                 </button>
               </form>
 
-              <div className="pt-4 border-t border-emerald-400/15">
+              <div className="pt-4 border-t border-white/[0.08]">
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Authorized for Zed Automation operators &amp; active brokerage partners. Need an audit key? Request one on the{' '}
                   <Link
@@ -221,7 +220,7 @@ export default function AuditAccessGate({ children }: { children: React.ReactNod
           </div>
         </main>
 
-        <footer className="relative z-10 max-w-6xl w-full mx-auto py-3 text-center text-xs font-mono text-slate-500">
+        <footer className="relative z-10 max-w-6xl w-full mx-auto py-3 text-center text-xs text-slate-500">
           Zed Automation &middot; Private Brokerage Commission Audit Infrastructure
         </footer>
       </div>

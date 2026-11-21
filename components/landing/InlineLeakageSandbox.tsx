@@ -89,7 +89,7 @@ export default function InlineLeakageSandbox({
   return (
     <section
       id="sandbox"
-      className="relative scroll-mt-20 rounded-2xl sm:rounded-3xl overflow-hidden border border-emerald-400/20 p-4 sm:p-8 lg:p-10"
+      className="relative scroll-mt-20 rounded-2xl sm:rounded-3xl overflow-hidden border border-white/[0.08] border-t-emerald-400/25 p-4 sm:p-8 lg:p-10"
     >
       {/* Subtle Dark-Blurred Modern Brokerage Office Backdrop */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
@@ -99,15 +99,15 @@ export default function InlineLeakageSandbox({
           fill
           sizes="(max-width: 1280px) 100vw, 1280px"
           referrerPolicy="no-referrer"
-          className="object-cover opacity-25 blur-[3px] scale-105"
+          className="object-cover opacity-20 blur-[3px] scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040807]/90 via-[#040807]/75 to-[#040807]/95" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040807]/90 via-[#040807]/80 to-[#040807]/95" />
       </div>
 
       <ScrollReveal className="relative z-10 space-y-8">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="space-y-2">
-            <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400">
+            <div className="text-xs font-medium text-slate-400">
               Section 02 · Interactive Leakage Calculator
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-[-0.03em] text-white">
@@ -117,7 +117,7 @@ export default function InlineLeakageSandbox({
           </div>
           <a
             href="#protocol"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-slate-200 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-200 hover:text-emerald-300 transition-colors whitespace-nowrap shrink-0"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             Inspect Audit Protocol
@@ -125,18 +125,21 @@ export default function InlineLeakageSandbox({
           </a>
         </div>
 
-        {/* Dual Glowing Smoked Glass Cards */}
+        {/* Dual Tactile Smoked Glass Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           {/* Left Card: Interactive Sliders & Controls */}
           <GlassSpotlightCard className="lg:col-span-7 p-4 sm:p-7 lg:p-8 flex flex-col justify-between gap-6">
             <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-emerald-400/15">
-                <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-white">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-white/[0.08]">
+                <span className="inline-flex items-center gap-2 text-xs font-semibold tracking-tight text-white">
                   <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-400" />
                   Brokerage Closing Inputs
                 </span>
-                <span className="text-xs font-mono text-emerald-300/90 tabular-nums">
-                  {formatUsd(metrics.monthlyGrossGci)} / mo Gross GCI
+                <span className="text-xs text-emerald-300/90">
+                  <span className="font-mono font-semibold tabular-nums">
+                    {formatUsd(metrics.monthlyGrossGci)}
+                  </span>{' '}
+                  / mo Gross GCI
                 </span>
               </div>
 
@@ -215,10 +218,10 @@ export default function InlineLeakageSandbox({
                         key={rate.value}
                         type="button"
                         onClick={() => setErrorRate(rate.value)}
-                        className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-mono border transition-colors cursor-pointer text-left tabular-nums whitespace-nowrap truncate ${
+                        className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-medium border transition-all active:scale-[0.985] cursor-pointer text-left tabular-nums whitespace-nowrap truncate ${
                           active
-                            ? 'bg-emerald-400/15 border-emerald-400/50 text-white font-semibold'
-                            : 'bg-[#040807]/75 border-white/10 text-slate-300 hover:text-white hover:border-emerald-400/30'
+                            ? 'bg-emerald-400/12 border-emerald-400/40 text-white font-semibold'
+                            : 'bg-[#040807]/75 border-white/[0.08] text-slate-300 hover:text-white hover:border-white/[0.18]'
                         }`}
                       >
                         {rate.label}
@@ -241,10 +244,10 @@ export default function InlineLeakageSandbox({
                         key={scope.id}
                         type="button"
                         onClick={() => setScopeId(scope.id)}
-                        className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-mono border transition-colors cursor-pointer text-center tabular-nums whitespace-nowrap ${
+                        className={`px-2.5 sm:px-3 py-2 rounded-lg text-[11px] sm:text-xs font-medium border transition-all active:scale-[0.985] cursor-pointer text-center whitespace-nowrap ${
                           active
-                            ? 'bg-emerald-400/15 border-emerald-400/50 text-white font-semibold'
-                            : 'bg-[#040807]/75 border-white/10 text-slate-300 hover:text-white hover:border-emerald-400/30'
+                            ? 'bg-emerald-400/12 border-emerald-400/40 text-white font-semibold'
+                            : 'bg-[#040807]/75 border-white/[0.08] text-slate-300 hover:text-white hover:border-white/[0.18]'
                         }`}
                       >
                         {scope.label}
@@ -255,26 +258,26 @@ export default function InlineLeakageSandbox({
               </div>
             </div>
 
-            <div className="pt-3 border-t border-emerald-400/15 text-[11px] font-mono text-slate-400">
+            <div className="pt-3 border-t border-white/[0.08] text-xs text-slate-400">
               Calibrate closing volume &amp; audit scope to estimate 90-day recoverable GCI.
             </div>
           </GlassSpotlightCard>
 
-          {/* Right Card: Glowing Loss & Recovery Readout */}
+          {/* Right Card: Tactile Loss & Recovery Readout */}
           <GlassSpotlightCard
             borderBeam={true}
             className="lg:col-span-5 p-4 sm:p-7 lg:p-8 flex flex-col justify-between gap-6"
           >
             <div className="space-y-5">
-              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
-                <span className="inline-flex items-center gap-1.5 uppercase tracking-wider text-emerald-300">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <span className="inline-flex items-center gap-1.5 font-semibold tracking-tight text-emerald-300">
                   <Zap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   Projected Audit Ledger
                 </span>
                 <span className="text-slate-400">Tabular Estimate</span>
               </div>
 
-              <div className="divide-y divide-emerald-400/15 border-y border-emerald-400/15">
+              <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
                 <div className="py-3.5 flex items-baseline justify-between gap-3">
                   <span className="text-xs text-slate-300 min-w-0">
                     Monthly Split &amp; Cap Drift
@@ -335,13 +338,13 @@ export default function InlineLeakageSandbox({
                       auditScopeLabel: activeScope.label,
                     })
                   }
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-xs sm:text-sm h-11 px-3.5 sm:px-4 shadow-[0_0_24px_rgba(16,185,129,0.35)] transition-colors cursor-pointer whitespace-nowrap"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#10B981] hover:bg-emerald-400 text-[#040807] font-semibold text-xs sm:text-sm h-11 px-3.5 sm:px-4 shadow-[0_4px_20px_rgba(16,185,129,0.22)] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap"
                 >
                   Verify on 3 Real Closed Deals
                   <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
               </MagneticButton>
-              <p className="text-[11px] font-mono text-slate-400 text-center">
+              <p className="text-xs text-slate-400 text-center">
                 Delivered via PDF + private Loom in 48h · Zero phone calls
               </p>
             </div>

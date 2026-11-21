@@ -217,8 +217,8 @@ export function GlassSpotlightCard({
 
   const spotlight = useMotionTemplate`radial-gradient(380px circle at ${mouseX}px ${mouseY}px, ${
     variant === 'emerald'
-      ? 'rgba(16, 185, 129, 0.14)'
-      : 'rgba(255, 255, 255, 0.06)'
+      ? 'rgba(16, 185, 129, 0.08)'
+      : 'rgba(255, 255, 255, 0.04)'
   }, transparent 75%)`;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -244,34 +244,34 @@ export function GlassSpotlightCard({
 
   const baseSurface =
     variant === 'emerald'
-      ? 'bg-[#0B1210]/75 border-emerald-400/25 hover:border-emerald-400/50 shadow-[0_0_40px_rgba(16,185,129,0.12)] hover:shadow-[0_0_56px_rgba(16,185,129,0.22)]'
-      : 'bg-[#0C1011]/75 border-white/10 hover:border-white/20 shadow-[0_0_32px_rgba(0,0,0,0.45)]';
+      ? 'bg-[#0A110F]/80 border-white/[0.08] border-t-emerald-400/25 hover:border-white/[0.14] hover:border-t-emerald-400/35 shadow-[0_14px_38px_rgba(0,0,0,0.42),0_0_24px_rgba(16,185,129,0.05)] hover:shadow-[0_18px_44px_rgba(0,0,0,0.5),0_0_32px_rgba(16,185,129,0.08)]'
+      : 'bg-[#0A0F0E]/80 border-white/[0.08] border-t-white/[0.14] hover:border-white/[0.14] shadow-[0_12px_32px_rgba(0,0,0,0.42)]';
 
   return (
     <motion.div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={isFinePointer ? { y: -4 } : undefined}
+      whileHover={isFinePointer ? { y: -2 } : undefined}
       style={
         isFinePointer && tilt
           ? { rotateX, rotateY, transformPerspective: 1100 }
           : undefined
       }
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className={`group relative rounded-2xl border backdrop-blur-xl overflow-hidden transition-colors duration-300 ${baseSurface} ${className}`}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className={`group relative rounded-2xl border backdrop-blur-xl overflow-hidden transition-colors duration-200 ${baseSurface} ${className}`}
     >
-      {/* Inner Top Specular Highlight */}
+      {/* Inner Top Specular Hairline Catch-Light */}
       <div
         aria-hidden="true"
         className={`pointer-events-none absolute inset-x-0 top-0 h-px z-20 ${
           variant === 'emerald'
-            ? 'bg-gradient-to-r from-transparent via-emerald-300/55 to-transparent'
-            : 'bg-gradient-to-r from-transparent via-white/25 to-transparent'
+            ? 'bg-gradient-to-r from-transparent via-emerald-400/35 to-transparent'
+            : 'bg-gradient-to-r from-transparent via-white/15 to-transparent'
         }`}
       />
 
-      {/* Continuous Luminous Emerald Border Beam */}
+      {/* Restrained Ambient Border Hairline Trace */}
       {borderBeam && variant === 'emerald' && (
         <div
           aria-hidden="true"
@@ -279,10 +279,10 @@ export function GlassSpotlightCard({
         >
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'linear' }}
-            className="absolute -inset-[65%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_280deg,rgba(16,185,129,0.55)_325deg,rgba(110,231,183,0.9)_345deg,transparent_360deg)] will-change-transform"
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+            className="absolute -inset-[65%] bg-[conic-gradient(from_0deg,transparent_0deg,transparent_295deg,rgba(16,185,129,0.28)_330deg,rgba(110,231,183,0.48)_348deg,transparent_360deg)] will-change-transform"
           />
-          <div className="absolute inset-[1.5px] rounded-[14px] bg-[#0B1210]/95" />
+          <div className="absolute inset-px rounded-[15px] bg-[#0A110F]/95" />
         </div>
       )}
 
@@ -373,9 +373,9 @@ const TRUST_PLATFORMS = [
 
 export function TrustMarquee() {
   return (
-    <div className="border-y border-emerald-400/15 bg-[#070E0C]/70 backdrop-blur-md py-4 overflow-hidden">
+    <div className="border-y border-white/[0.08] bg-[#070D0B]/70 backdrop-blur-md py-4 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-        <span className="text-[11px] font-mono uppercase tracking-[0.16em] text-emerald-400/80 whitespace-nowrap shrink-0">
+        <span className="text-xs font-medium tracking-wide text-emerald-300/85 whitespace-nowrap shrink-0">
           Reconciles Exports From
         </span>
 
@@ -396,10 +396,10 @@ export function TrustMarquee() {
                     key={`${trackIdx}-${platform}`}
                     className="flex items-center gap-8 whitespace-nowrap"
                   >
-                    <span className="text-sm font-mono font-medium tracking-wide text-slate-300">
+                    <span className="text-sm font-medium tracking-tight text-slate-300">
                       {platform}
                     </span>
-                    <span className="text-emerald-400/50 text-xs" aria-hidden="true">
+                    <span className="text-white/20 text-xs" aria-hidden="true">
                       ·
                     </span>
                   </div>

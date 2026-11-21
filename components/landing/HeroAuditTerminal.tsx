@@ -168,20 +168,20 @@ export default function HeroAuditTerminal({
   return (
     <GlassSpotlightCard borderBeam={true} shimmer={true} tilt={false}>
       {/* Terminal Top Header */}
-      <div className="px-3.5 sm:px-5 py-3.5 border-b border-emerald-400/15 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
+      <div className="px-3.5 sm:px-5 py-3.5 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <span
-            className="h-2 w-2 rounded-sm bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.9)] shrink-0"
+            className="h-1.5 w-1.5 rounded-sm bg-emerald-400/80 shrink-0"
             aria-hidden="true"
           />
-          <span className="text-[11px] sm:text-xs font-mono font-medium uppercase tracking-wider text-slate-100 truncate">
+          <span className="text-xs font-semibold tracking-tight text-slate-100 truncate">
             Brokerage GCI Ledger
           </span>
-          <span className="text-emerald-400/40 text-xs shrink-0" aria-hidden="true">
+          <span className="text-white/20 text-xs shrink-0" aria-hidden="true">
             /
           </span>
-          <span className="text-[11px] sm:text-xs font-mono text-slate-400 tabular-nums whitespace-nowrap shrink-0">
-            5 Closed Sides
+          <span className="text-xs text-slate-400 whitespace-nowrap shrink-0">
+            <span className="font-mono tabular-nums">5</span> Closed Sides
           </span>
         </div>
 
@@ -189,14 +189,14 @@ export default function HeroAuditTerminal({
         <div
           role="group"
           aria-label="Reconciliation scope toggle"
-          className="inline-flex max-w-full items-center rounded-lg bg-[#040807]/85 border border-emerald-400/20 p-0.5"
+          className="inline-flex max-w-full items-center rounded-lg bg-[#040807]/85 border border-white/[0.08] p-0.5"
         >
           <button
             type="button"
             onClick={() => setAuditScope('splits')}
-            className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-mono transition-colors cursor-pointer whitespace-nowrap ${
+            className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[11px] font-medium transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap ${
               auditScope === 'splits'
-                ? 'bg-white/[0.1] text-white font-medium'
+                ? 'bg-white/[0.1] text-white'
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -206,10 +206,10 @@ export default function HeroAuditTerminal({
           <button
             type="button"
             onClick={() => setAuditScope('full')}
-            className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[10px] sm:text-[11px] font-mono transition-colors cursor-pointer whitespace-nowrap ${
+            className={`inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 rounded-md text-[11px] transition-all active:scale-[0.985] cursor-pointer whitespace-nowrap ${
               auditScope === 'full'
-                ? 'bg-[#10B981] text-[#040807] font-semibold shadow-[0_0_16px_rgba(16,185,129,0.4)]'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#10B981] text-[#040807] font-semibold shadow-sm'
+                : 'text-slate-400 hover:text-slate-200 font-medium'
             }`}
           >
             <FileCheck2 className="w-3 h-3 shrink-0" />
@@ -219,7 +219,7 @@ export default function HeroAuditTerminal({
       </div>
 
       {/* Ledger Column Headers */}
-      <div className="px-3.5 sm:px-5 py-2.5 border-b border-emerald-400/10 grid grid-cols-12 gap-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-slate-400">
+      <div className="px-3.5 sm:px-5 py-2.5 border-b border-white/[0.06] grid grid-cols-12 gap-2 text-[11px] font-medium text-slate-400">
         <div className="col-span-5 min-w-0 truncate">Closed Side / Agent</div>
         <div className="col-span-3 min-w-0 text-right whitespace-nowrap">Gross GCI</div>
         <div className="col-span-4 min-w-0 text-right whitespace-nowrap">Variance</div>
@@ -227,7 +227,7 @@ export default function HeroAuditTerminal({
 
       {/* Clickable Ledger Rows */}
       <div
-        className="divide-y divide-emerald-400/10"
+        className="divide-y divide-white/[0.06]"
         role="listbox"
         aria-label="Audited closed transactions"
       >
@@ -245,8 +245,8 @@ export default function HeroAuditTerminal({
               onClick={() => setSelectedId(deal.id)}
               className={`w-full text-left px-3.5 sm:px-5 py-3 grid grid-cols-12 gap-1.5 sm:gap-2 items-center transition-colors cursor-pointer ${
                 isSelected
-                  ? 'bg-emerald-400/[0.08]'
-                  : 'hover:bg-emerald-400/[0.04]'
+                  ? 'bg-emerald-400/[0.07]'
+                  : 'hover:bg-white/[0.03]'
               }`}
             >
               <div className="col-span-5 min-w-0 flex items-center gap-1.5 sm:gap-2">
@@ -259,8 +259,8 @@ export default function HeroAuditTerminal({
                   <div className="text-xs sm:text-[13px] font-medium text-white truncate">
                     {deal.address}
                   </div>
-                  <div className="text-[10px] sm:text-[11px] font-mono text-slate-400 truncate tabular-nums">
-                    {deal.id} · {deal.agent}
+                  <div className="text-[11px] text-slate-400 truncate">
+                    <span className="font-mono tabular-nums">{deal.id}</span> · {deal.agent}
                   </div>
                 </div>
               </div>
@@ -269,18 +269,18 @@ export default function HeroAuditTerminal({
                 {formatUsd(deal.grossGci)}
               </div>
 
-              <div className="col-span-4 min-w-0 text-right font-mono text-[11px] sm:text-[13px] tabular-nums">
+              <div className="col-span-4 min-w-0 text-right">
                 {activeVariance > 0 ? (
-                  <span className="text-rose-400 font-medium whitespace-nowrap">
+                  <span className="font-mono text-[11px] sm:text-[13px] tabular-nums text-rose-400 font-medium whitespace-nowrap">
                     -{formatUsd(activeVariance)}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center justify-end gap-1 text-emerald-400 whitespace-nowrap">
+                  <span className="inline-flex items-center justify-end gap-1 font-mono text-[11px] sm:text-[13px] tabular-nums text-emerald-400 whitespace-nowrap">
                     <Check className="w-3 h-3 shrink-0" />
                     {deal.variance > 0 ? 'Skipped' : '$0'}
                   </span>
                 )}
-                <div className="text-[10px] text-slate-400 truncate">
+                <div className="text-[11px] text-slate-400 truncate">
                   {deal.category}
                 </div>
               </div>
@@ -290,14 +290,22 @@ export default function HeroAuditTerminal({
       </div>
 
       {/* Selected Row Forensic Line Inspector */}
-      <div className="px-3.5 sm:px-5 py-4 border-t border-emerald-400/15 bg-[#060C0A]/80 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="text-[11px] font-mono uppercase tracking-wider text-emerald-300/90">
-            Line Inspection · {selectedDeal.id} · {selectedDeal.closeDate}
+      <div className="px-3.5 sm:px-5 py-4 border-t border-white/[0.08] bg-[#060C0A]/80 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="font-medium text-emerald-300/90">
+            Line Inspection ·{' '}
+            <span className="font-mono tabular-nums">{selectedDeal.id}</span> ·{' '}
+            <span className="font-mono tabular-nums">{selectedDeal.closeDate}</span>
           </div>
-          <div className="text-[11px] font-mono text-slate-400 tabular-nums">
-            Sale {formatUsd(selectedDeal.salePrice)} · Split{' '}
-            {selectedDeal.expectedSplitPct}%
+          <div className="text-slate-400">
+            Sale{' '}
+            <span className="font-mono tabular-nums text-slate-200">
+              {formatUsd(selectedDeal.salePrice)}
+            </span>{' '}
+            · Split{' '}
+            <span className="font-mono tabular-nums text-slate-200">
+              {selectedDeal.expectedSplitPct}%
+            </span>
           </div>
         </div>
 
@@ -305,29 +313,29 @@ export default function HeroAuditTerminal({
           {selectedDeal.rule}
         </p>
 
-        <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-2 border-t border-emerald-400/10 font-mono text-xs tabular-nums">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-2.5 border-t border-white/[0.06] text-xs">
           <div className="min-w-0">
-            <div className="text-[10px] uppercase tracking-wider text-slate-400 truncate">
+            <div className="text-[11px] font-medium text-slate-400 truncate">
               Expected Payout
             </div>
-            <div className="mt-0.5 text-slate-100 font-medium">
+            <div className="mt-0.5 font-mono tabular-nums text-slate-100 font-medium">
               {formatUsd(selectedDeal.expectedPayout)}
             </div>
           </div>
           <div className="min-w-0">
-            <div className="text-[10px] uppercase tracking-wider text-slate-400 truncate">
+            <div className="text-[11px] font-medium text-slate-400 truncate">
               Disbursed
             </div>
-            <div className="mt-0.5 text-slate-100 font-medium">
+            <div className="mt-0.5 font-mono tabular-nums text-slate-100 font-medium">
               {formatUsd(selectedDeal.paidAmount)}
             </div>
           </div>
           <div className="min-w-0 text-right">
-            <div className="text-[10px] uppercase tracking-wider text-slate-400 truncate">
+            <div className="text-[11px] font-medium text-slate-400 truncate">
               Recoverable
             </div>
             <div
-              className={`mt-0.5 font-semibold ${
+              className={`mt-0.5 font-mono tabular-nums font-semibold ${
                 selectedDeal.variance > 0 ? 'text-emerald-400' : 'text-slate-400'
               }`}
             >
@@ -340,10 +348,10 @@ export default function HeroAuditTerminal({
       </div>
 
       {/* Forensic Commission Reconciliation Summary */}
-      <div className="px-3.5 sm:px-5 py-4 border-t border-emerald-400/20 bg-[#08100E]/85 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+      <div className="px-3.5 sm:px-5 py-4 border-t border-white/[0.08] bg-[#08100E]/85 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
         <div>
-          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
-            Split Drift ({flaggedCount} files)
+          <div className="text-xs font-medium text-slate-400">
+            Split Drift (<span className="font-mono tabular-nums">{flaggedCount}</span> files)
           </div>
           <div className="mt-1 text-base font-mono font-semibold text-white">
             <AnimatedNumber value={splitDriftLeakage} prefix="$" />
@@ -351,7 +359,7 @@ export default function HeroAuditTerminal({
         </div>
 
         <div>
-          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+          <div className="text-xs font-medium text-slate-400">
             CD &amp; Referral Clawback
           </div>
           <div className="mt-1 text-base font-mono font-semibold text-slate-100">
@@ -360,7 +368,7 @@ export default function HeroAuditTerminal({
         </div>
 
         <div className="sm:text-right">
-          <div className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+          <div className="text-xs font-medium text-slate-400">
             Projected 90d Net Recovery
           </div>
           <div className="mt-1 text-xl font-mono font-bold text-emerald-400">
@@ -370,11 +378,11 @@ export default function HeroAuditTerminal({
       </div>
 
       {/* Public Conversion Action Bar (Zero Password Wall) */}
-      <div className="px-3.5 sm:px-5 py-3 border-t border-emerald-400/15 bg-[#040807]/85 flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5 text-xs font-mono">
+      <div className="px-3.5 sm:px-5 py-3 border-t border-white/[0.08] bg-[#040807]/85 flex flex-wrap items-center justify-between gap-x-4 gap-y-2.5 text-xs font-medium">
         <button
           type="button"
           onClick={onScrollToSandbox}
-          className="inline-flex items-center gap-1.5 py-0.5 text-slate-300 hover:text-emerald-300 transition-colors whitespace-nowrap cursor-pointer"
+          className="inline-flex items-center gap-1.5 py-0.5 text-slate-300 hover:text-white transition-colors whitespace-nowrap cursor-pointer"
         >
           <ArrowDown className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
           Model Your Brokerage Leakage
@@ -382,7 +390,7 @@ export default function HeroAuditTerminal({
         <button
           type="button"
           onClick={onOpenModal}
-          className="inline-flex items-center gap-1.5 py-0.5 text-emerald-300 hover:text-emerald-200 font-medium transition-colors whitespace-nowrap cursor-pointer"
+          className="inline-flex items-center gap-1.5 py-0.5 text-emerald-300 hover:text-emerald-200 font-semibold transition-colors whitespace-nowrap cursor-pointer"
         >
           Submit 3 Deals for Free Audit
           <ArrowRight className="w-3.5 h-3.5 shrink-0" />
